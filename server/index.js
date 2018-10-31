@@ -109,43 +109,54 @@ app.get('/', (req, res) => {
 });
 
 // Get the oncoming trains given a stopId and fieldId.
-app.get('/schedule', (req, res) => {
-  const mta = new MTA({
-    key: '6fdbd192a4cc961fa30c69c9607abcbf',
-    feed_id: 1
-  });
-  const { stopId, direction } = req.query;
+app.get('/schedule/:stopId/', (req, res) => {
+
+  const { stopId } = req.params;
+  const { direction, feed_id } = req.query;
   if (stopId === undefined || stopId === null) {
-    res.json({ error: 'Need to include a stopId' });
+    res.json({ error: 'Missing stopId parameter' });
     return;
   }
 
-  mta.schedule(stopId).then(({ schedule }) => {
-    if (direction === undefined || direction === null) {
-      // If no direction given, just return all data we have. Not ideal...
-      res.json(schedule[stopId]);
-    } else {
-      if (direction !== 'N' && direction !== 'S') {
-        res.json({ error: 'Invalid direction given' });
-        return;
-      }
-      // Generate current Epoch for comparison.
-      let currTime = Date.now().toString();
-      currTime = currTime.substring(0, currTime.length - 3);
+  const mta = new MTA({
+    key: '6fdbd192a4cc961fa30c69c9607abcbf',
+    feed_id: +feed_id || 1
+  });
 
-      // Get the nearest 5 train arrivals in your given direction
-      const next = [];
-      for (let i = 0; next.length < 6; ++i) {
-        // !!! This is assuming that it's sorted by arrival time, further testing required !!!
-        const { routeId, arrivalTime } = schedule[stopId][direction][i];
+  mta.schedule(stopId).then(({ schedule }) => {
+    // Generate current Epoch for comparison.
+    let currTime = Date.now().toString();
+    currTime = +currTime.substring(0, currTime.length - 3);
+
+    // Get the nearest 5 train arrivals in your given direction. Or, if no direction given, include both directions.
+    const nextArriving = {};
+
+    // Populate North
+    if (direction === 'N' || direction !== 'S') {
+      nextArriving.N = [];
+      for (let i = 0; nextArriving.N.length < 5 && i < schedule[stopId].N.length; ++i) {
+        const { routeId, arrivalTime } = schedule[stopId].N[i];
         // If arrival time is null I'm assuming that means it's at the station? Maybe returning 0 would be better for FE, hmm.
 
-        if (arrivalTime < +currTime) continue; // BUG: Occasionally an arrivalTime will be in the past? Just assume data integrity err and skip it.
-        const eta = arrivalTime === null ? 'At the station' : arrivalTime - +currTime;
-        next.push({ routeId, eta });
+        if (arrivalTime < currTime) continue; // BUG: Occasionally an arrivalTime will be in the past? Just assume data integrity err and skip it.
+        const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
+        nextArriving.N.push({ routeId, eta });
       }
-      res.json(next);
     }
+
+    // Populate South
+    if (direction === 'S' || direction !== 'N') {
+      nextArriving.S = [];
+      for (let i = 0; nextArriving.S.length < 5 && i < schedule[stopId].S.length; ++i) {
+        const { routeId, arrivalTime } = schedule[stopId].S[i];
+
+        if (arrivalTime < currTime) continue;
+        const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
+        nextArriving.S.push({ routeId, eta });
+      }
+    }
+
+    res.json(nextArriving);
   }).catch((error) => {
     res.json({ error });
   });
