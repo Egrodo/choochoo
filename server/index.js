@@ -1,6 +1,4 @@
-const GTFS = require('gtfs-realtime-bindings');
 const express = require('express');
-const request = require('request');
 const MTA = require('mta-gtfs');
 const app = express();
 
@@ -15,98 +13,6 @@ const app = express();
     Then I have mta.schedule(stopId, field_id). The field_id's differentiate 
 
 */
-app.get('/', (req, res) => {
-  // request({
-  //   method: 'GET',
-  //   url: 'http://datamine.mta.info/mta_esi.php?key=6fdbd192a4cc961fa30c69c9607abcbf&feed_id=1',
-  //   encoding: null
-  // }, ((err, reqRes, body) => {
-  //   if (err) {
-  //     throw new Error(err);
-  //   } else if (res.statusCode !== 200) {
-  //     throw new Error(`Not okay response status code? -> ${reqRes.statusCode}`)
-  //   }
-
-  //   const feed = GTFS.FeedMessage.decode(body);
-  //   // feed.entity.forEach((entity) => {
-  //   //   console.log(entity);
-  //   // });
-  //   res.send(feed.entity[feed.entity.length - 1]);
-  // }));
-  const mta = new MTA({
-    key: '6fdbd192a4cc961fa30c69c9607abcbf',
-    feed_id: 1 // TODO: Does this feed_id determine which data I can get with .schedule?
-  });
-
-  // mta.stop().then(function (result) {
-  //   res.send(result);
-  // }).catch(function (err) {
-  //   console.log(err);
-  // });
-  // mta.schedule(115, 1).then((result) => res.send(result));
-  /*
-    Stations are stop ids. Sometimes there are multiple of the same id number, N and S versions. They have a parent_station. Just use the parent station?
-  // */
-  // There are many different stopId's for each station, wtf? Do each match up to a different feed?
-  // stopId is the station identifier
-  const stopId = 902;
-  // feedId is the type of train
-  const feedId = 26;
-  /*
-    fieldId's:
-      1: the 1,2,3,4,5,6, and S lines
-      26: the A,C,E,H,S lines (S???)
-      16: the N,Q,R,W lines
-      21: the B,D,F,M lines
-      2: the L line
-      11: the Staten Island Railway
-      31: the G line
-      36: the J,Z line
-      51: the 7 line
-  */
-  mta.schedule(stopId, feedId).then((result) => {
-    // I need to ensure I do strict checking of the stopId and feedId and error handling else can crash everything.
-    /* At this stage I have a data in the structure of 
-      {
-        schedule: {
-          635: {
-            N: [
-              {
-                routeId: "6" // What does this mean?
-                delay: null,
-                arrivalTime: // epoch time
-                departureTime: // This same as arrival time?
-              }
-            ],
-            S: [
-              (southbound stops)
-            ]
-          }
-        }
-      }
-
-    */
-    // This array contains everything from like 2 hours ago to like in an hour. So have to sort according to current time.
-    // Get the next 5 arriving.
-    let currTime = Date.now();
-    // Date.now comes out in milliseconds, I need seconds. Trim last 3 off the end.
-    currTime = currTime.toString().substring(0, currTime.toString().length - 3);
-    let next = result.schedule[`${stopId}`].N.filter(({ arrivalTime }) => {
-      // Within the next 600 seconds.
-      const diff = arrivalTime - currTime;
-      if (diff > 0 && diff < 3000) {
-        return true;
-      }
-      return false;
-    });
-
-    // Then rewrite their dates to readable format.
-    next = next.map((curr) => {
-      return { ...curr, readableTime: `${curr.arrivalTime - currTime} seconds away.` };
-    });
-    res.send(next);
-  });
-});
 
 // Get the oncoming trains given a stopId and fieldId.
 app.get('/schedule/:stopId/', (req, res) => {
@@ -168,6 +74,7 @@ app.get('/stopInfo', (req, res) => {
     key: '6fdbd192a4cc961fa30c69c9607abcbf',
     feed_id: 1
   });
+  
   const { stopId } = req.query;
   if (stopId === undefined) {
     mta.stop().then((stopsInfo) => {
