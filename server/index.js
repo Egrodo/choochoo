@@ -11,11 +11,11 @@ const app = express();
     This is a static list for the most part, but it could always change. I should be updating this every month maybe?
     This backend might have to go onto AWS or something.
     Then I have mta.schedule(stopId, field_id). The field_id's differentiate 
-
+    
 */
 
 // Get the oncoming trains given a stopId and fieldId.
-app.get('/schedule/:stopId/', (req, res) => {
+app.get('/schedule/:stopId/', (req, res, next) => {
 
   const { stopId } = req.params;
   const { direction, feed_id } = req.query;
@@ -63,36 +63,33 @@ app.get('/schedule/:stopId/', (req, res) => {
     }
 
     res.json(nextArriving);
-  }).catch((error) => {
-    res.json({ error });
-  });
+  }).catch(next);
 });
 
 // Get info on stops or any specific stop.
-app.get('/stopInfo', (req, res) => {
+app.get('/stopInfo', (req, res, next) => {
   const mta = new MTA({
     key: '6fdbd192a4cc961fa30c69c9607abcbf',
     feed_id: 1
   });
-  
+
   const { stopId } = req.query;
-  if (stopId === undefined) {
+  if (!stopId) {
     mta.stop().then((stopsInfo) => {
-      res.json(stopsInfo);
+      res.json({ stopsInfo });
     }).catch((error) => {
       res.json({ error });
     });
   } else {
     mta.stop(stopId).then((stopInfo) => {
-      res.json(stopInfo);
-    }).catch((error) => {
-      res.json({ error });
-    });
+      if (stopInfo === undefined) throw new Error(`Invalid stopId: ${stopId}`);
+      res.json({ stopInfo });
+    }).catch(next);
   }
 });
 
 app.use((req, res, next) => {
-  res.statusCode(404).send("Route doesn't exist.");
+  res.status(404).send("Route doesn't exist.");
 });
 
 app.listen(3001, () => console.log('Server running on port 3001.'));
