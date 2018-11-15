@@ -1,0 +1,40 @@
+@font-face {
+  font-family: 'Product Sans';
+  src: url('../assets/font/Product\ Sans\ Regular.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Product Sans';
+  src: url('../assets/font/Product\ Sans\ Bold.ttf');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Product Sans';
+  src: url('../assets/font/Product\ Sans\ Italic.ttf');
+  font-style: italic;
+}
+
+.App {
+  background-color: #60C2FF;
+  color: #fff;
+  font-family: 'Product Sans';
+  width: 375px;
+  height: 667px;
+}
+
+.imgContainer {
+  width: 100%;
+  height: 93px;
+}
+
+.headerImg {
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+}

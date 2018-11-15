@@ -1,36 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router';
-import { Input } from 'semantic-ui-react';
+import SunAndClouds from '../assets/images/sunny-day.png';
+import CSS from '../css/App.module.css';
 
-/*
-  Use React Context to serve the data to the app, manage the data here.
-*/
+import WelcomeView from './WelcomeView';
+import MainView from './MainView';
+import OptionsView from './OptionsView';
 
 function App() {
-  console.log('render');
-  // On first load check local storage and establish variables.
-  const checkStorage = (key => localStorage.getItem(key) || '');
+  console.log('App render');
+  // This function will run on every single render. But hooks is smart enough to not rewrite state with empty state.
 
-  const [name, setName] = useState(checkStorage('name'));
-  const [stopId, setStopId] = useState(checkStorage('stopId'));
-  const [zipCode, setZipCode] = useState(checkStorage('zipCode'));
+  const [name, setName] = useState('');
+  const [stopId, setStopId] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [view, setView] = useState('');
 
+  const saveChanges = (newName, newStopId, newZipCode) => {
+    // Submit the state to the localStorage.
+    if (!name || !stopId || !zipCode) {
+      /*  TODO:
+          Handle errors with a prop? Or should this be done farther down?
+          Handle empty zipCode.
+      */
+      throw new Error("saveToStorage wasn't given proper variables").trace;
+    } else {
+      // Need to validate stopId first
+      localStorage.setItem('name', name);
+      setName(newName);
+      localStorage.setItem('stopId', stopId);
+      setStopId(newStopId);
+      localStorage.setItem('zipCode', zipCode);
+      setZipCode(newZipCode);
+    }
+  }
 
   useEffect(() => {
-    // On first load and on an update of any of the global state items.
+    // This runs on componentDidMount componentWillUnmount.
 
-    // TODO: Only update localStorage when I save, not just on typing.
-    if (name) localStorage.setItem('name', name);
-    if (stopId) localStorage.setItem('stopId', stopId);
-    if (zipCode) localStorage.setItem('zipCode', zipCode);
-  }, [name, stopId, zipCode]);
+    // On first load check if we have data. If we dont have any data, show welcome view. If we do, show mainView.
+    const checkStorage = (key => localStorage.getItem(key) || '');
+    const newName = checkStorage('name');
+    const newStopId = checkStorage('stopId');
+    const newZipCode = checkStorage('zipCode');
 
+    setName(newName);
+    setStopId(newStopId);
+    setZipCode(newZipCode);
+    if (newName && newStopId) {
+      setView('main');
+    } else setView('welcome');
+  }, []);
+
+  // General parent stylings setting the header img, fonts, bg color.
   return (
-    <>
-      <Input placeholder="Name..." value={name} onChange={e => setName(e.target.value)} />
-      <Input placeholder="stopId..." value={stopId} onChange={e => setStopId(e.target.value)} />
-      <Input placeholder="zipCode..." value={zipCode} onChange={e => setZipCode(e.target.value)} />
-    </>
+    <div className={CSS.App}>
+      <header className={CSS.imgContainer}>
+        <img src={SunAndClouds} className={CSS.headerImg} alt="SunAndClouds" />
+      </header>
+      <div className={CSS.content}>
+        {view === 'welcome' && (
+          <WelcomeView saveChanges={saveChanges} />
+        )}
+        {view === 'main' && (
+          <MainView name={name} stopId={stopId} zipCode={zipCode} />
+        )}
+        {view === 'options' && (
+          <OptionsView
+            name={name}
+            stopId={stopId}
+            zipCode={zipCode}
+            saveChanges={saveChanges}
+          />
+        )}
+      </div>
+    </div>
   );
 }
 
