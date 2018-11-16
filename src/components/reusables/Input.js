@@ -3,7 +3,7 @@ import CSS from '../../css/Input.module.css';
 
 function Input(props) {
   return (
-    <>
+    <div className={CSS.InputContainer}>
       {props.label && (
         <label htmlFor={props.alt} className={CSS.label}>
           {props.label}
@@ -14,11 +14,16 @@ function Input(props) {
         className={`
           ${CSS.Input}
           ${props.fluid && CSS.fluid}
-          ${props.error.length && CSS.error}
+          ${props.error && CSS.error}
         `}
         {...props}
       />
-    </>
+      {props.error && (
+        <label htmlFor={props.alt} className={`${CSS.label} ${CSS.error}`}>
+          {props.error}
+        </label>
+      )}
+    </div>
   );
 }
 

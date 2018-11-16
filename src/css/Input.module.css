@@ -1,5 +1,8 @@
+.InputContainer {
+  margin-bottom: 1rem;
+}
+
 .Input {
-  margin: 0 0 2em 0;
   max-width: 100%;
   outline: none;
   text-align: left;
@@ -11,6 +14,7 @@
   border-radius: 0.286rem;
   box-shadow: none;
   box-sizing: border-box;
+  margin-bottom: 1.15rem;
 }
 
 .Input:focus {
@@ -21,7 +25,7 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
-.Input.fluid {
+.fluid {
   width: 100%;
 }
 
@@ -31,4 +35,9 @@
 
 .error {
   border-color: red;
+  margin-bottom: 0;
+}
+
+.label.error {
+  color: red;
 }

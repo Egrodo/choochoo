@@ -22,7 +22,7 @@ function WelcomeView({ saveChanges }) {
 
     // First check that they filled in all the areas.
     if (!station) errors.station = 'Missing station';
-    if (!name) errors.name = 'Missing name';
+    if (!name.trim()) errors.name = 'Missing name';
     if (!zipCode) errors.zipCode = 'Missing zipcode';
 
     // TODO: Now validate the station > stopId here.
@@ -50,7 +50,7 @@ function WelcomeView({ saveChanges }) {
         I'll need some information before we start
       </h4>
 
-      <div className={CSS.inputContainer}>
+      <div className={CSS.inputsContainer}>
         {/* TODO: The station input needs a typeahead. */}
         <Input
           onChange={e => setStation(e.target.value)}
