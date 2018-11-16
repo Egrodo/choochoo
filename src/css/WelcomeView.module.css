@@ -1,3 +1,20 @@
 .WelcomeView {
   text-align: center;
 }
+
+.mainHeader {
+  margin: 0.5em 0 0 0;
+  font-weight: normal;
+  color: #fff;
+}
+
+.secondaryHeader {
+  margin: 0.5em 0 0 0;
+  font-weight: normal;
+  color: #fff;
+}
+
+.inputContainer {
+  text-align: left;
+  margin-top: 3em;
+}

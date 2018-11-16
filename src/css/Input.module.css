@@ -1,0 +1,30 @@
+.Input {
+  margin: 0;
+  max-width: 100%;
+  outline: none;
+  text-align: left;
+  line-height: 1.215em;
+  font-family: inherit;
+  padding: 0.5em 0.7em;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0.286rem;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+.Input:focus {
+  border-color: #ffd10c;
+}
+
+.Input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.Input.fluid {
+  width: 100%;
+}
+
+.label {
+  margin-left: 0.8em;
+}

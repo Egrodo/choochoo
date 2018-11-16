@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import SunAndClouds from '../assets/images/sunny-day.png';
 import CSS from '../css/App.module.css';
 
-import WelcomeView from './WelcomeView';
-import MainView from './MainView';
-import OptionsView from './OptionsView';
+import WelcomeView from './views/WelcomeView';
+import MainView from './views/MainView';
+import OptionsView from './views/OptionsView';
 
 function App() {
   console.log('App render');
