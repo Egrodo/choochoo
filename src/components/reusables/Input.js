@@ -11,7 +11,11 @@ function Input(props) {
       )}
       <input
         name={props.alt}
-        className={`${CSS.Input} ${props.fluid && CSS.fluid}`}
+        className={`
+          ${CSS.Input}
+          ${props.fluid && CSS.fluid}
+          ${props.error.length && CSS.error}
+        `}
         {...props}
       />
     </>

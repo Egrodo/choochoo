@@ -28,3 +28,7 @@
 .label {
   margin-left: 0.8em;
 }
+
+.error {
+  border-color: red;
+}

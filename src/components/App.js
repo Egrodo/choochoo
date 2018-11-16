@@ -16,6 +16,8 @@ function App() {
   const [view, setView] = useState('');
 
   const saveChanges = (newName, newStopId, newZipCode) => {
+    console.log('Saving following to localStorage:');
+    console.table({ newName, newStopId, newZipCode });
     // Submit the state to the localStorage.
     if (!name || !stopId || !zipCode) {
       /*  TODO:
@@ -32,13 +34,13 @@ function App() {
       localStorage.setItem('zipCode', zipCode);
       setZipCode(newZipCode);
     }
-  }
+  };
 
   useEffect(() => {
     // This runs on componentDidMount componentWillUnmount.
 
     // On first load check if we have data. If we dont have any data, show welcome view. If we do, show mainView.
-    const checkStorage = (key => localStorage.getItem(key) || '');
+    const checkStorage = key => localStorage.getItem(key) || '';
     const newName = checkStorage('name');
     const newStopId = checkStorage('stopId');
     const newZipCode = checkStorage('zipCode');
@@ -55,12 +57,14 @@ function App() {
   return (
     <div className={CSS.App}>
       <header className={CSS.imgContainer}>
-        <img src={SunAndClouds} className={CSS.headerImg} alt="SunAndClouds" />
+        <img
+          src={SunAndClouds}
+          className={CSS.headerImg}
+          alt="Sun And Clouds"
+        />
       </header>
       <div className={CSS.content}>
-        {view === 'welcome' && (
-          <WelcomeView saveChanges={saveChanges} />
-        )}
+        {view === 'welcome' && <WelcomeView saveChanges={saveChanges} />}
         {view === 'main' && (
           <MainView name={name} stopId={stopId} zipCode={zipCode} />
         )}
