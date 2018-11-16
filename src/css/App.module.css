@@ -20,6 +20,7 @@
   background-color: #60c2ff;
   color: #fff;
   font-family: 'Product Sans';
+  position: relative;
   width: 375px;
   height: 667px;
 }
@@ -35,6 +36,5 @@
 }
 
 .content {
-  height: 100%;
   padding: 0 1em;
 }

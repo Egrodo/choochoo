@@ -18,3 +18,10 @@
   text-align: left;
   margin-top: 3em;
 }
+
+.btnContainer {
+  position: absolute;
+  bottom: 2em;
+  left: 50%;
+  transform: translateX(-50%);
+}
