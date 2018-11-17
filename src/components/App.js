@@ -19,20 +19,17 @@ function App() {
     console.log('Saving following to localStorage:');
     console.table({ newName, newStopId, newZipCode });
     // Submit the state to the localStorage.
-    if (!name || !stopId || !zipCode) {
-      /*  TODO:
-          Handle errors with a prop? Or should this be done farther down?
-          Handle empty zipCode.
-      */
-      throw new Error("saveToStorage wasn't given proper variables").trace;
+    if (!newName || !newStopId || !newZipCode) {
+      throw new Error("saveToStorage wasn't given proper variables");
     } else {
       // Need to validate stopId first
-      localStorage.setItem('name', name);
+      localStorage.setItem('name', newName);
+      localStorage.setItem('stopId', newStopId);
+      localStorage.setItem('zipCode', newZipCode);
       setName(newName);
-      localStorage.setItem('stopId', stopId);
       setStopId(newStopId);
-      localStorage.setItem('zipCode', zipCode);
       setZipCode(newZipCode);
+      setView('main');
     }
   };
 
@@ -44,11 +41,11 @@ function App() {
     const newName = checkStorage('name');
     const newStopId = checkStorage('stopId');
     const newZipCode = checkStorage('zipCode');
-
+    console.log({ newName, newStopId, newZipCode });
     setName(newName);
     setStopId(newStopId);
     setZipCode(newZipCode);
-    if (newName && newStopId) {
+    if (newName && newStopId && newZipCode) {
       setView('main');
     } else setView('welcome');
   }, []);

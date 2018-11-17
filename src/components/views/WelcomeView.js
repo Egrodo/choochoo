@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import CSS from '../../css/WelcomeView.module.css';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
 function WelcomeView({ saveChanges }) {
   const [name, setName] = useState('');
-  // TODO: Handle the station > stopId stuff.
   const [station, setStation] = useState('');
   const [zipCode, setZipCode] = useState('');
 
@@ -26,7 +26,6 @@ function WelcomeView({ saveChanges }) {
     if (!zipCode) errors.zipCode = 'Missing zipcode';
 
     // TODO: Now validate the station > stopId here.
-
     if (name.length > 16) {
       errors.name = 'First name too long';
     }
@@ -43,8 +42,7 @@ function WelcomeView({ saveChanges }) {
       setErrorObj(errors);
       saveChanges(name, station, zipCode);
     } else {
-      console.table(errors);
-      // Otherwise display the errors given and preserve the others.
+      // Otherwise display the errors given.
       setErrorObj(errors);
     }
   };
@@ -79,7 +77,7 @@ function WelcomeView({ saveChanges }) {
         />
         <Input
           onChange={e => {
-            // TODO: Figure out a way to deal with spaces.
+            // Only allow numbers to be typed in.
             if (!Number.isNaN(Number(e.target.value))) {
               setZipCode(e.target.value);
             }
@@ -99,5 +97,15 @@ function WelcomeView({ saveChanges }) {
     </section>
   );
 }
+
+WelcomeView.propTypes = {
+  saveChanges: PropTypes.func
+};
+
+WelcomeView.defaultProps = {
+  saveChanges: () => {
+    console.error('PropTypes Error: saveChanges not passed into WelcomeView.');
+  }
+};
 
 export default WelcomeView;
