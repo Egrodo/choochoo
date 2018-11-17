@@ -31,10 +31,16 @@ function WelcomeView({ saveChanges }) {
       errors.name = 'First name too long';
     }
 
-    // TODO: Now validate the zipCode here.
+    if (Number.isNaN(Number(zipCode))) {
+      errors.zipCode = 'Only numbers allowed';
+    } else if (Number(zipCode) < 10001 || Number(zipCode) > 11697) {
+      // If it's not NaN, check if it's in the zipCode range for NYC.
+      errors.zipCode = "This zipcode doesn't seem to be in NYC";
+    }
 
     if (!Object.keys(errors).length) {
-      // If there are no errors, save the changes.
+      // If there are no errors, remove the red and save the changes.
+      setErrorObj(errors);
       saveChanges(name, station, zipCode);
     } else {
       console.table(errors);
@@ -72,7 +78,12 @@ function WelcomeView({ saveChanges }) {
           fluid={1}
         />
         <Input
-          onChange={e => setZipCode(e.target.value)}
+          onChange={e => {
+            // TODO: Figure out a way to deal with spaces.
+            if (!Number.isNaN(Number(e.target.value))) {
+              setZipCode(e.target.value);
+            }
+          }}
           value={zipCode}
           placeholder="Zip..."
           alt="zip code"
