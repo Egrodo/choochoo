@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const express = require('express');
 const MTA = require('mta-gtfs');
 const fs = require('fs');
@@ -9,7 +10,6 @@ const data = JSON.parse(fs.readFileSync('server/stopList.json'));
 
 // Get the oncoming trains given a stopId and fieldId.
 app.get('/schedule/:stopId/', (req, res, next) => {
-  // TODO: Do I bundle all the trains together?
   const { stopId } = req.params;
   const { direction, feed_id } = req.query;
   if (stopId === undefined || stopId === null) {
@@ -68,12 +68,12 @@ app.get('/schedule/:stopId/', (req, res, next) => {
         });
 
         try {
+          /* eslint-disable-next-line */
           const { schedule } = await mta.schedule(stopId);
           if (!schedule) continue;
           const [N, S] = getTrains(schedule);
           results[feedId] = { N, S };
         } catch (err) {
-          // TODO: Handle error silently.
           console.log('\n\n\n', 'err', err, '\n\n\n');
         }
       }
@@ -96,28 +96,6 @@ app.get('/schedule/:stopId/', (req, res, next) => {
         const results = {};
         results[feed_id] = { N, S };
         res.json(results);
-      })
-      .catch(next);
-  }
-});
-
-// Get info on stops or any specific stop.
-app.get('/stopInfo', (req, res, next) => {
-  const mta = new MTA({
-    key: '6fdbd192a4cc961fa30c69c9607abcbf',
-    feed_id: 1
-  });
-
-  const { id } = req.query;
-  if (!id) {
-    // Return a pre-filtered list of stops that don't include N's.
-    res.json({ stopsList });
-  } else {
-    mta
-      .stop(id)
-      .then(stopInfo => {
-        if (stopInfo === undefined) throw new Error(`Invalid id: ${id}`);
-        res.json({ stopInfo });
       })
       .catch(next);
   }
