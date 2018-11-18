@@ -39,7 +39,6 @@ function App() {
     const newName = checkStorage('name');
     const newStopId = checkStorage('stopId');
     const newZipCode = checkStorage('zipCode');
-    console.log({ newName, newStopId, newZipCode });
     setName(newName);
     setStopId(newStopId);
     setZipCode(newZipCode);

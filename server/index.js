@@ -1,10 +1,12 @@
 /* eslint-disable camelcase */
 const express = require('express');
+const cors = require('cors');
 const MTA = require('mta-gtfs');
 const Fuse = require('fuse.js');
 const data = require('./stopList.json');
 
 const app = express();
+app.use(cors());
 
 // Get the oncoming trains given a stopId and fieldId.
 app.get('/schedule/:stopId/', (req, res, next) => {

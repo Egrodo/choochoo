@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Typeahead from '../reusables/Typeahead.js';
 import CSS from '../../css/WelcomeView.module.css';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';
@@ -9,7 +10,10 @@ function WelcomeView({ saveChanges }) {
   const [station, setStation] = useState('');
   const [zipCode, setZipCode] = useState('');
 
-  // Error handling: empty strings means no error, otherwise display error. Where?
+  const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState([]);
+
+  // Error handling: empty strings means no error, otherwise display error.
   const [errorObj, setErrorObj] = useState({
     name: '',
     station: '',
@@ -53,10 +57,8 @@ function WelcomeView({ saveChanges }) {
     <section className={CSS.WelcomeView}>
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
       <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
-
       <div className={CSS.inputsContainer}>
-        {/* TODO: The station input needs a typeahead. */}
-        <Input
+        {/* <Input
           onChange={e => setStation(e.target.value)}
           value={station}
           placeholder="Station..."
@@ -64,7 +66,8 @@ function WelcomeView({ saveChanges }) {
           label="Station Name"
           error={errorObj.station || ''}
           fluid={1}
-        />
+        /> */}
+        <Typeahead onChange={e => setStation(e.target.value)} value={station} placeholder="Station..." />
         <Input
           onChange={e => setName(e.target.value)}
           value={name}

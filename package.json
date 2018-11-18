@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-react-hooks": "0.0.0",
     "express": "^4.16.4",
@@ -14,6 +15,7 @@
     "normalize.css": "^8.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.7.0-alpha.2",
+    "react-autosuggest": "^9.4.2",
     "react-dom": "^16.7.0-alpha.2",
     "react-scripts": "2.0.5"
   },
