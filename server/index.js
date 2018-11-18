@@ -54,7 +54,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
   // Otherwise, compose a result array from trying all the feed_id's.
 
   if (!feed_id) {
-    // If I'm not given a feed_id just try all of them.
+    // If I'm not given a feed_id return a list of all of them
     const potentialLines = [1, 26, 16, 21, 2, 11, 31, 36, 51];
     (async function loop() {
       const results = {};
@@ -68,11 +68,13 @@ app.get('/schedule/:stopId/', (req, res, next) => {
         try {
           /* eslint-disable-next-line */
           const { schedule } = await mta.schedule(stopId);
-          if (!schedule) continue;
-          const [N, S] = getTrains(schedule);
-          results[feedId] = { N, S };
+          // If that feed_id exists at that stop, add it to our results.
+          if (schedule) {
+            const [N, S] = getTrains(schedule);
+            results[feedId] = { N, S };
+          }
         } catch (err) {
-          console.log('\n\n\n', 'err', err, '\n\n\n');
+          console.error(err);
         }
       }
       res.json(results);
@@ -110,7 +112,7 @@ app.get('/searchStops/', (req, res, next) => {
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 3,
-    keys: ['stop_name']
+    keys: ['stop_name', 'stop_id']
   });
   const results = fuse.search(query);
   res.json(results);
@@ -125,8 +127,8 @@ app.get('/stopInfo', (req, res, next) => {
 
   const { id } = req.query;
   if (!id) {
-    // Return a pre-filtered list of stops that don't include N's.
-    res.json({ stopsList });
+    // If no id given just return all stops
+    res.json(data);
   } else {
     mta
       .stop(id)
