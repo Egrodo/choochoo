@@ -6,6 +6,7 @@ module.exports = {
   },
   plugins: ['react-hooks', 'prettier'],
   rules: {
+    'max-len': 0,
     'linebreak-style': 0,
     'react/no-unused-state': 0,
     'react/no-array-index-key': 0,

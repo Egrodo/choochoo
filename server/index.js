@@ -1,23 +1,15 @@
 const express = require('express');
 const MTA = require('mta-gtfs');
 const fs = require('fs');
+const Fuse = require('fuse.js');
+
 const app = express();
 
 const data = JSON.parse(fs.readFileSync('server/stopList.json'));
-/*
-  Design:
-    So I have this big map of "stopId"s and their corresponding station names which I can get with mta.stop().
-    I'll need to use this for the setup of the app so the user can choose their stations.
-    On the frontend I'll need to write a debouncer that searches for the stopId in this list. Make an endpoint to search stop_id's from stop_name's?
-
-    This is a static list for the most part, but it could always change. I should be updating this every month maybe?
-    This backend might have to go onto AWS or something.
-    Then I have mta.schedule(stopId, field_id). The field_id's differentiate 
-    
-*/
 
 // Get the oncoming trains given a stopId and fieldId.
 app.get('/schedule/:stopId/', (req, res, next) => {
+  // TODO: Do I bundle all the trains together?
   const { stopId } = req.params;
   const { direction, feed_id } = req.query;
   if (stopId === undefined || stopId === null) {
@@ -25,49 +17,88 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     return;
   }
 
-  const mta = new MTA({
-    key: '6fdbd192a4cc961fa30c69c9607abcbf',
-    feed_id: +feed_id || 1
-  });
+  // A function to return all closest trains given a schedule.
+  const getTrains = (schedule, countPerDir = 5) => {
+    // Get the current (3 length) second count for comparison.
+    let currTime = Date.now().toString();
+    currTime = +currTime.substring(0, currTime.length - 3);
 
-  mta
-    .schedule(stopId)
-    .then(({ schedule }) => {
-      // Generate current Epoch for comparison.
-      let currTime = Date.now().toString();
-      currTime = +currTime.substring(0, currTime.length - 3);
+    // Get the nearest `countPerDir` train arrivals in your given direction. Or, if no direction given, include both directions.
+    // Populate North
+    const N = [];
+    if (direction === 'N' || direction !== 'S') {
+      for (let i = 0; N.length < countPerDir && i < schedule[stopId].N.length; ++i) {
+        const { routeId, arrivalTime } = schedule[stopId].N[i];
+        // If arrival time is null I'm assuming that means it's at the station? Maybe returning 0 would be better for FE, hmm.
 
-      // Get the nearest 5 train arrivals in your given direction. Or, if no direction given, include both directions.
-      const nextArriving = {};
+        if (arrivalTime < currTime) continue; // BUG: Occasionally an arrivalTime will be in the past? Just assume data integrity err and skip it.
+        const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
+        N.push({ routeId, eta });
+      }
+    }
 
-      // Populate North
-      if (direction === 'N' || direction !== 'S') {
-        nextArriving.N = [];
-        for (let i = 0; nextArriving.N.length < 5 && i < schedule[stopId].N.length; ++i) {
-          const { routeId, arrivalTime } = schedule[stopId].N[i];
-          // If arrival time is null I'm assuming that means it's at the station? Maybe returning 0 would be better for FE, hmm.
+    // Populate South
+    const S = [];
+    if (direction === 'S' || direction !== 'N') {
+      for (let i = 0; S.length < countPerDir && i < schedule[stopId].S.length; ++i) {
+        const { routeId, arrivalTime } = schedule[stopId].S[i];
 
-          if (arrivalTime < currTime) continue; // BUG: Occasionally an arrivalTime will be in the past? Just assume data integrity err and skip it.
-          const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
-          nextArriving.N.push({ routeId, eta });
+        if (arrivalTime < currTime) continue;
+        const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
+        S.push({ routeId, eta });
+      }
+    }
+
+    return [N, S];
+  };
+
+  // If a feed_id was passed in, return the results just for that feed_id.
+  // Otherwise, compose a result array from trying all the feed_id's.
+
+  if (!feed_id) {
+    // If I'm not given a feed_id just try all of them.
+    const potentialLines = [1, 26, 16, 21, 2, 11, 31, 36, 51];
+    (async function loop() {
+      const results = {};
+      for (let i = 0; i < potentialLines.length; ++i) {
+        const feedId = potentialLines[i];
+        const mta = new MTA({
+          key: '6fdbd192a4cc961fa30c69c9607abcbf',
+          feed_id: feedId
+        });
+
+        try {
+          const { schedule } = await mta.schedule(stopId);
+          if (!schedule) continue;
+          const [N, S] = getTrains(schedule);
+          results[feedId] = { N, S };
+        } catch (err) {
+          // TODO: Handle error silently.
+          console.log('\n\n\n', 'err', err, '\n\n\n');
         }
       }
+      res.json(results);
+    })();
+  } else {
+    const mta = new MTA({
+      key: '6fdbd192a4cc961fa30c69c9607abcbf',
+      feed_id: +feed_id
+    });
 
-      // Populate South
-      if (direction === 'S' || direction !== 'N') {
-        nextArriving.S = [];
-        for (let i = 0; nextArriving.S.length < 5 && i < schedule[stopId].S.length; ++i) {
-          const { routeId, arrivalTime } = schedule[stopId].S[i];
-
-          if (arrivalTime < currTime) continue;
-          const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
-          nextArriving.S.push({ routeId, eta });
+    mta
+      .schedule(stopId)
+      .then(({ schedule }) => {
+        if (!schedule) {
+          res.json({ error: 'No feed_id at this stopId', feed_id, stopId });
+          return;
         }
-      }
-
-      res.json(nextArriving);
-    })
-    .catch(next);
+        const [N, S] = getTrains(schedule, 5);
+        const results = {};
+        results[feed_id] = { N, S };
+        res.json(results);
+      })
+      .catch(next);
+  }
 });
 
 // Get info on stops or any specific stop.
@@ -92,16 +123,23 @@ app.get('/stopInfo', (req, res, next) => {
   }
 });
 
-app.get('/searchStop/', (req, res, next) => {
+app.get('/searchStops/', (req, res, next) => {
   const { query } = req.query;
-
-  // TODO: Search the stopsInfo list for the query, return all matching.
-  const arr = Object.keys(data).map(key => {
-    const c = data[key];
-    return { ...c };
+  if (!query) {
+    next('No query sent');
+    return;
+  }
+  const fuse = new Fuse(data, {
+    shouldSort: true,
+    threshold: 0.3,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 3,
+    keys: ['stop_name']
   });
-
-  res.json(arr);
+  const results = fuse.search(query);
+  res.json(results);
 });
 
 app.use((_, res) => {

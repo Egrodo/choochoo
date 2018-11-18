@@ -26,6 +26,8 @@ function WelcomeView({ saveChanges }) {
     if (!zipCode) errors.zipCode = 'Missing zipcode';
 
     // TODO: Now validate the station > stopId here.
+    // Ensure that there are no random characters in the station.
+
     if (name.length > 16) {
       errors.name = 'First name too long';
     }
@@ -50,9 +52,7 @@ function WelcomeView({ saveChanges }) {
   return (
     <section className={CSS.WelcomeView}>
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
-      <h4 className={CSS.secondaryHeader}>
-        I'll need some information before we start
-      </h4>
+      <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
 
       <div className={CSS.inputsContainer}>
         {/* TODO: The station input needs a typeahead. */}

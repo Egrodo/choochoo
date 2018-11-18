@@ -16,8 +16,6 @@ function App() {
   const [view, setView] = useState('');
 
   const saveChanges = (newName, newStopId, newZipCode) => {
-    console.log('Saving following to localStorage:');
-    console.table({ newName, newStopId, newZipCode });
     // Submit the state to the localStorage.
     if (!newName || !newStopId || !newZipCode) {
       throw new Error("saveToStorage wasn't given proper variables");
@@ -54,25 +52,12 @@ function App() {
   return (
     <div className={CSS.App}>
       <header className={CSS.imgContainer}>
-        <img
-          src={SunAndClouds}
-          className={CSS.headerImg}
-          alt="Sun And Clouds"
-        />
+        <img src={SunAndClouds} className={CSS.headerImg} alt="Sun And Clouds" />
       </header>
       <div className={CSS.content}>
         {view === 'welcome' && <WelcomeView saveChanges={saveChanges} />}
-        {view === 'main' && (
-          <MainView name={name} stopId={stopId} zipCode={zipCode} />
-        )}
-        {view === 'options' && (
-          <OptionsView
-            name={name}
-            stopId={stopId}
-            zipCode={zipCode}
-            saveChanges={saveChanges}
-          />
-        )}
+        {view === 'main' && <MainView name={name} stopId={stopId} zipCode={zipCode} />}
+        {view === 'options' && <OptionsView name={name} stopId={stopId} zipCode={zipCode} saveChanges={saveChanges} />}
       </div>
     </div>
   );
