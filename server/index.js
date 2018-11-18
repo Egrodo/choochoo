@@ -1,12 +1,10 @@
 /* eslint-disable camelcase */
 const express = require('express');
 const MTA = require('mta-gtfs');
-const fs = require('fs');
 const Fuse = require('fuse.js');
+const data = require('./stopList.json');
 
 const app = express();
-
-const data = JSON.parse(fs.readFileSync('server/stopList.json'));
 
 // Get the oncoming trains given a stopId and fieldId.
 app.get('/schedule/:stopId/', (req, res, next) => {
@@ -93,9 +91,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
           return;
         }
         const [N, S] = getTrains(schedule, 5);
-        const results = {};
-        results[feed_id] = { N, S };
-        res.json(results);
+        res.json({ feed_id: { N, S } });
       })
       .catch(next);
   }
@@ -118,6 +114,28 @@ app.get('/searchStops/', (req, res, next) => {
   });
   const results = fuse.search(query);
   res.json(results);
+});
+
+// Get info on stops or any specific stop.
+app.get('/stopInfo', (req, res, next) => {
+  const mta = new MTA({
+    key: '6fdbd192a4cc961fa30c69c9607abcbf',
+    feed_id: 1
+  });
+
+  const { id } = req.query;
+  if (!id) {
+    // Return a pre-filtered list of stops that don't include N's.
+    res.json({ stopsList });
+  } else {
+    mta
+      .stop(id)
+      .then(stopInfo => {
+        if (stopInfo === undefined) throw new Error(`Invalid id: ${id}`);
+        res.json({ stopInfo });
+      })
+      .catch(next);
+  }
 });
 
 app.use((_, res) => {
