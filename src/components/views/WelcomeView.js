@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Typeahead from '../reusables/Typeahead.js';
+import Typeahead from '../reusables/Typeahead';
 import CSS from '../../css/WelcomeView.module.css';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';
@@ -9,9 +9,6 @@ function WelcomeView({ saveChanges }) {
   const [name, setName] = useState('');
   const [station, setStation] = useState('');
   const [zipCode, setZipCode] = useState('');
-
-  const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState([]);
 
   // Error handling: empty strings means no error, otherwise display error.
   const [errorObj, setErrorObj] = useState({
@@ -30,6 +27,7 @@ function WelcomeView({ saveChanges }) {
     if (!zipCode) errors.zipCode = 'Missing zipcode';
 
     // TODO: Now validate the station > stopId here.
+    // TODO: If the input completely matches a stop_name use that.
     // Ensure that there are no random characters in the station.
 
     if (name.length > 16) {
@@ -58,7 +56,7 @@ function WelcomeView({ saveChanges }) {
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
       <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
       <div className={CSS.inputsContainer}>
-        <Typeahead error={errorObj.station || ''} />
+        <Typeahead error={errorObj.station ? errorObj.station : ''} station={station} setStation={setStation} />
         <Input
           onChange={e => setName(e.target.value)}
           value={name}
@@ -66,7 +64,7 @@ function WelcomeView({ saveChanges }) {
           placeholder="Name..."
           alt="name"
           label="First Name"
-          error={errorObj.name || ''}
+          error={errorObj.name ? errorObj.name : ''}
           fluid={1}
         />
         <Input
@@ -80,7 +78,7 @@ function WelcomeView({ saveChanges }) {
           placeholder="Zip..."
           alt="zip code"
           label="Zip Code"
-          error={errorObj.zipCode || ''}
+          error={errorObj.zipCode ? errorObj.zipCode : ''}
           fluid={1}
         />
       </div>

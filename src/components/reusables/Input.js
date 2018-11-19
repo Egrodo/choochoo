@@ -10,14 +10,14 @@ function Input(props) {
         </label>
       )}
       <input
+        {...props}
         name={props.alt}
         className={`
           ${CSS.Input}
-          ${props.fluid && CSS.fluid}
+          ${props.classes ? props.classes : ''}
+          ${props.fluid ? CSS.fluid : ''}
           ${props.error && CSS.error}
-          ${props.loading && CSS.loading}
         `}
-        {...props}
       />
       {props.error && (
         <label htmlFor={props.alt} className={`${CSS.label} ${CSS.error}`}>

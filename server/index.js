@@ -117,6 +117,10 @@ app.get('/searchStops/', (req, res, next) => {
     keys: ['stop_name', 'stop_id']
   });
   const results = fuse.search(query);
+  // Only get the top 5 search results.
+  if (results.length > 5) {
+    res.json(results.slice(0, 5));
+  }
   res.json(results);
 });
 

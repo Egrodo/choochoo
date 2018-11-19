@@ -1,5 +1,43 @@
+/* .floatInput {
+  position: relative;
+} */
+
+.inputContainer {
+  position: relative;
+  top: 0;
+}
+
+.bottomBorder {
+  border-radius: 0;
+}
+
 .dropDownContainer {
+  display: block;
+  position: absolute;
+  width: calc(100% - 2em);
+  margin-top: -2.2rem;
+  border: 1px solid #aaa;
+  background-color: white;
+  color: black;
+  z-index: 5;
+}
+
+.dropDownContainer.hidden {
+  display: none;
+}
+
+.listContainer {
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.7);
+  list-style-type: none;
 }
 
 .dropDownItem {
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.dropDownItem:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }

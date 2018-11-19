@@ -1,7 +1,31 @@
 {
-  "cSpell.words": [
-    "camelcase",
-    "choochoo",
-    "gtfs"
-  ]
+  "cSpell.words": ["camelcase", "choochoo", "gtfs"],
+  "cSpell.enabledLanguageIds": [
+    "asciidoc",
+    "c",
+    "cpp",
+    "csharp",
+    "css",
+    "go",
+    "handlebars",
+    "html",
+    "jade",
+    "javascript",
+    "javascriptreact",
+    "latex",
+    "less",
+    "markdown",
+    "php",
+    "plaintext",
+    "pub",
+    "python",
+    "restructuredtext",
+    "rust",
+    "scss",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "yml"
+  ],
+  "cSpell.ignorePaths": ["**/package-lock.json", "**/node_modules/**", "**/*.json", "**/.git/**", ".vscode", "typings"]
 }

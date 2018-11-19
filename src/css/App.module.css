@@ -17,6 +17,7 @@
 }
 
 .App {
+  box-sizing: border-box;
   background-color: #60c2ff;
   color: #fff;
   font-family: 'Product Sans';
