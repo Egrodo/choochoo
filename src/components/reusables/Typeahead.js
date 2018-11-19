@@ -13,11 +13,12 @@ function Typeahead(props) {
   const debouncedQuery = useDebounce(query, 500);
 
   const getInfo = () => {
-    console.log('getting info');
-    fetch(`http://localhost:3001/searchStops?query=${query}`)
+    setLoading(true);
+    fetch(`/searchStops?query=${query}`)
       .then(data => data.json())
       .then(json => {
-        console.log(json);
+        setOptions(json);
+        setLoading(false);
       })
       .catch(err => console.error(err));
   };
@@ -36,6 +37,7 @@ function Typeahead(props) {
         onChange={e => setQuery(e.target.value)}
         alt="station"
         label="Station Name"
+        loading={loading}
         fluid={1}
         {...props}
       />
