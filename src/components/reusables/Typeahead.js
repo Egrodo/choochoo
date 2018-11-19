@@ -54,11 +54,12 @@ function Typeahead({ error, station, setStation }) {
           onFocus={() => {
             if (options.length > 1) enableOptions(true);
           }}
-          // onBlur={() => {
-          //   // BUG: This is activating before the onOptionClick can fire.
-          //   setStation(query);
-          //   if (showOptions) setShowOptions(false);
-          // }}
+          onBlur={() => {
+            // Adding a bit of a delay here in case the blur was to click an option.
+            setTimeout(() => {
+              if (optionsView) enableOptions(false);
+            }, 200);
+          }}
           alt="station"
           label="Station Name"
           classes={CSS.input}
