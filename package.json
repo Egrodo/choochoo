@@ -15,7 +15,6 @@
     "normalize.css": "^8.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.7.0-alpha.2",
-    "react-autosuggest": "^9.4.2",
     "react-dom": "^16.7.0-alpha.2",
     "react-scripts": "2.0.5"
   },

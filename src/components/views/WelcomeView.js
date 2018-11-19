@@ -58,16 +58,7 @@ function WelcomeView({ saveChanges }) {
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
       <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
       <div className={CSS.inputsContainer}>
-        {/* <Input
-          onChange={e => setStation(e.target.value)}
-          value={station}
-          placeholder="Station..."
-          alt="station"
-          label="Station Name"
-          error={errorObj.station || ''}
-          fluid={1}
-        /> */}
-        <Typeahead onChange={e => setStation(e.target.value)} value={station} placeholder="Station..." />
+        <Typeahead error={errorObj.station || ''} />
         <Input
           onChange={e => setName(e.target.value)}
           value={name}
