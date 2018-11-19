@@ -1,0 +1,59 @@
+.selectContainer {
+  margin-bottom: 1em;
+}
+
+.select {
+  font-family: inherit;
+  width: 100%;
+  outline: none;
+  text-align: left;
+  line-height: 1.215em;
+  padding: 0.5em 0.7em;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0.286rem;
+  box-shadow: none;
+  box-sizing: border-box;
+  margin-bottom: 1.15rem;
+  appearance: none;
+
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px), calc(100% - 2.3em) 0.4em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+.select:hover {
+  cursor: pointer;
+}
+
+.select:focus {
+  border-color: #ffd10c;
+}
+
+.select:focus {
+  background-image: linear-gradient(45deg, black 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, black 50%), linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 15px) 1em, calc(100% - 20px) 1em, calc(100% - 2.5em) 0.5em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+  outline: 0;
+}
+
+.label {
+  margin-left: 0.8em;
+}
+
+.error {
+  border-color: red;
+  margin-bottom: 0;
+}
+
+.label.error {
+  color: red;
+}
+
+.disabled {
+  background-color: #e6e6e6;
+}

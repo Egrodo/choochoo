@@ -64,6 +64,13 @@ function WelcomeView({ saveChanges }) {
     [station]
   );
 
+  useEffect(
+    () => {
+      // When the line is changed, compose the result data package.
+    },
+    [line]
+  );
+
   return (
     <section className={CSS.WelcomeView}>
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
@@ -85,6 +92,8 @@ function WelcomeView({ saveChanges }) {
           selection={line}
           onChange={e => setLine(e.target.value)}
           error={errorObj.line ? errorObj.line : ''}
+          label="Line Type"
+          alt="line"
         />
         <Input
           onChange={e => {
