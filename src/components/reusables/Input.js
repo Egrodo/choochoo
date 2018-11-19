@@ -15,6 +15,7 @@ function Input(props) {
           ${CSS.Input}
           ${props.fluid && CSS.fluid}
           ${props.error && CSS.error}
+          ${props.loading && CSS.loading}
         `}
         {...props}
       />

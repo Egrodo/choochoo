@@ -15,6 +15,7 @@
   box-shadow: none;
   box-sizing: border-box;
   margin-bottom: 1.15rem;
+  position: relative;
 }
 
 .Input:focus {

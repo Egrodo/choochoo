@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CSS from '../../css/Typeahead.module.css';
 
 import useDebounce from './useDebounce';
 import Input from './Input';
@@ -13,11 +14,11 @@ function Typeahead(props) {
   const debouncedQuery = useDebounce(query, 500);
 
   const getInfo = () => {
-    setLoading(true);
     fetch(`/searchStops?query=${query}`)
       .then(data => data.json())
       .then(json => {
         setOptions(json);
+        console.log(json);
         setLoading(false);
       })
       .catch(err => console.error(err));
@@ -34,14 +35,21 @@ function Typeahead(props) {
     <form>
       <Input
         placeholder="Station..."
-        onChange={e => setQuery(e.target.value)}
+        onChange={e => {
+          setLoading(true);
+          setQuery(e.target.value);
+        }}
         alt="station"
         label="Station Name"
-        loading={loading}
+        loading={loading ? 1 : 0}
         fluid={1}
         {...props}
       />
-      <p>{query}</p>
+      <ul className={CSS.dropDownContainer}>
+        {options.map((item, i) => (
+          <li className={CSS.dropDownItem}>{item.stop_name}</li>
+        ))}
+      </ul>
     </form>
   );
 }
