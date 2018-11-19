@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Typeahead from '../reusables/Typeahead';
 import CSS from '../../css/WelcomeView.module.css';
+import Option from '../reusables/Option';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
 function WelcomeView({ saveChanges }) {
   const [name, setName] = useState('');
-  const [station, setStation] = useState('');
+
+  // The station should contain all the data for the station, not just the name.
+  const [station, setStation] = useState({});
   const [zipCode, setZipCode] = useState('');
+  const [lines, setLines] = useState([]);
+  const [line, setLine] = useState('');
 
   // Error handling: empty strings means no error, otherwise display error.
   const [errorObj, setErrorObj] = useState({
@@ -51,6 +56,14 @@ function WelcomeView({ saveChanges }) {
     }
   };
 
+  useEffect(
+    () => {
+      // Every time the station changes generate a list of stop_id's it has, which will re-render Option.
+      setLines(station.stop_id);
+    },
+    [station]
+  );
+
   return (
     <section className={CSS.WelcomeView}>
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
@@ -66,6 +79,12 @@ function WelcomeView({ saveChanges }) {
           label="First Name"
           error={errorObj.name ? errorObj.name : ''}
           fluid={1}
+        />
+        <Option
+          data={lines}
+          selection={line}
+          onChange={e => setLine(e.target.value)}
+          error={errorObj.line ? errorObj.line : ''}
         />
         <Input
           onChange={e => {

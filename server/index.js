@@ -120,8 +120,7 @@ app.get('/searchStops/', (req, res, next) => {
   // Only get the top 5 search results.
   if (results.length > 5) {
     res.json(results.slice(0, 5));
-  }
-  res.json(results);
+  } else res.json(results);
 });
 
 // Get info on stops or any specific stop.

@@ -5,15 +5,16 @@ import CSS from '../../css/Typeahead.module.css';
 import useDebounce from './useDebounce';
 import Input from './Input';
 
-// TODO: Extend Input
 function Typeahead({ error, station, setStation }) {
+  const [stationName, setStationName] = useState(station.stop_name || '');
   const [options, setOptions] = useState([]);
   const [optionsView, enableOptions] = useState(false);
 
-  const debouncedQuery = useDebounce(station, 500);
+  const debouncedQuery = useDebounce(stationName, 500);
 
+  // TODO: Take the specific data logic out and put that in WelcomeView so this is reusable.
   const getData = () => {
-    fetch(`/searchStops?query=${station}`)
+    fetch(`/searchStops?query=${stationName}`)
       .then(data => data.json())
       .then(json => {
         // Once I've retrieved data, store it and enable options view.
@@ -26,9 +27,9 @@ function Typeahead({ error, station, setStation }) {
   const onOptionClick = ({ target: { id } }) => {
     if (!options[id]) throw new RangeError('Invalid id passed to onOptionClick');
     // If one is selected send it upwards for validation and disable option view.
-    setStation(options[id].stop_name);
     enableOptions(false);
-    console.log('Clicked options, disabling option');
+    setStation(options[id]);
+    setStationName(options[id].stop_name);
   };
 
   useEffect(
@@ -39,15 +40,15 @@ function Typeahead({ error, station, setStation }) {
     [debouncedQuery]
   );
 
-  // TODO: Once I've clicked an option, disable options until I change the input again.
+  // TODO: On blur of input box if a suggestion wasn't clicked (or if not identical) error.
   return (
     <form>
       <div className={CSS.inputContainer}>
         <Input
           placeholder="Station..."
-          value={station}
+          value={stationName}
           onChange={e => {
-            setStation(e.target.value);
+            setStationName(e.target.value);
             enableOptions(true);
             if (!e.target.value && options.length) setOptions([]);
           }}
@@ -83,13 +84,13 @@ function Typeahead({ error, station, setStation }) {
 
 Typeahead.propTypes = {
   error: PropTypes.string,
-  station: PropTypes.string,
+  station: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   setStation: PropTypes.func
 };
 
 Typeahead.defaultProps = {
   error: '',
-  station: '',
+  station: {},
   setStation: () => {
     throw new Error('setStation not passed to Typeahead');
   }
