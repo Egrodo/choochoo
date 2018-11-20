@@ -56,6 +56,17 @@ function WelcomeView({ saveChanges }) {
     }
   };
 
+  const getData = (stationName, setOptions, enableOptionsView) => {
+    fetch(`/searchStops?query=${stationName}`)
+      .then(data => data.json())
+      .then(json => {
+        // Once I've retrieved data, store it and enable options view.
+        setOptions(json);
+        enableOptionsView(true);
+      }) // TODO: What to do on error? Maybe App level network error dialogue.
+      .catch(err => console.error(err));
+  };
+
   useEffect(
     () => {
       // Every time the station changes generate a list of stop_id's it has, which will re-render Option.
@@ -76,7 +87,12 @@ function WelcomeView({ saveChanges }) {
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
       <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
       <div className={CSS.inputsContainer}>
-        <Typeahead error={errorObj.station ? errorObj.station : ''} station={station} setStation={setStation} />
+        <Typeahead
+          error={errorObj.station ? errorObj.station : ''}
+          getData={getData}
+          station={station}
+          setStation={setStation}
+        />
         <Input
           onChange={e => setName(e.target.value)}
           value={name}
