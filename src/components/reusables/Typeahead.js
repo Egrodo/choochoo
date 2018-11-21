@@ -47,6 +47,17 @@ function Typeahead({ error, getData, station, setStation }) {
             // Adding a bit of a delay here in case the blur was to click an option.
             setTimeout(() => {
               if (optionsView) enableOptionsView(false);
+              if (!station.stop_name || stationName !== station.stop_name) {
+                // On blur, if there is no station selected, try to match the typed str with an option.
+                const currInp = stationName.toLowerCase().trim();
+                for (let i = 0; i < options.length; ++i) {
+                  if (currInp === options[i].stop_name.toLowerCase()) {
+                    setStation(options[i]);
+                    setStationName(options[i].stop_name);
+                    break;
+                  }
+                }
+              }
             }, 200);
           }}
           alt="station"

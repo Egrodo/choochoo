@@ -32,6 +32,9 @@ function WelcomeView({ saveChanges }) {
     if (!zipCode) errors.zipCode = 'Missing zipcode';
 
     // TODO: Now validate the station > stopId here.
+    // IF the user did not select a typeahead, search the input onblur.
+    // 
+    console.log(station);
     // TODO: If the input completely matches a stop_name use that.
     // Ensure that there are no random characters in the station.
 
