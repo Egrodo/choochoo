@@ -27,7 +27,7 @@ function App() {
     // On submit, validate the station I guess?
     localStorage.setItem('name', newName);
     localStorage.setItem('line', newLine);
-    localStorage.setItem('stationObj', newStationObj);
+    localStorage.setItem('stationObj', JSON.stringify(newStationObj));
     localStorage.setItem('zipCode', newZipCode);
     setName(newName);
     setLine(newLine);
@@ -45,7 +45,7 @@ function App() {
     const checkStorage = key => localStorage.getItem(key) || '';
     const newName = checkStorage('name');
     const newLine = checkStorage('line');
-    const newStationObj = checkStorage('stationObj');
+    const newStationObj = JSON.parse(checkStorage('stationObj') || '{}');
     const newZipCode = checkStorage('zipCode');
     setName(newName);
     setLine(newLine);

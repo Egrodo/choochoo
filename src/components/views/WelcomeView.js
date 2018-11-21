@@ -10,7 +10,7 @@ function WelcomeView({ saveChanges }) {
   
   // The station should contain all the data for the station, not just the name.
   const [name, setName] = useState('');
-  const [station, setStation] = useState({});
+  const [stationObj, setStationObj] = useState({});
   const [lines, setLines] = useState([]); // List of lines potential line
   const [line, setLine] = useState(''); // Selected line
   const [zipCode, setZipCode] = useState('');
@@ -18,7 +18,7 @@ function WelcomeView({ saveChanges }) {
   // Error handling: empty strings means no error, otherwise display error.
   const [errorObj, setErrorObj] = useState({
     name: '',
-    station: '',
+    stationObj: '',
     line: '',
     zipCode: ''
   });
@@ -28,7 +28,7 @@ function WelcomeView({ saveChanges }) {
     const errors = {};
 
     // First check that they filled in all the areas.
-    if (!station) errors.station = 'Missing station';
+    if (!stationObj) errors.stationObj = 'Missing stationObj';
     if (!name.trim()) errors.name = 'Missing name';
     if (!line) errors.line = 'Missing line';
     if (!zipCode) errors.zipCode = 'Missing zipcode';
@@ -49,7 +49,7 @@ function WelcomeView({ saveChanges }) {
     setErrorObj(errors);
     if (!Object.keys(errors).length) {
       // If there are no errors, save the changes.
-      saveChanges(name, station, zipCode, line);
+      saveChanges(name, stationObj, zipCode, line);
     }
   };
 
@@ -67,12 +67,12 @@ function WelcomeView({ saveChanges }) {
   useEffect(
     () => {
       // Every time the station changes generate a list of stop_id's it has, which will re-render Option.
-      setLines(station.stop_id);
+      setLines(stationObj.stop_id);
 
       // Also default to the first option.
-      if (station.stop_id) setLine(station.stop_id[0]);
+      if (stationObj.stop_id) setLine(stationObj.stop_id[0]);
     },
-    [station]
+    [stationObj]
   );
 
   return (
@@ -81,10 +81,10 @@ function WelcomeView({ saveChanges }) {
       <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
       <div className={CSS.inputsContainer}>
         <Typeahead
-          error={errorObj.station ? errorObj.station : ''}
+          error={errorObj.stationObj ? errorObj.stationObj : ''}
           getData={getData}
-          station={station}
-          setStation={setStation}
+          stationObj={stationObj}
+          setStationObj={setStationObj}
         />
         <Input
           onChange={e => setName(e.target.value)}

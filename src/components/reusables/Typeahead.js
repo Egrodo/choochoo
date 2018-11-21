@@ -5,8 +5,8 @@ import CSS from '../../css/Typeahead.module.css';
 import useDebounce from './useDebounce';
 import Input from './Input';
 
-function Typeahead({ error, getData, station, setStation }) {
-  const [stationName, setStationName] = useState(station.stop_name || '');
+function Typeahead({ error, getData, stationObj, setStationObj }) {
+  const [stationName, setStationName] = useState(stationObj.stop_name || '');
   const [options, setOptions] = useState([]);
   const [optionsView, enableOptionsView] = useState(false);
 
@@ -16,7 +16,7 @@ function Typeahead({ error, getData, station, setStation }) {
     if (!options[id]) throw new RangeError('Invalid id passed to onOptionClick');
     // If one is selected send it upwards for validation and disable option view.
     enableOptionsView(false);
-    setStation(options[id]);
+    setStationObj(options[id]);
     setStationName(options[id].stop_name);
   };
 
@@ -47,12 +47,12 @@ function Typeahead({ error, getData, station, setStation }) {
             // Adding a bit of a delay here in case the blur was to click an option.
             setTimeout(() => {
               if (optionsView) enableOptionsView(false);
-              if (!station.stop_name || stationName !== station.stop_name) {
+              if (!stationObj.stop_name || stationName !== stationObj.stop_name) {
                 // On blur, if there is no station selected, try to match the typed str with an option.
                 const currInp = stationName.toLowerCase().trim();
                 for (let i = 0; i < options.length; ++i) {
                   if (currInp === options[i].stop_name.toLowerCase()) {
-                    setStation(options[i]);
+                    setStationObj(options[i]);
                     setStationName(options[i].stop_name);
                     break;
                   }
@@ -84,7 +84,7 @@ function Typeahead({ error, getData, station, setStation }) {
 Typeahead.propTypes = {
   error: PropTypes.string,
   getData: PropTypes.func,
-  station: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
+  stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   setStation: PropTypes.func
 };
 
@@ -93,7 +93,7 @@ Typeahead.defaultProps = {
   getData: () => {
     throw new Error('getData not passed to Typeahead');
   },
-  station: {},
+  stationObj: {},
   setStation: () => {
     throw new Error('setStation not passed to Typeahead');
   }
