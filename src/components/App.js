@@ -8,41 +8,50 @@ import OptionsView from './views/OptionsView';
 
 function App() {
   console.log('App render');
-  // This function will run on every single render. But hooks is smart enough to not rewrite state with empty state.
+  // This function will run on every single render. But hooks is smart enough to not rewrite existing state !
 
   const [name, setName] = useState('');
-  const [stopId, setStopId] = useState('');
+  const [stationObj, setStationObj] = useState('');
   const [zipCode, setZipCode] = useState('');
+  const [line, setLine] = useState('');
   const [view, setView] = useState('');
 
-  const saveChanges = (newName, newStopId, newZipCode) => {
+  const saveChanges = (newName, newStationObj, newZipCode, newLine) => {
     // Submit the state to the localStorage.
-    if (!newName || !newStopId || !newZipCode) {
-      throw new Error("saveToStorage wasn't given proper variables");
-    } else {
-      // Need to validate stopId first
-      localStorage.setItem('name', newName);
-      localStorage.setItem('stopId', newStopId);
-      localStorage.setItem('zipCode', newZipCode);
-      setName(newName);
-      setStopId(newStopId);
-      setZipCode(newZipCode);
-      setView('main');
+    console.log('savingChanges with:');
+    console.log(newName, newStationObj, newZipCode, newLine);
+    if (!newName || !newStationObj || !newZipCode || !newLine) {
+      throw new Error("saveChanges wasn't given proper variables");
     }
+    
+    // On submit, validate the station I guess?
+    localStorage.setItem('name', newName);
+    localStorage.setItem('line', newLine);
+    localStorage.setItem('stationObj', newStationObj);
+    localStorage.setItem('zipCode', newZipCode);
+    setName(newName);
+    setLine(newLine);
+    setStationObj(newStationObj);
+    setZipCode(newZipCode);
+    console.log('Submitting with:');
+    console.log({newName, newStationObj, newZipCode, newLine});
+    setView('main');
   };
 
   useEffect(() => {
-    // This runs on componentDidMount componentWillUnmount.
+    // This runs on componentDidMount & componentWillUnmount.
 
     // On first load check if we have data. If we dont have any data, show welcome view. If we do, show mainView.
     const checkStorage = key => localStorage.getItem(key) || '';
     const newName = checkStorage('name');
-    const newStopId = checkStorage('stopId');
+    const newLine = checkStorage('line');
+    const newStationObj = checkStorage('stationObj');
     const newZipCode = checkStorage('zipCode');
     setName(newName);
-    setStopId(newStopId);
+    setLine(newLine);
+    setStationObj(newStationObj);
     setZipCode(newZipCode);
-    if (newName && newStopId && newZipCode) {
+    if (newName && newStationObj && newZipCode && newLine) {
       setView('main');
     } else setView('welcome');
   }, []);
@@ -55,8 +64,8 @@ function App() {
       </header>
       <div className={CSS.content}>
         {view === 'welcome' && <WelcomeView saveChanges={saveChanges} />}
-        {view === 'main' && <MainView name={name} stopId={stopId} zipCode={zipCode} />}
-        {view === 'options' && <OptionsView name={name} stopId={stopId} zipCode={zipCode} saveChanges={saveChanges} />}
+        {view === 'main' && <MainView name={name} stationObj={stationObj} line={line} zipCode={zipCode} />}
+        {view === 'options' && <OptionsView name={name} stationObj={stationObj} line={line} zipCode={zipCode} saveChanges={saveChanges} />}
       </div>
     </div>
   );

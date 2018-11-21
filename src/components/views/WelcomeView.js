@@ -7,18 +7,19 @@ import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
 function WelcomeView({ saveChanges }) {
-  const [name, setName] = useState('');
-
+  
   // The station should contain all the data for the station, not just the name.
+  const [name, setName] = useState('');
   const [station, setStation] = useState({});
+  const [lines, setLines] = useState([]); // List of lines potential line
+  const [line, setLine] = useState(''); // Selected line
   const [zipCode, setZipCode] = useState('');
-  const [lines, setLines] = useState([]);
-  const [line, setLine] = useState('');
 
   // Error handling: empty strings means no error, otherwise display error.
   const [errorObj, setErrorObj] = useState({
     name: '',
     station: '',
+    line: '',
     zipCode: ''
   });
 
@@ -29,14 +30,10 @@ function WelcomeView({ saveChanges }) {
     // First check that they filled in all the areas.
     if (!station) errors.station = 'Missing station';
     if (!name.trim()) errors.name = 'Missing name';
+    if (!line) errors.line = 'Missing line';
     if (!zipCode) errors.zipCode = 'Missing zipcode';
 
-    // TODO: Now validate the station > stopId here.
-    // IF the user did not select a typeahead, search the input onblur.
-    // 
-    console.log(station);
-    // TODO: If the input completely matches a stop_name use that.
-    // Ensure that there are no random characters in the station.
+    // Do I need to validate that the data in the station is valid? So long as it has all the fields...
 
     if (name.length > 16) {
       errors.name = 'First name too long';
@@ -49,13 +46,10 @@ function WelcomeView({ saveChanges }) {
       errors.zipCode = "This zipcode doesn't seem to be in NYC";
     }
 
+    setErrorObj(errors);
     if (!Object.keys(errors).length) {
-      // If there are no errors, remove the red and save the changes.
-      setErrorObj(errors);
-      saveChanges(name, station, zipCode);
-    } else {
-      // Otherwise display the errors given.
-      setErrorObj(errors);
+      // If there are no errors, save the changes.
+      saveChanges(name, station, zipCode, line);
     }
   };
 
@@ -74,15 +68,11 @@ function WelcomeView({ saveChanges }) {
     () => {
       // Every time the station changes generate a list of stop_id's it has, which will re-render Option.
       setLines(station.stop_id);
+
+      // Also default to the first option.
+      if (station.stop_id) setLine(station.stop_id[0]);
     },
     [station]
-  );
-
-  useEffect(
-    () => {
-      // When the line is changed, compose the result data package.
-    },
-    [line]
   );
 
   return (
