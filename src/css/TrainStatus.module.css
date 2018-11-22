@@ -1,0 +1,23 @@
+.TrainStatus {
+  margin: 1em 0;
+  padding: .5em 0;
+  width: 100%;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  display: grid;
+  grid-template-columns: 1fr 1fr 6fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: ". . .";
+  text-align: center;
+}
+
+.timeContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "." ".";
+}
+
+.arrivalTime {
+  font-size: 1.2em;
+  font-weight: bold;
+}

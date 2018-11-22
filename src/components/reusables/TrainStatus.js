@@ -6,8 +6,8 @@ function TrainStatus({ status, line }) {
   // Use line (or routeId off status?) to get the relevant image.
   return (
     <section className={CSS.TrainStatus}>
-      <div className={CSS.time}>
-        <span className={CSS.minCount}>{status.arrivalTime}</span>
+      <div className={CSS.timeContainer}>
+        <span className={CSS.arrivalTime}>{Math.round(status.arrivalTime / 60)}</span>
         <span className={CSS.min}>min</span>
       </div>
       <div className={CSS.routeId}>

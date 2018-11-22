@@ -63,7 +63,7 @@ function TrainBlock({ stationObj, line }) {
       <div className={CSS.headlineContainer}>
         <span className={CSS.stationName}>{stationName}</span>
         {/* TODO: what's a proper value for tabIndex? */}
-        <span onClick={switchDirection} role="button" tabIndex={-5} className={`${CSS.direction} ${CSS[direction]}`}>
+        <span onClick={switchDirection} role="button" tabIndex="0" className={`${CSS.direction} ${CSS[direction]}`}>
           {`${direction === 'N' ? 'North' : 'South'}bound`}
         </span>
       </div>
