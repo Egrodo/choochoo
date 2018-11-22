@@ -1,15 +1,18 @@
 .WelcomeView {
   text-align: center;
+  padding: 0 1em;
 }
 
 .mainHeader {
   margin: 0.5em 0 0 0;
+  font-size: 1.8em;
   font-weight: normal;
   color: #fff;
 }
 
 .secondaryHeader {
   margin: 0.5em 0 0 0;
+  font-size: 1em;
   font-weight: normal;
   color: #fff;
 }

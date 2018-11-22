@@ -6,8 +6,9 @@ import Option from '../reusables/Option';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
+// TODO: Ctrl + enter should try to submit form.
 function WelcomeView({ saveChanges }) {
-  
+
   // The station should contain all the data for the station, not just the name.
   const [name, setName] = useState('');
   const [stationObj, setStationObj] = useState({});

@@ -22,8 +22,8 @@ function WeatherBlock({ zipCode }) {
 
   return (
     <section className={CSS.WeatherBlock}>
-      <div className={CSS.tempContainer}>
-        <span className={CSS.temp}>{temp}</span>
+      <div className={CSS.temperatureContainer}>
+        <span className={CSS.temperature}>{temp}</span>
       </div>
       <div className={CSS.descContainer}>
         <span className={CSS.desc}>{desc}</span>

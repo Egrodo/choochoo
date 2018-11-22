@@ -1,16 +1,22 @@
 .MainView {
-
+  width: 100%;
 }
 
 .mainHeader {
   text-align: center;
   margin-top: .5em;
+  font-size: 1.8em;
   font-weight: normal;
   color: #fff;
 }
 
 .weatherContainer {
   /* TODO: Smarter way to center this */
-  margin: 1em 40%;
+  margin: 1em 37.5%;
   width: 100%;
+}
+
+.trainContainer {
+  width: 100%;
+  margin: 1em 0;
 }

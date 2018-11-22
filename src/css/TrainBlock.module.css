@@ -1,0 +1,34 @@
+.TrainBlock {
+  margin-top: 3em;
+}
+
+.headlineContainer {
+  padding: 0 1em;
+}
+
+.stationName {
+  display: inline-block;
+  text-align: left;
+}
+
+.direction {
+  /* TODO: Better way to do this */
+  display: block;
+  float: right;
+  color: #ffe236;
+}
+
+.direction:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.direction.N::after {
+  content: '▲';
+  right: 0;
+}
+
+.direction.S::after {
+  content: '▼';
+  right: 0;
+}

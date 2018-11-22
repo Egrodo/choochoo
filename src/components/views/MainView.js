@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import WeatherBlock from '../blocks/WeatherBlock';
+import TrainBlock from '../blocks/TrainBlock';
+
 import CSS from '../../css/MainView.module.css';
 
 function MainView({name, stationObj, line, zipCode}) {
@@ -24,7 +26,9 @@ function MainView({name, stationObj, line, zipCode}) {
       <div className={CSS.weatherContainer}>
         <WeatherBlock zipCode={zipCode} />
       </div>
-      Main View rendering with {name}, {stationObj.stop_name}, {line}, {zipCode}
+      <div className={CSS.trainContainer}>
+        <TrainBlock stationObj={stationObj} line={line} />
+      </div>
     </section>  
   );
 }
