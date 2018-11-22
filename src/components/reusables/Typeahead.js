@@ -28,7 +28,6 @@ function Typeahead({ error, getData, stationObj, setStationObj }) {
     [debouncedQuery]
   );
 
-  // TODO: If a selection wasn't clicked, the stuff typed in there has to match exactly with the name.
   return (
     <form>
       <div className={CSS.inputContainer}>

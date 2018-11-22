@@ -1,0 +1,16 @@
+.MainView {
+
+}
+
+.mainHeader {
+  text-align: center;
+  margin-top: .5em;
+  font-weight: normal;
+  color: #fff;
+}
+
+.weatherContainer {
+  /* TODO: Smarter way to center this */
+  margin: 1em 40%;
+  width: 100%;
+}

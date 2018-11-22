@@ -1,0 +1,30 @@
+.WeatherBlock {
+  text-align: center;
+  padding: .3em 1em;
+  border: 1.5px solid white;
+  border-radius: 10px;
+  /* TODO: Better way to do this */
+  width: fit-content;
+}
+
+.tempContainer {
+  padding-right: .7em;
+}
+
+.temp {
+  font-size: 2em;
+  position: relative;
+}
+
+.temp::after {
+  content: 'o';
+  top: 0;
+  font-size: .6em;
+  padding-left: .1em;
+  font-weight: bold;
+  position: absolute;
+}
+
+.desc {
+  font-size: .9em;
+}

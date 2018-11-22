@@ -41,7 +41,7 @@ function App() {
   useEffect(() => {
     // This runs on componentDidMount & componentWillUnmount.
 
-    // On first load check if we have data. If we dont have any data, show welcome view. If we do, show mainView.
+    // On first load check if we have data. If we don't have any data, show welcome view. If we do, show mainView.
     const checkStorage = key => localStorage.getItem(key) || '';
     const newName = checkStorage('name');
     const newLine = checkStorage('line');
