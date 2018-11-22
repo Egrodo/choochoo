@@ -100,7 +100,7 @@ function WelcomeView({ saveChanges }) {
         <Option
           data={lines}
           selection={line}
-          onChange={e => setLine(e.target.value)}
+          onChange={e => setLine(lines[e.target.value])}
           error={errorObj.line ? errorObj.line : ''}
           label="Line Type"
           alt="line"

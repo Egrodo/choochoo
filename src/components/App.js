@@ -18,12 +18,10 @@ function App() {
 
   const saveChanges = (newName, newStationObj, newZipCode, newLine) => {
     // Submit the state to the localStorage.
-    console.log('savingChanges with:');
-    console.log(newName, newStationObj, newZipCode, newLine);
     if (!newName || !newStationObj || !newZipCode || !newLine) {
       throw new Error("saveChanges wasn't given proper variables");
     }
-    
+
     // On submit, validate the station I guess?
     localStorage.setItem('name', newName);
     localStorage.setItem('line', newLine);
@@ -33,8 +31,6 @@ function App() {
     setLine(newLine);
     setStationObj(newStationObj);
     setZipCode(newZipCode);
-    console.log('Submitting with:');
-    console.log({newName, newStationObj, newZipCode, newLine});
     setView('main');
   };
 

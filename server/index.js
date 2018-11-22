@@ -18,7 +18,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
   }
 
   // A function to return all closest trains given a schedule.
-  const getTrains = (schedule, countPerDir = 5) => {
+  const getTrains = (schedule, countPerDir = 3) => {
     // Get the current (3 length) second count for comparison.
     let currTime = Date.now().toString();
     currTime = +currTime.substring(0, currTime.length - 3);
@@ -59,7 +59,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     // If I'm not given a feed_id return a list of all of them
     const potentialLines = [1, 26, 16, 21, 2, 11, 31, 36, 51];
     (async function loop() {
-      const results = {};
+      let results;
       for (let i = 0; i < potentialLines.length; ++i) {
         const feedId = potentialLines[i];
         const mta = new MTA({
@@ -73,7 +73,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
           // If that feed_id exists at that stop, add it to our results.
           if (schedule) {
             const [N, S] = getTrains(schedule);
-            results[feedId] = { N, S };
+            results = { N, S };
           }
         } catch (err) {
           console.error(err);

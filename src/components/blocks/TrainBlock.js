@@ -3,39 +3,6 @@ import PropTypes from 'prop-types';
 import TrainStatus from '../reusables/TrainStatus';
 import CSS from '../../css/TrainBlock.module.css';
 
-const dummyData = {
-  "115": {
-    N: [
-      {
-        routeId: '1',
-        arrivalTime: 102,
-      },
-      {
-        routeId: '1',
-        arrivalTime: 396,
-      },
-      {
-        routeId: '1',
-        arrivalTime: 599,
-      },
-    ],
-    S: [
-      {
-        routeId: '1',
-        arrivalTime: 102,
-      },
-      {
-        routeId: '1',
-        arrivalTime: 396,
-      },
-      {
-        routeId: '1',
-        arrivalTime: 599,
-      },
-    ]
-  },
-};
-
 // This component has to retrieve real-time data and render the information appropriately.
 function TrainBlock({ stationObj, line }) {
   const [direction, setDirection] = useState('N');
@@ -45,7 +12,12 @@ function TrainBlock({ stationObj, line }) {
   // On unmount remember to remove the timer.
   const getSchedule = () => {
     // API request here
-    setSchedule(dummyData[line]);
+    // TODO: Loading indicator for TrainBlock.
+    console.log(`Getting /schedule/${line}`);
+    fetch(`/schedule/${line}`).then(data => data.json()).then(json => {
+      console.log(json);
+      setSchedule(json);
+    }).catch(err => console.error(err));
   };
 
   const switchDirection = () => {
@@ -62,7 +34,6 @@ function TrainBlock({ stationObj, line }) {
     <section className={CSS.TrainBlock}>
       <div className={CSS.headlineContainer}>
         <span className={CSS.stationName}>{stationName}</span>
-        {/* TODO: what's a proper value for tabIndex? */}
         <span onClick={switchDirection} role="button" tabIndex="0" className={`${CSS.direction} ${CSS[direction]}`}>
           {`${direction === 'N' ? 'North' : 'South'}bound`}
         </span>
