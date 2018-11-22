@@ -6,7 +6,16 @@ function TrainStatus({ status, line }) {
   // Use line (or routeId off status?) to get the relevant image.
   return (
     <section className={CSS.TrainStatus}>
-      Train Status for {line}: {status.arrivalTime} seconds left for {status.routeId} train.
+      <div className={CSS.time}>
+        <span className={CSS.minCount}>{status.arrivalTime}</span>
+        <span className={CSS.min}>min</span>
+      </div>
+      <div className={CSS.routeId}>
+        {status.routeId}
+      </div>
+      <div className={CSS.trainPathContainer}>
+        {status.arrivalTime}
+      </div>
     </section>
   );
 }

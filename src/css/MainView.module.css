@@ -11,9 +11,7 @@
 }
 
 .weatherContainer {
-  /* TODO: Smarter way to center this */
-  margin: 1em 37.5%;
-  width: 100%;
+  text-align: center;
 }
 
 .trainContainer {

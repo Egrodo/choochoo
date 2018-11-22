@@ -3,7 +3,7 @@
   padding: .3em 1.3em;
   border: 1.5px solid white;
   border-radius: 10px;
-  /* TODO: Better way to do this */
+  margin: 0 auto;
   width: fit-content;
 }
 

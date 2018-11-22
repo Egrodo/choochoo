@@ -3,18 +3,12 @@
 }
 
 .headlineContainer {
+  display: flex;
+  justify-content: space-between;
   padding: 0 1em;
 }
 
-.stationName {
-  display: inline-block;
-  text-align: left;
-}
-
 .direction {
-  /* TODO: Better way to do this */
-  display: block;
-  float: right;
   color: #ffe236;
 }
 
