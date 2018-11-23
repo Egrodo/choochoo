@@ -18,3 +18,33 @@
   width: 100%;
   margin: 1em 0;
 }
+
+.optionsLink {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 1em;
+  color: #ffd10c;
+}
+
+.optionsLink::before {
+  content: '';
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  left: 0;
+  background-image: url('../assets/images/cog.svg');
+  background-size: 1em 1em;
+  background-repeat: no-repeat;
+  padding-right: .3em;
+  transform: translateY(.15em);
+}
+
+.optionsLink:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.optionsLink:focus {
+  outline: none;
+}

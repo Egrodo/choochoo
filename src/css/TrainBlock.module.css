@@ -12,6 +12,10 @@
   color: #ffe236;
 }
 
+.direction:focus {
+  outline: none;
+}
+
 .direction:hover {
   cursor: pointer;
   text-decoration: underline;

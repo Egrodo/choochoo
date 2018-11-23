@@ -8,14 +8,10 @@ function TrainBlock({ stationObj, line }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
 
-  // On first mount retrieve realtime data. Set a timer to do it every few minutes after that.
-  // On unmount remember to remove the timer.
   const getSchedule = () => {
-    // API request here
     // TODO: Loading indicator for TrainBlock.
     console.log(`Getting /schedule/${line}`);
     fetch(`/schedule/${line}`).then(data => data.json()).then(json => {
-      console.log(json);
       setSchedule(json);
     }).catch(err => console.error(err));
   };
@@ -26,7 +22,16 @@ function TrainBlock({ stationObj, line }) {
   };
 
   useEffect(() => {
+    // On mount getSchedule and set a timer to re-run getSchedule every minute.
     getSchedule();
+    const timer = window.setInterval(() => {
+      // Are there problems that could occur when this is re-ran?
+      console.log('re-requesting at ' + Date.now());
+      getSchedule();
+    }, 60000);
+    return () => { // Return callback to run on unmount.
+      window.clearInterval(timer);
+    };
   }, []);
 
   const stationName = stationObj.stop_name;
@@ -40,7 +45,7 @@ function TrainBlock({ stationObj, line }) {
       </div>
       <div className={CSS.TrainStatusContainer}>
         {schedule[direction].map(status =>
-          <TrainStatus status={status} line={line} key={status.arrivalTime} />
+          <TrainStatus status={status} line={line} key={status.eta} />
         )}
       </div>
     </section>

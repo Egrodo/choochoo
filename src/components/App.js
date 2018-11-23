@@ -60,7 +60,7 @@ function App() {
       </header>
       <div className={CSS.content}>
         {view === 'welcome' && <WelcomeView saveChanges={saveChanges} />}
-        {view === 'main' && <MainView name={name} stationObj={stationObj} line={line} zipCode={zipCode} />}
+        {view === 'main' && <MainView name={name} stationObj={stationObj} line={line} zipCode={zipCode} gotoOptions={() => setView('options')} />}
         {view === 'options' && <OptionsView name={name} stationObj={stationObj} line={line} zipCode={zipCode} saveChanges={saveChanges} />}
       </div>
     </div>

@@ -10,13 +10,13 @@ function TrainStatus({ status, line }) {
     // On mount/unmount load the applicable route image.
     import(`../../assets/images/trainIcons/${status.routeId.toLowerCase()}.svg`)
       .then(image => {
-        console.log(image);
         setImg(image.default);
       }).catch(err => {
         console.error(err);
       });
   }, []);
 
+  // TODO: If 0 min, <1 min
   return (
     <section className={CSS.TrainStatus}>
       <div className={CSS.timeContainer}>

@@ -5,10 +5,10 @@ import TrainBlock from '../blocks/TrainBlock';
 
 import CSS from '../../css/MainView.module.css';
 
-function MainView({name, stationObj, line, zipCode}) {
+function MainView({ name, stationObj, line, zipCode, gotoOptions }) {
+  const [greeting, setGreeting] = useState();
 
-  const greeting = () => {
-    // This will be re-ran on every re-render.
+  const calcGreeting = () => {
     const currT = new Date().getHours();
     if (currT < 12) {
       return 'Morning';
@@ -20,16 +20,23 @@ function MainView({name, stationObj, line, zipCode}) {
     return 'Day';
   };
 
+  useEffect(() => {
+    setGreeting(calcGreeting());
+  }, []);
+
   return (
     <section className={CSS.MainView}>
-      <h1 className={CSS.mainHeader}>Good {greeting()} {name}</h1>
+      <h1 className={CSS.mainHeader}>Good {greeting} {name}</h1>
       <div className={CSS.weatherContainer}>
         <WeatherBlock zipCode={zipCode} />
       </div>
       <div className={CSS.trainContainer}>
         <TrainBlock stationObj={stationObj} line={line} />
       </div>
-    </section>  
+      <div className={CSS.optionsLink}>
+        <span onClick={gotoOptions} role="button" tabIndex="0">Options</span>
+      </div>
+    </section>
   );
 }
 
@@ -38,6 +45,7 @@ MainView.propTypes = {
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
   zipCode: PropTypes.string,
+  gotoOptions: PropTypes.func,
 };
 
 MainView.defaultProps = {
