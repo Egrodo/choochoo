@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TrainStatus from '../reusables/TrainStatus';
+import Spinner from '../reusables/Spinner';
 import CSS from '../../css/TrainBlock.module.css';
 
 // This component has to retrieve real-time data and render the information appropriately.
 function TrainBlock({ stationObj, line }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
+  const [loading, setLoading] = useState(false);
 
   // TODO: Maybe have my own timer running every time I get a network update and display info based on that instead   
   const getSchedule = () => {
-    // TODO: Loading indicator for TrainBlock.
+    setLoading(true);
     console.log(`Getting /schedule/${line}`);
     fetch(`/schedule/${line}`).then(data => data.json()).then(json => {
       setSchedule(json);
+      setLoading(false);
     }).catch(err => {
       // The server is offline / having troubles ?
       console.error(err);
@@ -57,9 +60,17 @@ function TrainBlock({ stationObj, line }) {
           {`${direction === 'N' ? 'North' : 'South'}bound`}
         </span>
       </div>
-      <div className={CSS.TrainStatusContainer}>
+      <div className={`${CSS.statusContainer} ${loading && CSS.loading}`}>
+        {loading && <>
+          <div className={CSS.floatLoader}><Spinner /></div>
+          <div className={CSS.darken}>
+            <TrainStatus loading />
+            <TrainStatus loading />
+            <TrainStatus loading />
+          </div>
+        </>}
         {schedule[direction].map(status =>
-          <TrainStatus status={status} line={line} key={status.eta} />
+          <TrainStatus status={status} key={status.eta} />
         )}
       </div>
     </section>

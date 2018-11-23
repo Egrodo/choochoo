@@ -36,3 +36,19 @@
 .direction.S::after {
   transform: rotate(180deg);
 }
+
+.darken {
+  background-color: black;
+  opacity: .3;
+}
+
+.statusContainer.loading {
+  position: relative;
+}
+
+.floatLoader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
