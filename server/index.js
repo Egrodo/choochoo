@@ -2,9 +2,10 @@
 const express = require('express');
 const cors = require('cors');
 const MTA = require('mta-gtfs');
+const axios = require('axios');
 const Fuse = require('fuse.js');
 const stopList = require('./stopList.json');
-const routeToFeed = require('./RouteIdToFeedId.json');
+const routeToFeed = require('./routeIdToFeedId.json');
 
 require('dotenv').config();
 
@@ -26,7 +27,6 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     currTime = +currTime.substring(0, currTime.length - 3);
 
     // Get the nearest `countPerDir` train arrivals in both directions.
-    // TODO: Optimize this.
 
     const { N, S } = schedule[stopId];
     const north = [];
@@ -68,7 +68,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     (async function loop() {
       for (let i = 0; i < feed_id.length; ++i) {
         const mta = new MTA({
-          key: process.env.mtaKey,
+          key: process.env.MTA_KEY,
           feed_id: feed_id[i]
         });
 
@@ -91,7 +91,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
   }
 
   const mta = new MTA({
-    key: process.env.mtaKey,
+    key: process.env.MTA_KEY,
     feed_id
   });
 
@@ -130,26 +130,10 @@ app.get('/searchStops/', (req, res, next) => {
   } else res.json(results);
 });
 
-// TESTING
-app.get('/testing/:stopId', (req, res, next) => {
-  const { stopId } = req.params;
-  if (!stopId) {
-    res.json({ error: 'No stopId given.' });
-    // Or send to next?
-    return;
-  }
-
-  const mta = new MTA({ key: process.env.mtaKey, feed_id: 16 });
-
-  mta.schedule(stopId).then(({ schedule }) => {
-    res.json(schedule);
-  });
-});
-
 // Get info on stops or any specific stop.
 app.get('/stopInfo', (req, res, next) => {
   const mta = new MTA({
-    key: process.env.mtaKey,
+    key: process.env.MTA_KEY,
     feed_id: 1
   });
 
@@ -166,6 +150,19 @@ app.get('/stopInfo', (req, res, next) => {
       })
       .catch(next);
   }
+});
+
+app.get('/weatherInfo/:lat/:lon', (req, res, next) => {
+  const { lat, lon } = req.params;
+  if (!lat || !lon) {
+    res.json({ error: 'Missing either lat or lon from parameters' });
+    return;
+  }
+
+  axios.get(`https://api.darksky.net/forecast/${process.env.WEATHER_KEY}/${lat},${lon}`)
+    .then(({ data }) => {
+      res.json(data.currently);
+    }).catch(err => res.json(err));
 });
 
 app.use((_, res) => {
