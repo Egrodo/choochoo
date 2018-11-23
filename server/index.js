@@ -6,6 +6,8 @@ const Fuse = require('fuse.js');
 const stopList = require('./stopList.json');
 const routeToFeed = require('./RouteIdToFeedId.json');
 
+require('dotenv').config();
+
 const app = express();
 app.use(cors());
 
@@ -66,7 +68,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     (async function loop() {
       for (let i = 0; i < feed_id.length; ++i) {
         const mta = new MTA({
-          key: '6fdbd192a4cc961fa30c69c9607abcbf',
+          key: process.env.mtaKey,
           feed_id: feed_id[i]
         });
 
@@ -89,7 +91,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
   }
 
   const mta = new MTA({
-    key: '6fdbd192a4cc961fa30c69c9607abcbf',
+    key: process.env.mtaKey,
     feed_id
   });
 
@@ -137,7 +139,7 @@ app.get('/testing/:stopId', (req, res, next) => {
     return;
   }
 
-  const mta = new MTA({ key: '6fdbd192a4cc961fa30c69c9607abcbf', feed_id: 16 });
+  const mta = new MTA({ key: process.env.mtaKey, feed_id: 16 });
 
   mta.schedule(stopId).then(({ schedule }) => {
     res.json(schedule);
@@ -147,7 +149,7 @@ app.get('/testing/:stopId', (req, res, next) => {
 // Get info on stops or any specific stop.
 app.get('/stopInfo', (req, res, next) => {
   const mta = new MTA({
-    key: '6fdbd192a4cc961fa30c69c9607abcbf',
+    key: process.env.mtaKey,
     feed_id: 1
   });
 
@@ -167,7 +169,7 @@ app.get('/stopInfo', (req, res, next) => {
 });
 
 app.use((_, res) => {
-  res.status(404).send("Route doesn't exist.");
+  res.status(404).send("Route doesnkt exist.");
 });
 
 app.listen(3001, () => console.log('Server running on port 3001.'));

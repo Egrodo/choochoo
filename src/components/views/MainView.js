@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import WeatherBlock from '../blocks/WeatherBlock';
 import TrainBlock from '../blocks/TrainBlock';
@@ -24,11 +24,15 @@ function MainView({ name, stationObj, line, gotoOptions }) {
     setGreeting(calcGreeting());
   }, []);
 
+  const memoWeather = useMemo(() => (
+    <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} />
+  ));
+
   return (
     <section className={CSS.MainView}>
       <h1 className={CSS.mainHeader}>Good {greeting} {name}</h1>
       <div className={CSS.weatherContainer}>
-        <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} />
+        {memoWeather}
       </div>
       <div className={CSS.trainContainer}>
         <TrainBlock stationObj={stationObj} line={line} />

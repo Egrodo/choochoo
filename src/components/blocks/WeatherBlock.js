@@ -8,9 +8,9 @@ const dummyData = {
 };
 
 // Weather block. There will be a lot more logic when I actually connect to a weather API.
-function WeatherBlock({ zipCode }) {
+function WeatherBlock({ lat, lon }) {
   // TODO: Memoize this so it doesn't re-render every time MainView does.
-
+  console.log(lat, lon);
   const [temp, setTemp] = useState('');
   const [desc, setDesc] = useState('');
   // settimeout to update this every 5 minutes maybe?
@@ -33,11 +33,13 @@ function WeatherBlock({ zipCode }) {
 }
 
 WeatherBlock.propTypes = {
-  zipCode: PropTypes.string,
+  lat: PropTypes.string,
+  lon: PropTypes.string
 };
 
 WeatherBlock.defaultProps = {
-  zipCode: '',
+  lat: '40.7831',
+  lon: '73.9712'
 };
 
 export default WeatherBlock;
