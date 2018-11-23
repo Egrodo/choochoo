@@ -14,14 +14,12 @@ function WelcomeView({ saveChanges }) {
   const [stationObj, setStationObj] = useState({});
   const [lines, setLines] = useState([]); // List of lines potential line
   const [line, setLine] = useState(''); // Selected line
-  const [zipCode, setZipCode] = useState('');
 
   // Error handling: empty strings means no error, otherwise display error.
   const [errorObj, setErrorObj] = useState({
     name: '',
     stationObj: '',
     line: '',
-    zipCode: ''
   });
 
   const submit = () => {
@@ -32,7 +30,6 @@ function WelcomeView({ saveChanges }) {
     if (!stationObj) errors.stationObj = 'Missing stationObj';
     if (!name.trim()) errors.name = 'Missing name';
     if (!line) errors.line = 'Missing line';
-    if (!zipCode) errors.zipCode = 'Missing zipcode';
 
     // Do I need to validate that the data in the station is valid? So long as it has all the fields...
 
@@ -40,17 +37,10 @@ function WelcomeView({ saveChanges }) {
       errors.name = 'First name too long';
     }
 
-    if (Number.isNaN(Number(zipCode))) {
-      errors.zipCode = 'Only numbers allowed';
-    } else if (Number(zipCode) < 10001 || Number(zipCode) > 11697) {
-      // If it's not NaN, check if it's in the zipCode range for NYC.
-      errors.zipCode = "This zipcode doesn't seem to be in NYC";
-    }
-
     setErrorObj(errors);
     if (!Object.keys(errors).length) {
       // If there are no errors, save the changes.
-      saveChanges(name, stationObj, zipCode, line);
+      saveChanges(name, stationObj, line);
     }
   };
 
@@ -104,20 +94,6 @@ function WelcomeView({ saveChanges }) {
           error={errorObj.line ? errorObj.line : ''}
           label="Line Type"
           alt="line"
-        />
-        <Input
-          onChange={e => {
-            // Only allow numbers to be typed in.
-            if (!Number.isNaN(Number(e.target.value))) {
-              setZipCode(e.target.value);
-            }
-          }}
-          value={zipCode}
-          placeholder="Zip..."
-          alt="zip code"
-          label="Zip Code"
-          error={errorObj.zipCode ? errorObj.zipCode : ''}
-          fluid={1}
         />
       </div>
 

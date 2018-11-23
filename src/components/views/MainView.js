@@ -5,7 +5,7 @@ import TrainBlock from '../blocks/TrainBlock';
 
 import CSS from '../../css/MainView.module.css';
 
-function MainView({ name, stationObj, line, zipCode, gotoOptions }) {
+function MainView({ name, stationObj, line, gotoOptions }) {
   const [greeting, setGreeting] = useState();
 
   const calcGreeting = () => {
@@ -28,7 +28,7 @@ function MainView({ name, stationObj, line, zipCode, gotoOptions }) {
     <section className={CSS.MainView}>
       <h1 className={CSS.mainHeader}>Good {greeting} {name}</h1>
       <div className={CSS.weatherContainer}>
-        <WeatherBlock zipCode={zipCode} />
+        <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} />
       </div>
       <div className={CSS.trainContainer}>
         <TrainBlock stationObj={stationObj} line={line} />
@@ -44,7 +44,6 @@ MainView.propTypes = {
   name: PropTypes.string,
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
-  zipCode: PropTypes.string,
   gotoOptions: PropTypes.func,
 };
 
@@ -52,7 +51,7 @@ MainView.defaultProps = {
   name: '',
   stationObj: {},
   line: '',
-  zipCode: '',
+  gotoOptions: (() => { throw new ReferenceError('gotoOptions not passed to MainView'); }),
 };
 
 export default MainView;

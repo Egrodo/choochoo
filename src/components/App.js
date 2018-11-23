@@ -12,13 +12,12 @@ function App() {
 
   const [name, setName] = useState('');
   const [stationObj, setStationObj] = useState('');
-  const [zipCode, setZipCode] = useState('');
   const [line, setLine] = useState('');
   const [view, setView] = useState('');
 
-  const saveChanges = (newName, newStationObj, newZipCode, newLine) => {
+  const saveChanges = (newName, newStationObj, newLine) => {
     // Submit the state to the localStorage.
-    if (!newName || !newStationObj || !newZipCode || !newLine) {
+    if (!newName || !newStationObj || !newLine) {
       throw new Error("saveChanges wasn't given proper variables");
     }
 
@@ -26,28 +25,22 @@ function App() {
     localStorage.setItem('name', newName);
     localStorage.setItem('line', newLine);
     localStorage.setItem('stationObj', JSON.stringify(newStationObj));
-    localStorage.setItem('zipCode', newZipCode);
     setName(newName);
     setLine(newLine);
     setStationObj(newStationObj);
-    setZipCode(newZipCode);
     setView('main');
   };
 
   useEffect(() => {
-    // This runs on componentDidMount & componentWillUnmount.
-
     // On first load check if we have data. If we don't have any data, show welcome view. If we do, show mainView.
     const checkStorage = key => localStorage.getItem(key) || '';
     const newName = checkStorage('name');
     const newLine = checkStorage('line');
     const newStationObj = JSON.parse(checkStorage('stationObj') || '{}');
-    const newZipCode = checkStorage('zipCode');
     setName(newName);
     setLine(newLine);
     setStationObj(newStationObj);
-    setZipCode(newZipCode);
-    if (newName && newStationObj && newZipCode && newLine) {
+    if (newName && newStationObj && newLine) {
       setView('main');
     } else setView('welcome');
   }, []);
@@ -60,8 +53,8 @@ function App() {
       </header>
       <div className={CSS.content}>
         {view === 'welcome' && <WelcomeView saveChanges={saveChanges} />}
-        {view === 'main' && <MainView name={name} stationObj={stationObj} line={line} zipCode={zipCode} gotoOptions={() => setView('options')} />}
-        {view === 'options' && <OptionsView name={name} stationObj={stationObj} line={line} zipCode={zipCode} saveChanges={saveChanges} />}
+        {view === 'main' && <MainView name={name} stationObj={stationObj} line={line} gotoOptions={() => setView('options')} />}
+        {view === 'options' && <OptionsView name={name} stationObj={stationObj} line={line} saveChanges={saveChanges} />}
       </div>
     </div>
   );

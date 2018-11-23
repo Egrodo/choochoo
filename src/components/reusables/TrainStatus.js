@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CSS from '../../css/TrainStatus.module.css';
 
-function TrainStatus({ status, loading = false }) {
+function TrainStatus({ status, loading }) {
   // Use line (or routeId off status?) to get the relevant image.
   const [img, setImg] = useState('');
   const [timeLeft, setTimeLeft] = useState(status.eta);
@@ -19,11 +19,10 @@ function TrainStatus({ status, loading = false }) {
 
     // Every 10 seconds update the timeLeft state which will update the eta and trainPath.
     const timer = window.setInterval(() => {
-      setTimeLeft(timeLeft => (timeLeft - 10 > 0 ? timeLeft - 10 : 0));
+      setTimeLeft(currTimeLeft => (currTimeLeft - 10 > 0 ? currTimeLeft - 10 : 0));
     }, 10000);
-    return () => {
-      window.clearInterval(timer);
-    }
+    /* eslint-disable-next-line */
+    return () => window.clearInterval(timer);
   }, []);
 
   // Train path on a scale from 5 min to 0.
@@ -53,12 +52,12 @@ function TrainStatus({ status, loading = false }) {
 
 TrainStatus.propTypes = {
   status: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
-  line: PropTypes.string,
+  loading: PropTypes.bool
 };
 
 TrainStatus.defaultProps = {
   status: {},
-  line: '',
+  loading: false
 };
 
 export default TrainStatus;
