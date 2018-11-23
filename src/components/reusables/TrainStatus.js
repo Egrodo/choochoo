@@ -4,27 +4,35 @@ import CSS from '../../css/TrainStatus.module.css';
 
 function TrainStatus({ status, loading = false }) {
   // Use line (or routeId off status?) to get the relevant image.
-  const [img, setImg] = useState();
+  const [img, setImg] = useState('');
+  const [timeLeft, setTimeLeft] = useState(status.eta);
 
   useEffect(() => {
     // On mount/unmount load the applicable route image.
-    if (!loading) {
-      import(`../../assets/images/trainIcons/${status.routeId.toLowerCase()}.svg`)
-        .then(image => {
-          setImg(image.default);
-        }).catch(err => {
-          console.error(err);
-        });
+    if (loading) return; // If this TrainStatus is in loading mode don't do anything here.
+    import(`../../assets/images/trainIcons/${status.routeId.toLowerCase()}.svg`)
+      .then(image => {
+        setImg(image.default);
+      }).catch(err => {
+        console.error(err);
+      });
+
+    // Every 10 seconds update the timeLeft state which will update the eta and trainPath.
+    const timer = window.setInterval(() => {
+      setTimeLeft(timeLeft => (timeLeft - 10 > 0 ? timeLeft - 10 : 0));
+    }, 10000);
+    return () => {
+      window.clearInterval(timer);
     }
   }, []);
 
-  // TODO: If 0 min, <1 min
+  // Train path on a scale from 5 min to 0.
   return (
     <section className={`${CSS.TrainStatus} ${loading && CSS.loading}`}>
       {!loading && <>
         <div className={CSS.timeContainer}>
           <span className={CSS.arrivalTime}>
-            {(status.eta / 60) < 1 ? '<1' : Math.round(status.eta / 60)}
+            {(status.eta / 60) < 1 ? '<1' : Math.round(timeLeft / 60)}
           </span>
           <span className={CSS.min}>min</span>
         </div>
@@ -36,7 +44,7 @@ function TrainStatus({ status, loading = false }) {
           />
         </div>
         <div className={CSS.trainPathContainer}>
-          {status.arrivalTime}
+          {timeLeft}
         </div>
       </>}
     </section>

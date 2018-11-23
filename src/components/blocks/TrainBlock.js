@@ -10,6 +10,7 @@ function TrainBlock({ stationObj, line }) {
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
   const [loading, setLoading] = useState(false);
 
+  // Have my own timer
   // TODO: Maybe have my own timer running every time I get a network update and display info based on that instead   
   const getSchedule = () => {
     setLoading(true);
@@ -61,17 +62,18 @@ function TrainBlock({ stationObj, line }) {
         </span>
       </div>
       <div className={`${CSS.statusContainer} ${loading && CSS.loading}`}>
-        {loading && <>
+        {loading ? <>
           <div className={CSS.floatLoader}><Spinner /></div>
           <div className={CSS.darken}>
             <TrainStatus loading />
             <TrainStatus loading />
             <TrainStatus loading />
           </div>
-        </>}
-        {schedule[direction].map(status =>
-          <TrainStatus status={status} key={status.eta} />
-        )}
+        </> : <>
+            {schedule[direction].map((status, i) =>
+              <TrainStatus status={status} key={`${status.routeId}_${i}`} />
+            )}
+          </>}
       </div>
     </section>
   );
