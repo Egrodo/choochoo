@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const MTA = require('mta-gtfs');
 const Fuse = require('fuse.js');
-const data = require('./stopList.json');
+const stopList = require('./stopList.json');
+const routeToFeed = require('./RouteIdToFeedId.json');
 
 const app = express();
 app.use(cors());
@@ -11,60 +12,62 @@ app.use(cors());
 // Get the oncoming trains given a stopId and fieldId.
 app.get('/schedule/:stopId/', (req, res, next) => {
   const { stopId } = req.params;
-  const { direction, feed_id } = req.query;
   if (stopId === undefined || stopId === null) {
     res.json({ error: 'Missing stopId parameter' });
     return;
   }
 
   // A function to return all closest trains given a schedule.
-  const getTrains = (schedule, countPerDir = 3) => {
+  const getTrains = (schedule, maxCount = 3) => {
     // Get the current (3 length) second count for comparison.
     let currTime = Date.now().toString();
     currTime = +currTime.substring(0, currTime.length - 3);
 
-    // Get the nearest `countPerDir` train arrivals in your given direction. Or, if no direction given, include both directions.
-    // Populate North
-    const N = [];
-    if (direction === 'N' || direction !== 'S') {
-      for (let i = 0; N.length < countPerDir && i < schedule[stopId].N.length; ++i) {
-        const { routeId, arrivalTime } = schedule[stopId].N[i];
-        // If arrival time is null I'm assuming that means it's at the station? Maybe returning 0 would be better for FE, hmm.
+    // Get the nearest `countPerDir` train arrivals in both directions.
+    // TODO: Optimize this.
 
-        if (arrivalTime < currTime) continue; // BUG: Occasionally an arrivalTime will be in the past? Just assume data integrity err and skip it.
-        const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
-        N.push({ routeId, eta });
+    const { N, S } = schedule[stopId];
+    const north = [];
+    const south = [];
+    let i = 0;
+    while (i < (Math.max(N.length, S.length))) {
+      if (N[i] && north.length < maxCount) {
+        const { routeId, arrivalTime } = N[i];
+
+        // If the arrival time is in the future (sometimes it's not, bug)
+        if (arrivalTime > currTime) {
+          const eta = arrivalTime === null ? 0 : arrivalTime - currTime;
+          north.push({ routeId, eta });
+        }
       }
-    }
 
-    // Populate South
-    const S = [];
-    if (direction === 'S' || direction !== 'N') {
-      for (let i = 0; S.length < countPerDir && i < schedule[stopId].S.length; ++i) {
-        const { routeId, arrivalTime } = schedule[stopId].S[i];
+      if (S[i] && south.length < maxCount) {
+        const { routeId, arrivalTime } = S[i];
 
-        if (arrivalTime < currTime) continue;
-        const eta = arrivalTime === null ? 'At the station' : arrivalTime - currTime;
-        S.push({ routeId, eta });
+        if (arrivalTime > currTime) {
+          const eta = arrivalTime === null ? 0 : arrivalTime - currTime;
+          south.push({ routeId, eta });
+        }
       }
+      ++i;
     }
-
-    return [N, S];
+    return { north, south };
   };
 
-  // If a feed_id was passed in, return the results just for that feed_id.
-  // Otherwise, compose a result array from trying all the feed_id's.
-
+  // Use the feed map to get a feed_id from the first char of the stopId.
+  const feed_id = routeToFeed[stopId.charAt(0)];
   if (!feed_id) {
-    // If I'm not given a feed_id return a list of all of them
-    const potentialLines = [1, 26, 16, 21, 2, 11, 31, 36, 51];
+    res.json({ error: 'routemap failed!', stopId, feed_id });
+    return;
+  }
+
+  if (Array.isArray(feed_id)) {
+    // If feed_id is an array that means there are multiple potential matches for it (like 'S'), so try both.
     (async function loop() {
-      let results;
-      for (let i = 0; i < potentialLines.length; ++i) {
-        const feedId = potentialLines[i];
+      for (let i = 0; i < feed_id.length; ++i) {
         const mta = new MTA({
           key: '6fdbd192a4cc961fa30c69c9607abcbf',
-          feed_id: feedId
+          feed_id: feed_id[i]
         });
 
         try {
@@ -72,33 +75,35 @@ app.get('/schedule/:stopId/', (req, res, next) => {
           const { schedule } = await mta.schedule(stopId);
           // If that feed_id exists at that stop, add it to our results.
           if (schedule) {
-            const [N, S] = getTrains(schedule);
-            results = { N, S };
+            const { north, south } = getTrains(schedule);
+            res.json({ N: north, S: south });
+            return;
           }
         } catch (err) {
-          console.error(err);
-        }
-      }
-      res.json(results);
-    })();
-  } else {
-    const mta = new MTA({
-      key: '6fdbd192a4cc961fa30c69c9607abcbf',
-      feed_id: +feed_id
-    });
-
-    mta
-      .schedule(stopId)
-      .then(({ schedule }) => {
-        if (!schedule) {
-          res.json({ error: 'No feed_id at this stopId', feed_id, stopId });
+          res.json({ error: err });
           return;
         }
-        const [N, S] = getTrains(schedule, 5);
-        res.json({ feed_id: { N, S } });
-      })
-      .catch(next);
+      }
+    })();
+    return;
   }
+
+  const mta = new MTA({
+    key: '6fdbd192a4cc961fa30c69c9607abcbf',
+    feed_id
+  });
+
+  mta.schedule(stopId).then(({ schedule }) => {
+    if (!schedule || !Object.keys(schedule).length) {
+      res.json({ error: 'no schedule returned from request', stopId });
+      return;
+    }
+
+    const { north, south } = getTrains(schedule, 3);
+    res.json({ N: north, S: south });
+  }).catch(err => {
+    res.json({ error: err, message: "mta.schedule promise rejected.", stopId, feed_id });
+  });
 });
 
 app.get('/searchStops/', (req, res, next) => {
@@ -107,7 +112,7 @@ app.get('/searchStops/', (req, res, next) => {
     next('No query sent');
     return;
   }
-  const fuse = new Fuse(data, {
+  const fuse = new Fuse(stopList, {
     shouldSort: true,
     threshold: 0.3,
     location: 0,
@@ -123,6 +128,22 @@ app.get('/searchStops/', (req, res, next) => {
   } else res.json(results);
 });
 
+// TESTING
+app.get('/testing/:stopId', (req, res, next) => {
+  const { stopId } = req.params;
+  if (!stopId) {
+    res.json({ error: 'No stopId given.' });
+    // Or send to next?
+    return;
+  }
+
+  const mta = new MTA({ key: '6fdbd192a4cc961fa30c69c9607abcbf', feed_id: 16 });
+
+  mta.schedule(stopId).then(({ schedule }) => {
+    res.json(schedule);
+  });
+});
+
 // Get info on stops or any specific stop.
 app.get('/stopInfo', (req, res, next) => {
   const mta = new MTA({
@@ -133,7 +154,7 @@ app.get('/stopInfo', (req, res, next) => {
   const { id } = req.query;
   if (!id) {
     // If no id given just return all stops
-    res.json(data);
+    res.json(stopList);
   } else {
     mta
       .stop(id)

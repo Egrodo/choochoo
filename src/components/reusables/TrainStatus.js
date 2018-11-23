@@ -20,7 +20,9 @@ function TrainStatus({ status, line }) {
   return (
     <section className={CSS.TrainStatus}>
       <div className={CSS.timeContainer}>
-        <span className={CSS.arrivalTime}>{Math.round(status.eta / 60)}</span>
+        <span className={CSS.arrivalTime}>
+          {(status.eta / 60) < 1 ? '<1' : Math.round(status.eta / 60)}
+        </span>
         <span className={CSS.min}>min</span>
       </div>
       <div className={CSS.routeId}>

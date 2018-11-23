@@ -8,12 +8,17 @@ function TrainBlock({ stationObj, line }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
 
+  // TODO: Maybe have my own timer running every time I get a network update and display info based on that instead   
   const getSchedule = () => {
     // TODO: Loading indicator for TrainBlock.
     console.log(`Getting /schedule/${line}`);
     fetch(`/schedule/${line}`).then(data => data.json()).then(json => {
       setSchedule(json);
-    }).catch(err => console.error(err));
+    }).catch(err => {
+      // The server is offline / having troubles ?
+      console.error(err);
+    });
+
   };
 
   const switchDirection = () => {
@@ -21,17 +26,26 @@ function TrainBlock({ stationObj, line }) {
     setDirection(direction === 'N' ? 'S' : 'N');
   };
 
+  // TODO: Handle offline and server offline at App level.
   useEffect(() => {
     // On mount getSchedule and set a timer to re-run getSchedule every minute.
-    getSchedule();
+    if (navigator.onLine) getSchedule();
     const timer = window.setInterval(() => {
-      // Are there problems that could occur when this is re-ran?
-      console.log('re-requesting at ' + Date.now());
-      getSchedule();
+      if (navigator.onLine) {
+        getSchedule();
+      } else {
+        // If after the minute update we're suddenly offline, set as offine and retry every 5s.
+        const online = window.setInterval(() => {
+          if (navigator.onLine) {
+            window.clearInterval(online);
+          } else {
+            console.log('Network Offline');
+          }
+        })
+      }
     }, 60000);
-    return () => { // Return callback to run on unmount.
-      window.clearInterval(timer);
-    };
+
+    return () => window.clearInterval(timer);
   }, []);
 
   const stationName = stationObj.stop_name;
