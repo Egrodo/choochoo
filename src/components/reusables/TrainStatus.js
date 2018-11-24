@@ -10,6 +10,7 @@ function TrainStatus({ status, loading }) {
   useEffect(() => {
     // On mount/unmount load the applicable route image.
     if (loading) return; // If this TrainStatus is in loading mode don't do anything here.
+    console.log(status.routeId);
     import(`../../assets/images/trainIcons/${status.routeId.toLowerCase()}.svg`)
       .then(image => {
         setImg(image.default);
@@ -31,7 +32,7 @@ function TrainStatus({ status, loading }) {
       {!loading && <>
         <div className={CSS.timeContainer}>
           <span className={CSS.arrivalTime}>
-            {(status.eta / 60) < 1 ? '<1' : Math.round(timeLeft / 60)}
+            {Math.round(status.eta / 60) < 1 ? '<1' : Math.round(timeLeft / 60)}
           </span>
           <span className={CSS.min}>min</span>
         </div>

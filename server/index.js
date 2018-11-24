@@ -163,7 +163,10 @@ app.get('/weatherInfo/:lat/:lon', (req, res, next) => {
     .then(({ data }) => {
       const { summary, temperature } = data.currently;
       res.json({ temperature, summary });
-    }).catch(err => res.json(err));
+    }).catch(err => {
+      console.error(err);
+      res.json({ error: err });
+    });
 });
 
 app.use((_, res) => {
