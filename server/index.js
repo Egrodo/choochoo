@@ -161,12 +161,13 @@ app.get('/weatherInfo/:lat/:lon', (req, res, next) => {
 
   axios.get(`https://api.darksky.net/forecast/${process.env.WEATHER_KEY}/${lat},${lon}`)
     .then(({ data }) => {
-      res.json(data.currently);
+      const { summary, temperature } = data.currently;
+      res.json({ temperature, summary });
     }).catch(err => res.json(err));
 });
 
 app.use((_, res) => {
-  res.status(404).send("Route doesnkt exist.");
+  res.status(404).send("Route doesn't exist.");
 });
 
 app.listen(3001, () => console.log('Server running on port 3001.'));

@@ -16,15 +16,13 @@ function WeatherBlock({ lat, lon }) {
   // settimeout to update this every 5 minutes maybe?
   useEffect(() => {
     // On first render get the weather data and place it in state.
-    // const apiKey = process.env.REACT_APP_WEATHER_KEY;
-    // const call = `https://api.darksky.net/forecast/${apiKey}/${lat},${lon}`;
-    // fetch(call, {
-    //   mode: 'no-cors'
-    // }).then(data => data.json())
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => console.error(err));
+    fetch(`/weatherInfo/${lat}/${lon}`).then(data => data.json())
+      .then(({ temperature, summary }) => {
+        setTemp(Math.round(temperature));
+        setDesc(summary);
+      }).catch(err => {
+        console.error({ err, message: "Can't connect to /weatherInfo" });
+      });
     setTemp(dummyData.temp);
     setDesc(dummyData.desc);
   }, []);
