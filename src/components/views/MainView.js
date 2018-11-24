@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import WeatherBlock from '../blocks/WeatherBlock';
 import TrainBlock from '../blocks/TrainBlock';
 
-import CSS from '../../css/MainView.module.css';
+import CSS from '../../css/views/MainView.module.css';
 
 function MainView({ name, stationObj, line, gotoOptions, networkRetry, networkIssue }) {
   const [greeting, setGreeting] = useState();

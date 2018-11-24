@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import CSS from '../../css/Option.module.css';
+import CSS from '../../css/reusables/Option.module.css';
 
 const lineMap = {
   "1": ["1", "2", "3"],

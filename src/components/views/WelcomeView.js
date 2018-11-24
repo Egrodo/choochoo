@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Typeahead from '../reusables/Typeahead';
-import CSS from '../../css/WelcomeView.module.css';
+import CSS from '../../css/views/WelcomeView.module.css';
 import Option from '../reusables/Option';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';

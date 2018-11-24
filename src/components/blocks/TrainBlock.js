@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
-import CSS from '../../css/TrainBlock.module.css';
+import CSS from '../../css/blocks/TrainBlock.module.css';
 
 // This component has to retrieve real-time data and render the information appropriately.
 

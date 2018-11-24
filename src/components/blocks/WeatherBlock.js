@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../reusables/Spinner';
 
-import CSS from '../../css/WeatherBlock.module.css';
+import CSS from '../../css/blocks/WeatherBlock.module.css';
 
 // Would rather this load until it's ready rather than have defaults.
 function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {

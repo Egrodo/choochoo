@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import CSS from '../../css/TrainStatus.module.css';
+import CSS from '../../css/reusables/TrainStatus.module.css';
 
 function TrainStatus({ status, loading }) {
   // Use line (or routeId off status?) to get the relevant image.

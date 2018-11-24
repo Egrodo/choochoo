@@ -27,7 +27,7 @@
   height: 1em;
   display: inline-block;
   right: 0;
-  background-image: url('../assets/images/upArrow.svg');
+  background-image: url('../../assets/images/upArrow.svg');
   background-size: 1em 1em;
   background-repeat: no-repeat;
   padding-left: .2em;

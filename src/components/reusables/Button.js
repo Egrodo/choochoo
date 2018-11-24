@@ -1,5 +1,5 @@
 import React from 'react';
-import CSS from '../../css/Button.module.css';
+import CSS from '../../css/reusables/Button.module.css';
 
 function Button(props) {
   return (

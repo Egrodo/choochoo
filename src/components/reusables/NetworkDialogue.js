@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CSS from '../../css/NetworkDialogue.module.css';
+import CSS from '../../css/reusables/NetworkDialogue.module.css';
 
 function NetworkDialogue({ message }) {
   return (

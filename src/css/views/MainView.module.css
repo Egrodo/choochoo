@@ -33,7 +33,7 @@
   height: 1em;
   display: inline-block;
   left: 0;
-  background-image: url('../assets/images/cog.svg');
+  background-image: url('../../assets/images/cog.svg');
   background-size: 1em 1em;
   background-repeat: no-repeat;
   padding-right: .3em;
