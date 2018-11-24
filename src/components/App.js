@@ -53,13 +53,12 @@ function App() {
       throw new Error("saveChanges wasn't given proper variables");
     }
 
-    // On submit, validate the station I guess?
+    localStorage.setItem('stationObj', JSON.stringify(newStationObj));
     localStorage.setItem('name', newName);
     localStorage.setItem('line', newLine);
-    localStorage.setItem('stationObj', JSON.stringify(newStationObj));
+    setStationObj(newStationObj);
     setName(newName);
     setLine(newLine);
-    setStationObj(newStationObj);
     setView('main');
   };
 

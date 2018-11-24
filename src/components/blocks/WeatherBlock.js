@@ -4,17 +4,18 @@ import Spinner from '../reusables/Spinner';
 
 import CSS from '../../css/WeatherBlock.module.css';
 
+// Would rather this load until it's ready rather than have defaults.
 function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
-  const [temp, setTemp] = useState('65');
-  const [desc, setDesc] = useState('Sunny');
+  const [temp, setTemp] = useState('00');
+  const [desc, setDesc] = useState('Loading');
   const [loading, setLoading] = useState(true);
 
   const getWeather = () => {
+    setLoading(true);
     fetch(`/weatherInfo/${lat}/${lon}`).then(data => data.json())
       .then(({ temperature, summary }) => {
         setTemp(Math.round(temperature));
         setDesc(summary);
-        setLoading(false);
       }).catch(err => {
         if (!networkIssue) {
           networkRetry(10);
@@ -29,12 +30,11 @@ function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
   }, []);
 
   useEffect(() => {
-    // TODO: Revisit this...
-    // When networkIssue updates
-    if (networkIssue && !loading) {
-      setLoading(true);
-    } else if (!networkIssue && loading) setLoading(false);
-  }, [networkIssue]);
+    // When the temp and desc are loaded disable spinner.
+    if (temp !== '00' && desc !== 'Loading') {
+      setLoading(false);
+    }
+  }, [temp, desc]);
 
   return (
     <section className={CSS.WeatherBlock}>
