@@ -24,6 +24,8 @@ module.exports = {
     'no-console': 0,
     'react/no-unescaped-entities': 0,
     'react/destructuring-assignment': 0,
-    'jsx-a11y/label-has-for': 0
+    'jsx-a11y/label-has-for': 0,
+    "jsx-a11y/href-no-hash": "off",
+    "jsx-a11y/anchor-is-valid": ["warn", { "aspects": ["invalidHref"] }],
   }
 };

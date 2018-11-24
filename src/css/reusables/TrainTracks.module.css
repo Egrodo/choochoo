@@ -1,0 +1,12 @@
+.TrainTracks {
+  border-bottom: 2px solid white;
+  text-align: left;
+  margin: 0 .5em;
+  width: calc(100% - 1em);
+}
+
+.TrainImg {
+  width: 3em;
+  height: 2.5em;
+  display: inline-block;
+}

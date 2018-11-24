@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import TrainTracks from './TrainTracks';
 import CSS from '../../css/reusables/TrainStatus.module.css';
 
 function TrainStatus({ status, loading }) {
@@ -32,7 +33,7 @@ function TrainStatus({ status, loading }) {
       {!loading && <>
         <div className={CSS.timeContainer}>
           <span className={CSS.arrivalTime}>
-            {Math.round(status.eta / 60) < 1 ? '<1' : Math.round(timeLeft / 60)}
+            {Math.round(timeLeft / 60) < 1 ? '<1' : Math.round(timeLeft / 60)}
           </span>
           <span className={CSS.min}>min</span>
         </div>
@@ -43,8 +44,8 @@ function TrainStatus({ status, loading }) {
             src={img}
           />
         </div>
-        <div className={CSS.trainPathContainer}>
-          {timeLeft}
+        <div className={CSS.trainTracksContainer}>
+          <TrainTracks eta={timeLeft} />
         </div>
       </>}
     </section>
