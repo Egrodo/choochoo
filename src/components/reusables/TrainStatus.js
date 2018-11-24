@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import TrainTracks from './TrainTracks';
 import CSS from '../../css/reusables/TrainStatus.module.css';
 
+// BUG: Switching directions needs to prompt a reload of everything.
 function TrainStatus({ status, loading }) {
   // Use line (or routeId off status?) to get the relevant image.
   const [img, setImg] = useState('');

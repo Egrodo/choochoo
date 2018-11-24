@@ -46,7 +46,7 @@ function TrainBlock({ stationObj, line, networkRetry, networkIssue }) {
         </span>
       </div>
       <div className={`${CSS.statusContainer} ${loading && CSS.loading}`}>
-        {loading ? <>
+        {(loading || !schedule[direction]) ? <>
           <div className={CSS.floatLoader}><Spinner /></div>
           <div className={CSS.darken}>
             <TrainStatus loading />

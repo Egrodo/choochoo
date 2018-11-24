@@ -3,10 +3,12 @@
   text-align: left;
   margin: 0 .5em;
   width: calc(100% - 1em);
+  position: relative;
 }
 
 .TrainImg {
   width: 3em;
   height: 2.5em;
   display: inline-block;
+  position: relative;
 }
