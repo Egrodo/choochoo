@@ -4,23 +4,37 @@ import Spinner from '../reusables/Spinner';
 
 import CSS from '../../css/WeatherBlock.module.css';
 
-// Weather block. There will be a lot more logic when I actually connect to a weather API.
-function WeatherBlock({ lat, lon, setNetworkIssue }) {
-  const [temp, setTemp] = useState('55');
+function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
+  const [temp, setTemp] = useState('65');
   const [desc, setDesc] = useState('Sunny');
   const [loading, setLoading] = useState(true);
-  // settimeout to update this every 5 minutes maybe?
-  useEffect(() => {
-    // On first render get the weather data and place it in state.
+
+  const getWeather = () => {
     fetch(`/weatherInfo/${lat}/${lon}`).then(data => data.json())
       .then(({ temperature, summary }) => {
         setTemp(Math.round(temperature));
         setDesc(summary);
         setLoading(false);
       }).catch(err => {
-        console.error({ err, message: "Can't connect to /weatherInfo" });
+        if (!networkIssue) {
+          networkRetry(10);
+          console.error(err);
+        }
       });
+  };
+
+  useEffect(() => {
+    // On first render get the weather.
+    getWeather();
   }, []);
+
+  useEffect(() => {
+    // TODO: Revisit this...
+    // When networkIssue updates
+    if (networkIssue && !loading) {
+      setLoading(true);
+    } else if (!networkIssue && loading) setLoading(false);
+  }, [networkIssue]);
 
   return (
     <section className={CSS.WeatherBlock}>
@@ -43,13 +57,15 @@ function WeatherBlock({ lat, lon, setNetworkIssue }) {
 WeatherBlock.propTypes = {
   lat: PropTypes.string,
   lon: PropTypes.string,
-  setNetworkIssue: PropTypes.func,
+  networkRetry: PropTypes.func,
+  networkIssue: PropTypes.bool,
 };
 
 WeatherBlock.defaultProps = {
   lat: '40.7831',
   lon: '73.9712',
-  setNetworkIssue: (() => { throw new ReferenceError('setNetworkIssue not passed to MainView'); }),
+  networkRetry: (() => { throw new ReferenceError('networkRetry not passed to WeatherBlock'); }),
+  networkIssue: false,
 };
 
 export default WeatherBlock;

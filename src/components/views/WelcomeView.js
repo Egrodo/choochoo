@@ -7,7 +7,7 @@ import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
 // TODO: Ctrl + enter should try to submit form.
-function WelcomeView({ saveChanges, isOnline }) {
+function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
   // The station should contain all the data for the station, not just the name.
   const [name, setName] = useState('');
   const [stationObj, setStationObj] = useState({});
@@ -53,8 +53,10 @@ function WelcomeView({ saveChanges, isOnline }) {
       })
       .catch(err => {
         // Await this, return promise.
-        isOnline();
-        // console.log(err);
+        if (!networkIssue) {
+          console.log(err);
+          networkRetry(10, getData, stationName, setOptions, enableOptionsView);
+        }
       });
   };
 
@@ -109,12 +111,14 @@ function WelcomeView({ saveChanges, isOnline }) {
 
 WelcomeView.propTypes = {
   saveChanges: PropTypes.func,
-  isOnline: PropTypes.func,
+  networkRetry: PropTypes.func,
+  networkIssue: PropTypes.bool,
 };
 
 WelcomeView.defaultProps = {
   saveChanges: (() => { throw new ReferenceError('saveChanges not passed to MainView'); }),
-  isOnline: (() => { throw new ReferenceError('isOnline not passed to MainView'); }),
+  networkRetry: (() => { throw new ReferenceError('networkRetry not passed to MainView'); }),
+  networkIssue: false,
 };
 
 export default WelcomeView;

@@ -4,9 +4,9 @@ import CSS from '../../css/NetworkDialogue.module.css';
 
 function NetworkDialogue({ message }) {
   return (
-    // TODO: Fancy dot dot animation? 
     <section className={`${CSS.NetworkDialogue} ${message && CSS.active}`}>
       {message}
+      <span>.</span><span>.</span><span>.</span>
     </section>
   );
 }

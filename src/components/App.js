@@ -19,59 +19,33 @@ function App() {
   const [networkIssue, setNetworkIssue] = useState('');
 
   // When invoked, check if the user is online. If they are, check if the server is online.
-  const isOnline = (tries = 10) => {
+  const networkRetry = (tries = 10, cb, ...params) => {
     if (tries === 0) {
       return Promise.reject('Tries exceeded');
     }
 
     return new Promise((res, rej) => {
+      console.log(`Retrying network, attempt: ${tries}`);
       if (navigator.onLine) {
         fetch('/stopInfo')
           .then(({ status }) => {
             if (status !== 200) throw new Error('Server Error');
-            // Otherwise success!
-            if (networkIssue) setNetworkIssue('');
+            // Otherwise if we're back online invoke the cb and undo errors.
+            if (cb) cb(...params);
             res(status);
+            setNetworkIssue('');
           })
           .catch(() => {
             if (networkIssue !== 'Server Down') setNetworkIssue('Server Down');
             // If sill offline, wait 10 seconds and try again.
-            setTimeout(() => isOnline(tries - 1), 10000);
+            setTimeout(() => networkRetry(tries - 1, cb, ...params), 10000);
           });
       } else {
         if (!networkIssue) setNetworkIssue('Internet down');
-        setTimeout(() => isOnline(tries - 1), 10000);
+        setTimeout(() => networkRetry(tries - 1, cb, ...params), 10000);
       }
     });
   };
-
-  // return new Promise(function cb(resolve, reject) {
-  //   console.log('Network down');
-  //   if (--tries > 0) {
-  //     if (navigator.isOnline) {
-  //       fetch('/stopInfo').then(() => {
-  //         if (networkIssue) setNetworkIssue('');
-  //         resolve();
-  //       }).catch(() => {
-  //         setNetworkIssue('Server offline');
-  //         setTimeout(() => {
-  //           cb(resolve, reject);
-  //         }, 10000);
-  //         reject();
-  //       })
-  //     } else {
-  //       setNetworkIssue('Internet offline');
-  //       setTimeout(() => {
-  //         cb(resolve, reject);
-  //       }, 10000);
-  //       reject();
-  //     }
-  //     resolve();
-  //   } else {
-  //     // Tries exhausted.
-  //     setNetworkIssue('Internet down?');
-  //   }
-  // });
 
   const saveChanges = (newName, newStationObj, newLine) => {
     // Submit the state to the localStorage.
@@ -112,11 +86,11 @@ function App() {
       <div className={CSS.content}>
         <NetworkDialogue message={networkIssue} />
         {view === 'welcome' &&
-          <WelcomeView saveChanges={saveChanges} isOnline={isOnline} />}
+          <WelcomeView saveChanges={saveChanges} networkRetry={networkRetry} networkIssue={Boolean(networkIssue.length)} />}
         {view === 'main' &&
-          <MainView name={name} stationObj={stationObj} line={line} isOnline={isOnline} gotoOptions={() => setView('options')} />}
+          <MainView name={name} stationObj={stationObj} line={line} networkRetry={networkRetry} networkIssue={Boolean(networkIssue.length)} gotoOptions={() => setView('options')} />}
         {view === 'options' &&
-          <OptionsView name={name} stationObj={stationObj} line={line} isOnline={isOnline} saveChanges={saveChanges} />}
+          <OptionsView name={name} stationObj={stationObj} line={line} networkRetry={networkRetry} networkIssue={Boolean(networkIssue.length)} saveChanges={saveChanges} />}
       </div>
     </div>
   );

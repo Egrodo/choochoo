@@ -5,7 +5,7 @@ import TrainBlock from '../blocks/TrainBlock';
 
 import CSS from '../../css/MainView.module.css';
 
-function MainView({ name, stationObj, line, gotoOptions, networkIssue, setNetworkIssue }) {
+function MainView({ name, stationObj, line, gotoOptions, networkRetry, networkIssue }) {
   const [greeting, setGreeting] = useState();
 
   const calcGreeting = () => {
@@ -25,8 +25,8 @@ function MainView({ name, stationObj, line, gotoOptions, networkIssue, setNetwor
   }, []);
 
   const memoWeather = useMemo(() => (
-    <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} setNetworkIssue={setNetworkIssue} />
-  ));
+    <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} networkRetry={networkRetry} networkIssue={networkIssue} />
+  ), [networkIssue]);
 
   return (
     <section className={CSS.MainView}>
@@ -35,7 +35,7 @@ function MainView({ name, stationObj, line, gotoOptions, networkIssue, setNetwor
         {memoWeather}
       </div>
       <div className={CSS.trainContainer}>
-        <TrainBlock stationObj={stationObj} line={line} networkIssue={networkIssue} setNetworkIssue={setNetworkIssue} />
+        <TrainBlock stationObj={stationObj} line={line} networkRetry={networkRetry} networkIssue={networkIssue} />
       </div>
       <div className={CSS.optionsLink}>
         <span onClick={gotoOptions} role="button" tabIndex="0">Options</span>
@@ -49,8 +49,8 @@ MainView.propTypes = {
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
   gotoOptions: PropTypes.func,
-  networkIssue: PropTypes.string,
-  setNetworkIssue: PropTypes.func,
+  networkRetry: PropTypes.func,
+  networkIssue: PropTypes.bool,
 };
 
 MainView.defaultProps = {
@@ -58,8 +58,8 @@ MainView.defaultProps = {
   stationObj: {},
   line: '',
   gotoOptions: (() => { throw new ReferenceError('gotoOptions not passed to MainView'); }),
-  networkIssue: '',
-  setNetworkIssue: (() => { throw new ReferenceError('setNetworkIssue not passed to MainView'); }),
+  networkRetry: (() => { throw new ReferenceError('networkRetry not passed to MainView'); }),
+  networkIssue: false,
 };
 
 export default MainView;

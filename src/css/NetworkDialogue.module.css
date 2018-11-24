@@ -17,3 +17,32 @@
   text-align: center;
   font-size: .9em;
 }
+
+.NetworkDialogue.active span {
+  font-size: 1.2em;
+  padding-left: .1em;
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.NetworkDialogue.active span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.NetworkDialogue.active span:nth-child(3) {
+  animation-delay: .4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: .1;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .1;
+  }
+}
