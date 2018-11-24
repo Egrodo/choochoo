@@ -6,6 +6,34 @@ import Option from '../reusables/Option';
 import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
+const lineMap = {
+  "1": ["1", "2", "3"],
+  "2": ["2", "3"],
+  "3": ["2", "3"],
+  "4": ["4", "5", "6"],
+  "5": ["4", "5", "6"],
+  "6": ["4", "5", "6"],
+  "S": ["S", "SIR"],
+  "9": ["GS Shuttle"],
+  "A": ["A", "C", "E", "H"],
+  "C": ["A", "C", "E", "H"],
+  "E": ["A", "C", "E", "H"],
+  "H": ["A", "C", "E", "H"],
+  "Q": ["N", "R", "W", "Q"],
+  "N": ["N", "R", "W", "Q"],
+  "R": ["N", "R", "W", "Q"],
+  "W": ["N", "R", "W", "Q"],
+  "F": ["B", "D", "F", "M"],
+  "M": ["B", "D", "F", "M"],
+  "D": ["B", "D", "F", "M"],
+  "B": ["B", "D", "F", "M"],
+  "G": ["G"],
+  "J": ["J", "Z"],
+  "Z": ["J", "Z"],
+  "7": ["7"],
+  "L": ["L"]
+};
+
 // TODO: Ctrl + enter should try to submit form.
 function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
   // The station should contain all the data for the station, not just the name.
@@ -97,6 +125,7 @@ function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
           selection={line}
           onChange={e => setLine(lines[e.target.value])}
           error={errorObj.line ? errorObj.line : ''}
+          lineMap={lineMap}
           label="Line Type"
           alt="line"
         />
