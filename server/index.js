@@ -22,6 +22,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
 
   // A function to return all closest trains given a schedule.
   const getTrains = (schedule, maxCount = 3) => {
+    // BUG: Occasionally I'll get an "Illegal offset' error and it'll crash everything.
     // Get the current (3 length) second count for comparison.
     let currTime = Date.now().toString();
     currTime = +currTime.substring(0, currTime.length - 3);

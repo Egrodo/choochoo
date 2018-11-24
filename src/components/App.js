@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SunAndClouds from '../assets/images/sunny-day.png';
 import CSS from '../css/App.module.css';
 
+import NetworkDialogue from './reusables/NetworkDialogue';
 import WelcomeView from './views/WelcomeView';
 import MainView from './views/MainView';
 import OptionsView from './views/OptionsView';
@@ -10,10 +11,67 @@ function App() {
   console.log('App render');
   // This function will run on every single render. But hooks is smart enough to not rewrite existing state !
 
-  const [name, setName] = useState('');
   const [stationObj, setStationObj] = useState('');
+  const [name, setName] = useState('');
   const [line, setLine] = useState('');
   const [view, setView] = useState('');
+
+  const [networkIssue, setNetworkIssue] = useState('');
+
+  // When invoked, check if the user is online. If they are, check if the server is online.
+  const isOnline = (tries = 10) => {
+    if (tries === 0) {
+      return Promise.reject('Tries exceeded');
+    }
+
+    return new Promise((res, rej) => {
+      if (navigator.onLine) {
+        fetch('/stopInfo')
+          .then(({ status }) => {
+            if (status !== 200) throw new Error('Server Error');
+            // Otherwise success!
+            if (networkIssue) setNetworkIssue('');
+            res(status);
+          })
+          .catch(() => {
+            if (networkIssue !== 'Server Down') setNetworkIssue('Server Down');
+            // If sill offline, wait 10 seconds and try again.
+            setTimeout(() => isOnline(tries - 1), 10000);
+          });
+      } else {
+        if (!networkIssue) setNetworkIssue('Internet down');
+        setTimeout(() => isOnline(tries - 1), 10000);
+      }
+    });
+  };
+
+  // return new Promise(function cb(resolve, reject) {
+  //   console.log('Network down');
+  //   if (--tries > 0) {
+  //     if (navigator.isOnline) {
+  //       fetch('/stopInfo').then(() => {
+  //         if (networkIssue) setNetworkIssue('');
+  //         resolve();
+  //       }).catch(() => {
+  //         setNetworkIssue('Server offline');
+  //         setTimeout(() => {
+  //           cb(resolve, reject);
+  //         }, 10000);
+  //         reject();
+  //       })
+  //     } else {
+  //       setNetworkIssue('Internet offline');
+  //       setTimeout(() => {
+  //         cb(resolve, reject);
+  //       }, 10000);
+  //       reject();
+  //     }
+  //     resolve();
+  //   } else {
+  //     // Tries exhausted.
+  //     setNetworkIssue('Internet down?');
+  //   }
+  // });
 
   const saveChanges = (newName, newStationObj, newLine) => {
     // Submit the state to the localStorage.
@@ -52,12 +110,15 @@ function App() {
         <img src={SunAndClouds} className={CSS.headerImg} alt="Sun And Clouds" />
       </header>
       <div className={CSS.content}>
-        {view === 'welcome' && <WelcomeView saveChanges={saveChanges} />}
-        {view === 'main' && <MainView name={name} stationObj={stationObj} line={line} gotoOptions={() => setView('options')} />}
-        {view === 'options' && <OptionsView name={name} stationObj={stationObj} line={line} saveChanges={saveChanges} />}
+        <NetworkDialogue message={networkIssue} />
+        {view === 'welcome' &&
+          <WelcomeView saveChanges={saveChanges} isOnline={isOnline} />}
+        {view === 'main' &&
+          <MainView name={name} stationObj={stationObj} line={line} isOnline={isOnline} gotoOptions={() => setView('options')} />}
+        {view === 'options' &&
+          <OptionsView name={name} stationObj={stationObj} line={line} isOnline={isOnline} saveChanges={saveChanges} />}
       </div>
     </div>
   );
 }
-
 export default App;

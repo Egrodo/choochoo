@@ -5,23 +5,25 @@ import Spinner from '../reusables/Spinner';
 import CSS from '../../css/TrainBlock.module.css';
 
 // This component has to retrieve real-time data and render the information appropriately.
-function TrainBlock({ stationObj, line }) {
+
+function TrainBlock({ stationObj, line, setNetworkIssue }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
   const [loading, setLoading] = useState(true);
 
-  // Have my own timer
   const getSchedule = () => {
     setLoading(true);
     console.log(`Getting /schedule/${line}`);
+    // BUG: Illegal offset sometimes appears here, track down.
     fetch(`/schedule/${line}`).then(data => data.json()).then(json => {
       setSchedule(json);
       setLoading(false);
+      setNetworkIssue('');
     }).catch(err => {
-      // The server is offline / having troubles ?
-      console.error(err);
+      // If we don't already know about an issue, set one and retry network.
+      setNetworkIssue("Server not responding...");
+      console.error(err.message);
     });
-
   };
 
   const switchDirection = () => {
@@ -29,7 +31,6 @@ function TrainBlock({ stationObj, line }) {
     setDirection(direction === 'N' ? 'S' : 'N');
   };
 
-  // TODO: Handle offline and server offline at App level.
   useEffect(() => {
     // On mount getSchedule and set a timer to re-run getSchedule every minute.
     if (navigator.onLine) getSchedule();
@@ -40,9 +41,10 @@ function TrainBlock({ stationObj, line }) {
         // If after the minute update we're suddenly offline, set as offine and retry every 5s.
         const online = window.setInterval(() => {
           if (navigator.onLine) {
+            getSchedule();
             window.clearInterval(online);
           } else {
-            console.log('Network Offline');
+            setNetworkIssue('Internet down, retrying...');
           }
         })
       }
@@ -81,11 +83,15 @@ function TrainBlock({ stationObj, line }) {
 TrainBlock.propTypes = {
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
+  networkIssue: PropTypes.string,
+  setNetworkIssue: PropTypes.func,
 };
 
 TrainBlock.defaultProps = {
   stationObj: {},
   line: '',
+  networkIssue: '',
+  setNetworkIssue: (() => { throw new ReferenceError('setNetworkIssue not passed to MainView'); }),
 };
 
 export default TrainBlock;

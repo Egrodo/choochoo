@@ -5,7 +5,7 @@ import Spinner from '../reusables/Spinner';
 import CSS from '../../css/WeatherBlock.module.css';
 
 // Weather block. There will be a lot more logic when I actually connect to a weather API.
-function WeatherBlock({ lat, lon }) {
+function WeatherBlock({ lat, lon, setNetworkIssue }) {
   const [temp, setTemp] = useState('55');
   const [desc, setDesc] = useState('Sunny');
   const [loading, setLoading] = useState(true);
@@ -42,12 +42,14 @@ function WeatherBlock({ lat, lon }) {
 
 WeatherBlock.propTypes = {
   lat: PropTypes.string,
-  lon: PropTypes.string
+  lon: PropTypes.string,
+  setNetworkIssue: PropTypes.func,
 };
 
 WeatherBlock.defaultProps = {
   lat: '40.7831',
-  lon: '73.9712'
+  lon: '73.9712',
+  setNetworkIssue: (() => { throw new ReferenceError('setNetworkIssue not passed to MainView'); }),
 };
 
 export default WeatherBlock;

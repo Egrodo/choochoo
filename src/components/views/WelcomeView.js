@@ -7,7 +7,7 @@ import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
 // TODO: Ctrl + enter should try to submit form.
-function WelcomeView({ saveChanges }) {
+function WelcomeView({ saveChanges, isOnline }) {
   // The station should contain all the data for the station, not just the name.
   const [name, setName] = useState('');
   const [stationObj, setStationObj] = useState({});
@@ -50,8 +50,12 @@ function WelcomeView({ saveChanges }) {
         // Once I've retrieved data, store it and enable options view.
         setOptions(json);
         enableOptionsView(true);
-      }) // TODO: What to do on error? Maybe App level network error dialogue.
-      .catch(err => console.error(err));
+      })
+      .catch(err => {
+        // Await this, return promise.
+        isOnline();
+        // console.log(err);
+      });
   };
 
   useEffect(
@@ -104,13 +108,13 @@ function WelcomeView({ saveChanges }) {
 }
 
 WelcomeView.propTypes = {
-  saveChanges: PropTypes.func
+  saveChanges: PropTypes.func,
+  isOnline: PropTypes.func,
 };
 
 WelcomeView.defaultProps = {
-  saveChanges: () => {
-    console.error('PropTypes Error: saveChanges not passed into WelcomeView.');
-  }
+  saveChanges: (() => { throw new ReferenceError('saveChanges not passed to MainView'); }),
+  isOnline: (() => { throw new ReferenceError('isOnline not passed to MainView'); }),
 };
 
 export default WelcomeView;

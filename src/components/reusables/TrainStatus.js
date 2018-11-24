@@ -8,9 +8,9 @@ function TrainStatus({ status, loading }) {
   const [timeLeft, setTimeLeft] = useState(status.eta);
 
   useEffect(() => {
-    // On mount/unmount load the applicable route image.
     if (loading) return; // If this TrainStatus is in loading mode don't do anything here.
-    console.log(status.routeId);
+
+    // On mount/unmount load the applicable route image.
     import(`../../assets/images/trainIcons/${status.routeId.toLowerCase()}.svg`)
       .then(image => {
         setImg(image.default);

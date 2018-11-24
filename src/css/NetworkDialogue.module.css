@@ -1,0 +1,19 @@
+.NetworkDialogue {
+  display: none;
+}
+
+.NetworkDialogue.active {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  -webkit-transform: translate(-10%, -50%);
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid red;
+  color: black;
+  padding: .3em 1em;
+  border-radius: 5px;
+  text-align: center;
+  font-size: .9em;
+}

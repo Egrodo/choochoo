@@ -5,7 +5,7 @@ import TrainBlock from '../blocks/TrainBlock';
 
 import CSS from '../../css/MainView.module.css';
 
-function MainView({ name, stationObj, line, gotoOptions }) {
+function MainView({ name, stationObj, line, gotoOptions, networkIssue, setNetworkIssue }) {
   const [greeting, setGreeting] = useState();
 
   const calcGreeting = () => {
@@ -25,7 +25,7 @@ function MainView({ name, stationObj, line, gotoOptions }) {
   }, []);
 
   const memoWeather = useMemo(() => (
-    <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} />
+    <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} setNetworkIssue={setNetworkIssue} />
   ));
 
   return (
@@ -35,7 +35,7 @@ function MainView({ name, stationObj, line, gotoOptions }) {
         {memoWeather}
       </div>
       <div className={CSS.trainContainer}>
-        <TrainBlock stationObj={stationObj} line={line} />
+        <TrainBlock stationObj={stationObj} line={line} networkIssue={networkIssue} setNetworkIssue={setNetworkIssue} />
       </div>
       <div className={CSS.optionsLink}>
         <span onClick={gotoOptions} role="button" tabIndex="0">Options</span>
@@ -49,6 +49,8 @@ MainView.propTypes = {
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
   gotoOptions: PropTypes.func,
+  networkIssue: PropTypes.string,
+  setNetworkIssue: PropTypes.func,
 };
 
 MainView.defaultProps = {
@@ -56,6 +58,8 @@ MainView.defaultProps = {
   stationObj: {},
   line: '',
   gotoOptions: (() => { throw new ReferenceError('gotoOptions not passed to MainView'); }),
+  networkIssue: '',
+  setNetworkIssue: (() => { throw new ReferenceError('setNetworkIssue not passed to MainView'); }),
 };
 
 export default MainView;

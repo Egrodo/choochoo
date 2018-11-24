@@ -22,24 +22,19 @@ const lineMap = {
 function Option(props) {
   // Display various line types and let the user select one. If there's only one, select it and disable field.
   const [trains, setTrains] = useState();
-  const calcTrains = () => {
+
+  useEffect(() => {
+    // On render and update display the appropriate trains.
     const newTrains = {};
-    console.log(props.data);
-    props.data.map(item => {
+    props.data.forEach(item => {
       let trainStr = '';
-      console.log(item);
-      lineMap[item.charAt(0)].map((line, i) => {
+      lineMap[item.charAt(0)].forEach((line, i) => {
         trainStr += `${line}`;
         if (lineMap[item.charAt(0)].length - 1 !== i) trainStr += ', ';
       });
       newTrains[item] = trainStr;
     });
     setTrains(newTrains);
-  };
-
-  useEffect(() => {
-    // On render and update display the appropriate trains.
-    calcTrains();
   }, [props.data]);
 
   return (
@@ -56,7 +51,7 @@ function Option(props) {
         disabled={props.data.length < 2}
       >
         {props.data.map((item, i) => (
-          <option value={i} key={item} className={CSS.optionItem}>
+          <option value={i} key={item}>
             {`${trains[item]} Trains`}
           </option>
         ))}
