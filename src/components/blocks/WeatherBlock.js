@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import Spinner from '../reusables/Spinner';
 
 import CSS from '../../css/WeatherBlock.module.css';
 
-const dummyData = {
-  temp: 46,
-  desc: 'Sunny'
-};
-
 // Weather block. There will be a lot more logic when I actually connect to a weather API.
 function WeatherBlock({ lat, lon }) {
-  const [temp, setTemp] = useState('');
-  const [desc, setDesc] = useState('');
+  const [temp, setTemp] = useState('55');
+  const [desc, setDesc] = useState('Sunny');
+  const [loading, setLoading] = useState(true);
   // settimeout to update this every 5 minutes maybe?
   useEffect(() => {
     // On first render get the weather data and place it in state.
@@ -20,21 +16,26 @@ function WeatherBlock({ lat, lon }) {
       .then(({ temperature, summary }) => {
         setTemp(Math.round(temperature));
         setDesc(summary);
+        setLoading(false);
       }).catch(err => {
         console.error({ err, message: "Can't connect to /weatherInfo" });
       });
-    setTemp(dummyData.temp);
-    setDesc(dummyData.desc);
   }, []);
 
   return (
     <section className={CSS.WeatherBlock}>
-      <div className={CSS.temperatureContainer}>
-        <span className={CSS.temperature}>{temp}</span>
-      </div>
-      <div className={CSS.descContainer}>
-        <span className={CSS.desc}>{desc}</span>
-      </div>
+      {loading ? <>
+        <div className={CSS.loader}>
+          <Spinner />
+        </div>
+      </> : <>
+          <div className={CSS.temperatureContainer}>
+            <span className={CSS.temperature}>{temp}</span>
+          </div>
+          <div className={CSS.descContainer}>
+            <span className={CSS.desc}>{desc}</span>
+          </div>
+        </>}
     </section>
   );
 }

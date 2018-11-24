@@ -8,10 +8,9 @@ import CSS from '../../css/TrainBlock.module.css';
 function TrainBlock({ stationObj, line }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Have my own timer
-  // TODO: Maybe have my own timer running every time I get a network update and display info based on that instead   
   const getSchedule = () => {
     setLoading(true);
     console.log(`Getting /schedule/${line}`);
