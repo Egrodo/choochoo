@@ -9,9 +9,8 @@ import Button from '../reusables/Button';
 import lineMap from '../data/lineMap';
 
 // You are required to display the message “Powered by Dark Sky” that links to https://darksky.net/poweredby/
+// SettingsView is just a re-branded WelcomeView, check that component for comments.
 function SettingsView({ initData, networkError, saveChanges }) {
-  // TODO: Lots of reused logic from WelcomeView. Move to custom hooks?
-
   const [name, setName] = useState(initData.name);
   const [stationObj, setStationObj] = useState(initData.stationObj);
   const [lines, setLines] = useState([]);
@@ -24,10 +23,8 @@ function SettingsView({ initData, networkError, saveChanges }) {
   });
 
   const submit = () => {
-    // On submit, ensure the fields are valid then saveChanges.
     const errors = {};
 
-    // First check that they filled in all the areas.
     if (!Object.keys(stationObj).length) errors.stationObj = 'Missing station name';
     if (name.length > 16) errors.name = 'First name too long';
     if (!name.trim()) errors.name = 'Missing name';
@@ -35,7 +32,6 @@ function SettingsView({ initData, networkError, saveChanges }) {
 
     setErrorObj(errors);
     if (!Object.keys(errors).length) {
-      // If there are no errors, save the changes.
       saveChanges(name, stationObj, line);
     }
   };
@@ -45,7 +41,6 @@ function SettingsView({ initData, networkError, saveChanges }) {
       .then(data => data.json())
       .then(json => {
         if (json.error) throw new Error(json.error);
-        // Once I've retrieved data, store it and enable options view.
         setOptions(json);
         enableOptionsView(true);
       })
@@ -58,10 +53,7 @@ function SettingsView({ initData, networkError, saveChanges }) {
 
   useEffect(
     () => {
-      // Every time the station changes generate a list of stop_id's it has, which will re-render Option.
       setLines(stationObj.stop_id);
-
-      // Also default to the first option.
       if (stationObj.stop_id) setLine(stationObj.stop_id[0]);
     },
     [stationObj]

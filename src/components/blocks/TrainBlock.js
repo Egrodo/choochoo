@@ -4,6 +4,7 @@ import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
+// TODO: Remember default direction
 function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
@@ -30,11 +31,18 @@ function TrainBlock({ stationObj, line, networkError }) {
   };
 
   const switchDirection = () => {
-    // On clicking of direction toggle rendered direction.
-    setDirection(direction === 'N' ? 'S' : 'N');
+    // On clicking of direction toggle rendered direction and save to localStorage.
+    setDirection(dir => {
+      const newDir = dir === 'N' ? 'S' : 'N';
+      localStorage.setItem('direction', newDir);
+      return newDir;
+    });
   };
 
   useEffect(() => {
+    // On first mount, get schedule and check for direction.
+    if (localStorage.getItem('direction')) setDirection(localStorage.getItem('direction'));
+
     getSchedule();
 
     // Get fresh data every 60 seconds.
@@ -44,7 +52,6 @@ function TrainBlock({ stationObj, line, networkError }) {
     return () => window.clearInterval(reload);
   }, []);
 
-  // BUG: TrainStatus isn't re-rendering on direction change.
   return (
     <section className={CSS.TrainBlock}>
       <div className={CSS.headlineContainer}>
