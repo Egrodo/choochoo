@@ -69,7 +69,6 @@ function Typeahead({ error, getData, stationObj, setStationObj }) {
       <div className={`${CSS.dropDownContainer} ${!optionsView && CSS.hidden}`}>
         <ul className={CSS.listContainer}>
           {options.map((item, i) => (
-            /* eslint-disable-next-line */
             <li key={item.stop_name} id={i} className={CSS.dropDownItem} onClick={onOptionClick}>
               {item.stop_name}
             </li>

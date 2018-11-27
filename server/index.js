@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const MTA = require('mta-gtfs');
 const axios = require('axios');
 const Fuse = require('fuse.js');
@@ -12,8 +13,32 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 
+// Each IP has 100 requests per 15 minutes. Applies to all routes.
+// TODO: Figure out how many req's a user actually needs.
+const mainLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 2,
+  handler: (req, res, options) => {
+    res.json({ error: 'Rate Limit Reached' });
+    return;
+  }
+});
+
+const searchLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  handler: (req, res, options) => {
+    res.json({ error: 'Rate Limit Reached' });
+    return;
+  }
+});
+
+// Limit the API requests differently for each.
+app.use('/search', searchLimiter);
+app.use('/api', mainLimiter);
+
 // Get the oncoming trains given a stopId and fieldId.
-app.get('/schedule/:stopId/', (req, res, next) => {
+app.get('/api/schedule/:stopId/', (req, res, next) => {
   const { stopId } = req.params;
   if (stopId === undefined || stopId === null) {
     res.json({ error: 'Missing stopId parameter' });
@@ -33,7 +58,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     const north = [];
     const south = [];
     let i = 0;
-    while (i < (Math.max(N.length, S.length))) {
+    while (i < Math.max(N.length, S.length)) {
       if (N[i] && north.length < maxCount) {
         const { routeId, arrivalTime } = N[i];
 
@@ -60,7 +85,7 @@ app.get('/schedule/:stopId/', (req, res, next) => {
   // Use the feed map to get a feed_id from the first char of the stopId.
   const feed_id = routeToFeed[stopId.charAt(0)];
   if (!feed_id) {
-    res.json({ error: 'routemap failed!', stopId, feed_id });
+    res.json({ error: 'Routemap failed!', stopId, feed_id });
     return;
   }
 
@@ -96,20 +121,24 @@ app.get('/schedule/:stopId/', (req, res, next) => {
     feed_id
   });
 
-  mta.schedule(stopId).then(({ schedule }) => {
-    if (!schedule || !Object.keys(schedule).length) {
-      res.json({ error: 'no schedule returned from request', stopId });
-      return;
-    }
+  mta
+    .schedule(stopId)
+    .then(({ schedule }) => {
+      if (!schedule || !Object.keys(schedule).length) {
+        res.json({ error: 'no schedule returned from request', stopId });
+        return;
+      }
 
-    const { north, south } = getTrains(schedule, 3);
-    res.json({ N: north, S: south });
-  }).catch(err => {
-    res.json({ error: err, message: "mta.schedule promise rejected.", stopId, feed_id });
-  });
+      const { north, south } = getTrains(schedule, 3);
+      res.json({ N: north, S: south });
+    })
+    .catch(err => {
+      res.json({ error: err, message: 'mta.schedule promise rejected.', stopId, feed_id });
+    });
 });
 
-app.get('/searchStops/', (req, res, next) => {
+// Search request for typeahead.
+app.get('/search/stops/', (req, res, next) => {
   const { query } = req.query;
   if (!query) {
     next('No query sent');
@@ -132,7 +161,7 @@ app.get('/searchStops/', (req, res, next) => {
 });
 
 // Get info on stops or any specific stop.
-app.get('/stopInfo', (req, res, next) => {
+app.get('/api/stopInfo/', (req, res, next) => {
   const mta = new MTA({
     key: process.env.MTA_KEY,
     feed_id: 1
@@ -153,18 +182,21 @@ app.get('/stopInfo', (req, res, next) => {
   }
 });
 
-app.get('/weatherInfo/:lat/:lon', (req, res, next) => {
+// DarkSky weather endpoint.
+app.get('/api/weather/:lat/:lon', (req, res, next) => {
   const { lat, lon } = req.params;
   if (!lat || !lon) {
     res.json({ error: 'Missing either lat or lon from parameters' });
     return;
   }
 
-  axios.get(`https://api.darksky.net/forecast/${process.env.WEATHER_KEY}/${lat},${lon}`)
+  axios
+    .get(`https://api.darksky.net/forecast/${process.env.WEATHER_KEY}/${lat},${lon}`)
     .then(({ data }) => {
       const { summary, temperature } = data.currently;
       res.json({ temperature, summary });
-    }).catch(err => {
+    })
+    .catch(err => {
       console.error(err);
       res.json({ error: err });
     });

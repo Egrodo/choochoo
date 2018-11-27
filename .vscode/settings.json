@@ -1,5 +1,10 @@
 {
-  "cSpell.words": ["camelcase", "choochoo", "gtfs"],
+  "cSpell.words": [
+    "camelcase",
+    "choochoo",
+    "gtfs",
+    "routemap"
+  ],
   "cSpell.enabledLanguageIds": [
     "asciidoc",
     "c",

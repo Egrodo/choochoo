@@ -12,11 +12,13 @@ function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
 
   const getWeather = () => {
     setLoading(true);
-    fetch(`/weatherInfo/${lat}/${lon}`).then(data => data.json())
+    fetch(`/weather/${lat}/${lon}`)
+      .then(data => data.json())
       .then(({ temperature, summary }) => {
         setTemp(Math.round(temperature));
         setDesc(summary);
-      }).catch(err => {
+      })
+      .catch(err => {
         if (!networkIssue) {
           networkRetry(10);
           console.error(err);
@@ -29,27 +31,34 @@ function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
     getWeather();
   }, []);
 
-  useEffect(() => {
-    // When the temp and desc are loaded disable spinner.
-    if (temp !== '00' && desc !== 'Loading') {
-      setLoading(false);
-    }
-  }, [temp, desc]);
+  useEffect(
+    () => {
+      // When the temp and desc are loaded disable spinner.
+      if (temp !== '00' && desc !== 'Loading') {
+        setLoading(false);
+      }
+    },
+    [temp, desc]
+  );
 
   return (
     <section className={CSS.WeatherBlock}>
-      {loading ? <>
-        <div className={CSS.loader}>
-          <Spinner />
-        </div>
-      </> : <>
+      {loading ? (
+        <>
+          <div className={CSS.loader}>
+            <Spinner />
+          </div>
+        </>
+      ) : (
+        <>
           <div className={CSS.temperatureContainer}>
             <span className={CSS.temperature}>{temp}</span>
           </div>
           <div className={CSS.descContainer}>
             <span className={CSS.desc}>{desc}</span>
           </div>
-        </>}
+        </>
+      )}
     </section>
   );
 }
@@ -58,14 +67,16 @@ WeatherBlock.propTypes = {
   lat: PropTypes.string,
   lon: PropTypes.string,
   networkRetry: PropTypes.func,
-  networkIssue: PropTypes.bool,
+  networkIssue: PropTypes.bool
 };
 
 WeatherBlock.defaultProps = {
   lat: '40.7831',
   lon: '73.9712',
-  networkRetry: (() => { throw new ReferenceError('networkRetry not passed to WeatherBlock'); }),
-  networkIssue: false,
+  networkRetry: () => {
+    throw new ReferenceError('networkRetry not passed to WeatherBlock');
+  },
+  networkIssue: false
 };
 
 export default WeatherBlock;
