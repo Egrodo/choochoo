@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import TrainTracks from './TrainTracks';
 import CSS from '../../css/reusables/TrainStatus.module.css';
 
-// BUG: Switching directions needs to prompt a reload of everything.
 function TrainStatus({ status, loading }) {
   const [img, setImg] = useState('');
   const [timeLeft, setTimeLeft] = useState(status.eta);
@@ -31,6 +30,16 @@ function TrainStatus({ status, loading }) {
     }, 10 * 1000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(
+    () => {
+      // On change of 'status' (direction change) recalc everything.
+      if (loading) return;
+      getImg(status.routeId.toLowerCase());
+      setTimeLeft(status.eta);
+    },
+    [status]
+  );
 
   return (
     <section className={`${CSS.TrainStatus} ${loading && CSS.loading}`}>

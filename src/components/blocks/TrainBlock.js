@@ -4,8 +4,6 @@ import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
-// This component has to retrieve real-time data and render the information appropriately.
-
 function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
@@ -16,7 +14,7 @@ function TrainBlock({ stationObj, line, networkError }) {
     if (loading) return;
     console.log(`Getting new schedule for line ${line}`);
     setLoading(true);
-    // BUG: Illegal offset sometimes appears here, track down.
+
     fetch(`/api/schedule/${line}`)
       .then(data => data.json())
       .then(json => {
@@ -39,7 +37,6 @@ function TrainBlock({ stationObj, line, networkError }) {
   useEffect(() => {
     getSchedule();
 
-    // TODO: This isn't working.
     // Get fresh data every 60 seconds.
     const reload = window.setInterval(() => {
       getSchedule();
@@ -47,6 +44,7 @@ function TrainBlock({ stationObj, line, networkError }) {
     return () => window.clearInterval(reload);
   }, []);
 
+  // BUG: TrainStatus isn't re-rendering on direction change.
   return (
     <section className={CSS.TrainBlock}>
       <div className={CSS.headlineContainer}>

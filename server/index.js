@@ -13,10 +13,10 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 
-// MainLimiter limits requests to the API at 20 per 5 minutes.
+// MainLimiter limits requests to the API at 45 per 15 minutes or 4 per minute (3x the automated amount to account for refreshes)
 const mainLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  max: 20,
+  windowMs: 15 * 60 * 1000,
+  max: 45,
   handler: (req, res, next) => {
     res.status(429).json({ error: 'Rate Limit Reached' });
     return;
