@@ -5,7 +5,7 @@ import TrainBlock from '../blocks/TrainBlock';
 
 import CSS from '../../css/views/MainView.module.css';
 
-function MainView({ name, stationObj, line, gotoOptions, networkError }) {
+function MainView({ name, stationObj, line, gotoSettings, networkError }) {
   const [greeting, setGreeting] = useState();
 
   const calcGreeting = () => {
@@ -35,9 +35,9 @@ function MainView({ name, stationObj, line, gotoOptions, networkError }) {
       <div className={CSS.trainContainer}>
         <TrainBlock stationObj={stationObj} line={line} networkError={networkError} />
       </div>
-      <div className={CSS.optionsLink}>
-        <span onClick={gotoOptions} role="button" tabIndex="0">
-          Options
+      <div className={CSS.settingsLink}>
+        <span onClick={gotoSettings} role="button" tabIndex="0">
+          Settings
         </span>
       </div>
     </section>
@@ -48,7 +48,7 @@ MainView.propTypes = {
   name: PropTypes.string,
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
-  gotoOptions: PropTypes.func,
+  gotoSettings: PropTypes.func,
   networkError: PropTypes.func
 };
 
@@ -56,8 +56,8 @@ MainView.defaultProps = {
   name: '',
   stationObj: {},
   line: '',
-  gotoOptions: () => {
-    throw new ReferenceError('gotoOptions not passed to MainView');
+  gotoSettings: () => {
+    throw new ReferenceError('gotoSettings not passed to MainView');
   },
   networkError: () => {
     throw new ReferenceError('networkError not passed to MainView');

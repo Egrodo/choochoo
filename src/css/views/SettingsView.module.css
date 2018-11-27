@@ -1,4 +1,4 @@
-.WelcomeView {
+.SettingsView {
   text-align: center;
   padding: 0 1em;
 }
@@ -6,13 +6,6 @@
 .mainHeader {
   margin-top: 0.5em;
   font-size: 1.8em;
-  font-weight: normal;
-  color: #fff;
-}
-
-.secondaryHeader {
-  margin: 0.5em 0 0 0;
-  font-size: 1em;
   font-weight: normal;
   color: #fff;
 }
@@ -27,4 +20,5 @@
   bottom: 2em;
   left: 50%;
   transform: translateX(-50%);
+  font-size: 0.9em;
 }

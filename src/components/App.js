@@ -5,7 +5,7 @@ import CSS from '../css/App.module.css';
 import NetworkDialogue from './reusables/NetworkDialogue';
 import WelcomeView from './views/WelcomeView';
 import MainView from './views/MainView';
-import OptionsView from './views/OptionsView';
+import SettingsView from './views/SettingsView';
 
 function App() {
   // This function will run on every single render. But hooks is smart enough to not rewrite existing state !
@@ -101,14 +101,16 @@ function App() {
             stationObj={stationObj}
             line={line}
             networkError={networkError}
-            gotoOptions={() => setView('options')}
+            gotoSettings={() => setView('settings')}
           />
         )}
-        {view === 'options' && (
-          <OptionsView
-            name={name}
-            stationObj={stationObj}
-            line={line}
+        {view === 'settings' && (
+          <SettingsView
+            initData={{
+              name,
+              stationObj,
+              line
+            }}
             networkError={networkError}
             saveChanges={saveChanges}
           />

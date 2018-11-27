@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
+import CSS from '../../css/views/SettingsView.module.css';
 import Typeahead from '../reusables/Typeahead';
-import CSS from '../../css/views/WelcomeView.module.css';
-import Option from '../reusables/Option';
 import Input from '../reusables/Input';
+import Option from '../reusables/Option';
 import Button from '../reusables/Button';
 import lineMap from '../data/lineMap';
 
-function WelcomeView({ saveChanges, networkError }) {
-  // The station should contain all the data for the station, not just the name.
-  const [name, setName] = useState('');
-  const [stationObj, setStationObj] = useState({});
-  const [lines, setLines] = useState([]); // List of lines potential line
-  const [line, setLine] = useState(''); // Selected line
+// You are required to display the message “Powered by Dark Sky” that links to https://darksky.net/poweredby/
+function SettingsView({ initData, networkError, saveChanges }) {
+  // TODO: Lots of reused logic from WelcomeView. Move to custom hooks?
 
-  // Error handling: empty strings means no error, otherwise display error.
+  const [name, setName] = useState(initData.name);
+  const [stationObj, setStationObj] = useState(initData.stationObj);
+  const [lines, setLines] = useState([]);
+  const [line, setLine] = useState(initData.line);
+
   const [errorObj, setErrorObj] = useState({
     name: '',
     stationObj: '',
@@ -66,9 +68,8 @@ function WelcomeView({ saveChanges, networkError }) {
   );
 
   return (
-    <section className={CSS.WelcomeView}>
-      <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
-      <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
+    <section className={CSS.SettingsView}>
+      <h1 className={CSS.mainHeader}>Settings</h1>
       <div className={CSS.inputsContainer}>
         <Typeahead
           error={errorObj.stationObj ? errorObj.stationObj : ''}
@@ -98,24 +99,35 @@ function WelcomeView({ saveChanges, networkError }) {
       </div>
 
       <div className={CSS.btnContainer}>
-        <Button onClick={submit}>Get Started</Button>
+        <Button onClick={submit}>Save Changes</Button>
       </div>
     </section>
   );
 }
 
-WelcomeView.propTypes = {
-  saveChanges: PropTypes.func,
-  networkError: PropTypes.func
+SettingsView.propTypes = {
+  initData: PropTypes.objectOf(
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]))
+    ])
+  ),
+  networkError: PropTypes.func,
+  saveChanges: PropTypes.func
 };
 
-WelcomeView.defaultProps = {
-  saveChanges: () => {
-    throw new ReferenceError('saveChanges not passed to MainView');
+SettingsView.defaultProps = {
+  initData: {
+    name: '',
+    line: '',
+    stationObj: {}
   },
   networkError: () => {
     throw new ReferenceError('networkError not passed to MainView');
+  },
+  saveChanges: () => {
+    throw new ReferenceError('saveChanges not passed to MainView');
   }
 };
 
-export default WelcomeView;
+export default SettingsView;
