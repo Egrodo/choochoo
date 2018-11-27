@@ -18,8 +18,8 @@ app.use(cors());
 const mainLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 2,
-  handler: (req, res, options) => {
-    res.json({ error: 'Rate Limit Reached' });
+  handler: (req, res, next) => {
+    res.status(429).json({ error: 'Rate Limit Reached' });
     return;
   }
 });
@@ -33,7 +33,7 @@ const searchLimiter = rateLimit({
   }
 });
 
-// Limit the API requests differently for each.
+// Limit the API requests
 app.use('/search', searchLimiter);
 app.use('/api', mainLimiter);
 

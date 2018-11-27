@@ -21,7 +21,8 @@
   text-decoration: underline;
 }
 
-.direction.N::after, .direction.S::after {
+.direction.N::after,
+.direction.S::after {
   content: '';
   width: 1em;
   height: 1em;
@@ -30,7 +31,7 @@
   background-image: url('../../assets/images/upArrow.svg');
   background-size: 1em 1em;
   background-repeat: no-repeat;
-  padding-left: .2em;
+  padding-left: 0.2em;
 }
 
 .direction.S::after {
@@ -39,10 +40,10 @@
 
 .darken {
   background-color: black;
-  opacity: .3;
+  opacity: 0.3;
 }
 
-.statusContainer.loading {
+.statusContainer {
   position: relative;
 }
 

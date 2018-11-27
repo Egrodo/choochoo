@@ -7,35 +7,35 @@ import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 
 const lineMap = {
-  "1": ["1", "2", "3"],
-  "2": ["2", "3"],
-  "3": ["2", "3"],
-  "4": ["4", "5", "6"],
-  "5": ["4", "5", "6"],
-  "6": ["4", "5", "6"],
-  "S": ["S", "SIR"],
-  "9": ["GS Shuttle"],
-  "A": ["A", "C", "E", "H"],
-  "C": ["A", "C", "E", "H"],
-  "E": ["A", "C", "E", "H"],
-  "H": ["A", "C", "E", "H"],
-  "Q": ["N", "R", "W", "Q"],
-  "N": ["N", "R", "W", "Q"],
-  "R": ["N", "R", "W", "Q"],
-  "W": ["N", "R", "W", "Q"],
-  "F": ["B", "D", "F", "M"],
-  "M": ["B", "D", "F", "M"],
-  "D": ["B", "D", "F", "M"],
-  "B": ["B", "D", "F", "M"],
-  "G": ["G"],
-  "J": ["J", "Z"],
-  "Z": ["J", "Z"],
-  "7": ["7"],
-  "L": ["L"]
+  '1': ['1', '2', '3'],
+  '2': ['2', '3'],
+  '3': ['2', '3'],
+  '4': ['4', '5', '6'],
+  '5': ['4', '5', '6'],
+  '6': ['4', '5', '6'],
+  '7': ['7'],
+  '9': ['GS Shuttle'],
+  S: ['S', 'SIR'],
+  A: ['A', 'C', 'E', 'H'],
+  C: ['A', 'C', 'E', 'H'],
+  E: ['A', 'C', 'E', 'H'],
+  H: ['A', 'C', 'E', 'H'],
+  Q: ['N', 'R', 'W', 'Q'],
+  N: ['N', 'R', 'W', 'Q'],
+  R: ['N', 'R', 'W', 'Q'],
+  W: ['N', 'R', 'W', 'Q'],
+  F: ['B', 'D', 'F', 'M'],
+  M: ['B', 'D', 'F', 'M'],
+  D: ['B', 'D', 'F', 'M'],
+  B: ['B', 'D', 'F', 'M'],
+  G: ['G'],
+  J: ['J', 'Z'],
+  Z: ['J', 'Z'],
+  L: ['L']
 };
 
 // TODO: Ctrl + enter should try to submit form.
-function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
+function WelcomeView({ saveChanges, networkError }) {
   // The station should contain all the data for the station, not just the name.
   const [name, setName] = useState('');
   const [stationObj, setStationObj] = useState({});
@@ -46,7 +46,7 @@ function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
   const [errorObj, setErrorObj] = useState({
     name: '',
     stationObj: '',
-    line: '',
+    line: ''
   });
 
   const submit = () => {
@@ -72,19 +72,19 @@ function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
   };
 
   const getData = (stationName, setOptions, enableOptionsView) => {
-    fetch(`/searchStops?query=${stationName}`)
+    fetch(`/search/stops/?query=${stationName}`)
       .then(data => data.json())
       .then(json => {
+        console.log(json);
+        if (json.error) throw new Error(json.error);
         // Once I've retrieved data, store it and enable options view.
         setOptions(json);
         enableOptionsView(true);
       })
       .catch(err => {
-        // Await this, return promise.
-        if (!networkIssue) {
-          console.log(err);
-          networkRetry(10, getData, stationName, setOptions, enableOptionsView);
-        }
+        if (err.message === 'Rate Limit Reached') {
+          networkError('Rate Limit Reached', false);
+        } else networkError('/searchStops req failed', true, getData, stationName, setOptions, enableOptionsView);
       });
   };
 
@@ -140,14 +140,16 @@ function WelcomeView({ saveChanges, networkRetry, networkIssue }) {
 
 WelcomeView.propTypes = {
   saveChanges: PropTypes.func,
-  networkRetry: PropTypes.func,
-  networkIssue: PropTypes.bool,
+  networkError: PropTypes.func
 };
 
 WelcomeView.defaultProps = {
-  saveChanges: (() => { throw new ReferenceError('saveChanges not passed to MainView'); }),
-  networkRetry: (() => { throw new ReferenceError('networkRetry not passed to MainView'); }),
-  networkIssue: false,
+  saveChanges: () => {
+    throw new ReferenceError('saveChanges not passed to MainView');
+  },
+  networkError: () => {
+    throw new ReferenceError('networkError not passed to MainView');
+  }
 };
 
 export default WelcomeView;

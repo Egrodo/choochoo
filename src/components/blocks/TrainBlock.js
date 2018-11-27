@@ -6,27 +6,26 @@ import CSS from '../../css/blocks/TrainBlock.module.css';
 
 // This component has to retrieve real-time data and render the information appropriately.
 
-function TrainBlock({ stationObj, line, networkRetry, networkIssue }) {
+function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
   const [loading, setLoading] = useState(true);
 
   const getSchedule = () => {
+    console.log(`Getting new schedule for line ${line}`);
     setLoading(true);
-    console.log(`Getting /schedule/${line}`);
     // BUG: Illegal offset sometimes appears here, track down.
-    fetch(`/schedule/${line}`)
+    fetch(`/api/schedule/${line}`)
       .then(data => data.json())
       .then(json => {
+        if (json.error) throw new Error(json.error);
         setSchedule(json);
         setLoading(false);
       })
       .catch(err => {
-        // If there's an issue connecting, wait a second then retry connections.
-        if (!networkIssue) {
-          networkRetry(10, getSchedule);
-          console.error(err.message);
-        }
+        if (err.message === 'Rate Limit Reached') {
+          networkError('Rate Limit Reached', false);
+        } else networkError(`/api/schedule/${line}`, true, getSchedule);
       });
   };
 
@@ -36,8 +35,13 @@ function TrainBlock({ stationObj, line, networkRetry, networkIssue }) {
   };
 
   useEffect(() => {
-    // On first mount get schedule.
     getSchedule();
+
+    // Get fresh data every 60 seconds.
+    const reload = setInterval(() => {
+      if (!loading) getSchedule();
+    }, 60 * 1000);
+    return () => clearInterval(reload);
   }, []);
 
   return (
@@ -75,17 +79,15 @@ function TrainBlock({ stationObj, line, networkRetry, networkIssue }) {
 TrainBlock.propTypes = {
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
-  networkRetry: PropTypes.func,
-  networkIssue: PropTypes.bool
+  networkError: PropTypes.func
 };
 
 TrainBlock.defaultProps = {
   stationObj: {},
   line: '',
-  networkRetry: () => {
-    throw new ReferenceError('networkRetry not passed to MainView');
-  },
-  networkIssue: false
+  networkError: () => {
+    throw new ReferenceError('networkError not passed to MainView');
+  }
 };
 
 export default TrainBlock;

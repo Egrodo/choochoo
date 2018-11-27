@@ -19,7 +19,18 @@ function App() {
   const [networkIssue, setNetworkIssue] = useState('');
 
   // When invoked, check if the user is online. If they are, check if the server is online.
-  const networkRetry = (tries = 10, cb, ...params) => {
+  const networkError = (msg, retry, cb, ...params) => {
+    console.error({ error: msg });
+    if (retry) {
+      // If requested to retry, send to async network retry system.
+      networkRetry(10, cb, ...params);
+    } else {
+      // Using this for rate limit, but it's usable for other things.
+      setNetworkIssue(msg);
+    }
+  };
+
+  const networkRetry = (tries, cb, ...params) => {
     if (tries === 0) {
       return Promise.reject('Tries exceeded');
     }
@@ -27,7 +38,7 @@ function App() {
     return new Promise((res, rej) => {
       console.log(`Retrying network, attempt: ${tries}`);
       if (navigator.onLine) {
-        fetch('/stopInfo')
+        fetch('/api/stopInfo')
           .then(({ status }) => {
             if (status !== 200) throw new Error('Server Error');
             // Otherwise if we're back online invoke the cb and undo errors.
@@ -84,12 +95,25 @@ function App() {
       </header>
       <div className={CSS.content}>
         <NetworkDialogue message={networkIssue} />
-        {view === 'welcome' &&
-          <WelcomeView saveChanges={saveChanges} networkRetry={networkRetry} networkIssue={Boolean(networkIssue.length)} />}
-        {view === 'main' &&
-          <MainView name={name} stationObj={stationObj} line={line} networkRetry={networkRetry} networkIssue={Boolean(networkIssue.length)} gotoOptions={() => setView('options')} />}
-        {view === 'options' &&
-          <OptionsView name={name} stationObj={stationObj} line={line} networkRetry={networkRetry} networkIssue={Boolean(networkIssue.length)} saveChanges={saveChanges} />}
+        {view === 'welcome' && <WelcomeView saveChanges={saveChanges} networkError={networkError} />}
+        {view === 'main' && (
+          <MainView
+            name={name}
+            stationObj={stationObj}
+            line={line}
+            networkError={networkError}
+            gotoOptions={() => setView('options')}
+          />
+        )}
+        {view === 'options' && (
+          <OptionsView
+            name={name}
+            stationObj={stationObj}
+            line={line}
+            networkError={networkError}
+            saveChanges={saveChanges}
+          />
+        )}
       </div>
     </div>
   );

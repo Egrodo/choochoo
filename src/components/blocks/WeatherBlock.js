@@ -5,24 +5,25 @@ import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/WeatherBlock.module.css';
 
 // Would rather this load until it's ready rather than have defaults.
-function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
+function WeatherBlock({ lat, lon, networkError }) {
   const [temp, setTemp] = useState('00');
   const [desc, setDesc] = useState('Loading');
   const [loading, setLoading] = useState(true);
 
   const getWeather = () => {
     setLoading(true);
-    fetch(`/weather/${lat}/${lon}`)
-      .then(data => data.json())
-      .then(({ temperature, summary }) => {
-        setTemp(Math.round(temperature));
-        setDesc(summary);
+    // TODO: Handle being rate limited.
+    fetch(`/api/weather/${lat}/${lon}`)
+      .then(res => res.json())
+      .then(json => {
+        if (json.error) throw new Error(json.error);
+        setTemp(Math.round(json.temperature));
+        setDesc(json.summary);
       })
       .catch(err => {
-        if (!networkIssue) {
-          networkRetry(10);
-          console.error(err);
-        }
+        if (err.message === 'Rate Limit Reached') {
+          networkError('Rate Limit Reached', false);
+        } else networkError('/api/weather req failed', true, getWeather);
       });
   };
 
@@ -66,17 +67,15 @@ function WeatherBlock({ lat, lon, networkRetry, networkIssue }) {
 WeatherBlock.propTypes = {
   lat: PropTypes.string,
   lon: PropTypes.string,
-  networkRetry: PropTypes.func,
-  networkIssue: PropTypes.bool
+  networkError: PropTypes.func
 };
 
 WeatherBlock.defaultProps = {
   lat: '40.7831',
   lon: '73.9712',
-  networkRetry: () => {
-    throw new ReferenceError('networkRetry not passed to WeatherBlock');
-  },
-  networkIssue: false
+  networkError: () => {
+    throw new ReferenceError('networkError not passed to WeatherBlock');
+  }
 };
 
 export default WeatherBlock;
