@@ -75,7 +75,6 @@ function WelcomeView({ saveChanges, networkError }) {
     fetch(`/search/stops/?query=${stationName}`)
       .then(data => data.json())
       .then(json => {
-        console.log(json);
         if (json.error) throw new Error(json.error);
         // Once I've retrieved data, store it and enable options view.
         setOptions(json);

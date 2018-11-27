@@ -13,22 +13,22 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 
-// Each IP has 100 requests per 15 minutes. Applies to all routes.
-// TODO: Figure out how many req's a user actually needs.
+// MainLimiter limits requests to the API at 20 per 5 minutes.
 const mainLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 2,
+  windowMs: 5 * 60 * 1000,
+  max: 20,
   handler: (req, res, next) => {
     res.status(429).json({ error: 'Rate Limit Reached' });
     return;
   }
 });
 
+// searchLimiter limits requests to the typeahead search at 50 per 5 minutes.
 const searchLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  handler: (req, res, options) => {
-    res.json({ error: 'Rate Limit Reached' });
+  windowMs: 5 * 60 * 1000,
+  max: 50,
+  handler: (req, res, next) => {
+    res.status(429).json({ error: 'Rate Limit Reached' });
     return;
   }
 });

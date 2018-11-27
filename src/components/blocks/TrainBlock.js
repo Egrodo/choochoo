@@ -9,9 +9,11 @@ import CSS from '../../css/blocks/TrainBlock.module.css';
 function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const getSchedule = () => {
+    // If we're already loading or something is broken, don't retry.
+    if (loading) return;
     console.log(`Getting new schedule for line ${line}`);
     setLoading(true);
     // BUG: Illegal offset sometimes appears here, track down.
@@ -37,11 +39,12 @@ function TrainBlock({ stationObj, line, networkError }) {
   useEffect(() => {
     getSchedule();
 
+    // TODO: This isn't working.
     // Get fresh data every 60 seconds.
-    const reload = setInterval(() => {
-      if (!loading) getSchedule();
+    const reload = window.setInterval(() => {
+      getSchedule();
     }, 60 * 1000);
-    return () => clearInterval(reload);
+    return () => window.clearInterval(reload);
   }, []);
 
   return (
@@ -52,7 +55,7 @@ function TrainBlock({ stationObj, line, networkError }) {
           {`${direction === 'N' ? 'North' : 'South'}bound`}
         </span>
       </div>
-      <div className={`${CSS.statusContainer} ${loading && CSS.loading}`}>
+      <div className={CSS.statusContainer}>
         {loading || !schedule[direction] ? (
           <>
             <div className={CSS.floatLoader}>

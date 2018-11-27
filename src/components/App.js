@@ -8,7 +8,6 @@ import MainView from './views/MainView';
 import OptionsView from './views/OptionsView';
 
 function App() {
-  console.log('App render');
   // This function will run on every single render. But hooks is smart enough to not rewrite existing state !
 
   const [stationObj, setStationObj] = useState('');

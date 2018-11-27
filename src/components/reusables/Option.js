@@ -7,20 +7,22 @@ function Option(props) {
   // Display various line types and let the user select one. If there's only one, select it and disable field.
   const [trains, setTrains] = useState();
 
-  useEffect(() => {
-    // On render and update display the appropriate trains.
-    const newTrains = {};
-    props.data.forEach(item => {
-      let trainStr = '';
-      console.log(item);
-      props.lineMap[item.charAt(0)].forEach((line, i) => {
-        trainStr += `${line}`;
-        if (props.lineMap[item.charAt(0)].length - 1 !== i) trainStr += ', ';
+  useEffect(
+    () => {
+      // On render and update display the appropriate trains.
+      const newTrains = {};
+      props.data.forEach(item => {
+        let trainStr = '';
+        props.lineMap[item.charAt(0)].forEach((line, i) => {
+          trainStr += `${line}`;
+          if (props.lineMap[item.charAt(0)].length - 1 !== i) trainStr += ', ';
+        });
+        newTrains[item] = trainStr;
       });
-      newTrains[item] = trainStr;
-    });
-    setTrains(newTrains);
-  }, [props.data]);
+      setTrains(newTrains);
+    },
+    [props.data]
+  );
 
   return (
     <div className={CSS.selectContainer}>
