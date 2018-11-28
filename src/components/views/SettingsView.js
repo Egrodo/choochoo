@@ -7,8 +7,9 @@ import Input from '../reusables/Input';
 import Option from '../reusables/Option';
 import Button from '../reusables/Button';
 import lineMap from '../data/lineMap';
+import mailIcon from '../../assets/images/emailIcon.svg';
+import cloudIcon from '../../assets/images/cloudIcon.svg';
 
-// You are required to display the message “Powered by Dark Sky” that links to https://darksky.net/poweredby/
 // SettingsView is just a re-branded WelcomeView, check that component for comments.
 function SettingsView({ initData, networkError, saveChanges }) {
   const [name, setName] = useState(initData.name);
@@ -91,6 +92,16 @@ function SettingsView({ initData, networkError, saveChanges }) {
       </div>
 
       <div className={CSS.btnContainer}>
+        <Button onClick={submit} icon={mailIcon}>
+          Feedback
+        </Button>
+        <a href="https://darksky.net/poweredby/" target="_blank" rel="noreferral noopener">
+          <Button onClick={submit} icon={cloudIcon}>
+            Powered by Dark Sky
+          </Button>
+        </a>
+      </div>
+      <div className={CSS.saveContainer}>
         <Button onClick={submit}>Save Changes</Button>
       </div>
     </section>

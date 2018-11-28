@@ -4,7 +4,7 @@ import Spinner from '../reusables/Spinner';
 
 import CSS from '../../css/blocks/WeatherBlock.module.css';
 
-// Would rather this load until it's ready rather than have defaults.
+// TODO: Cancel async stuff on unmount somehow?
 function WeatherBlock({ lat, lon, networkError }) {
   const [temp, setTemp] = useState('00');
   const [desc, setDesc] = useState('Loading');
@@ -12,7 +12,6 @@ function WeatherBlock({ lat, lon, networkError }) {
 
   const getWeather = () => {
     setLoading(true);
-    // TODO: Handle being rate limited.
     fetch(`/api/weather/${lat}/${lon}`)
       .then(res => res.json())
       .then(json => {

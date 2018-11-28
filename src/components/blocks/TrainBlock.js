@@ -4,7 +4,7 @@ import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
-// TODO: Remember default direction
+// TODO: Cancel async stuff on unmount somehow?
 function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
