@@ -86,19 +86,17 @@ function SettingsView({ initData, networkError, saveChanges }) {
           onChange={e => setLine(lines[e.target.value])}
           error={errorObj.line ? errorObj.line : ''}
           lineMap={lineMap}
-          label="Line Type"
-          alt="line type"
+          label="Subway Line"
+          alt="Subway Line"
         />
       </div>
 
       <div className={CSS.btnContainer}>
-        <Button onClick={submit} icon={mailIcon}>
-          Feedback
-        </Button>
-        <a href="https://darksky.net/poweredby/" target="_blank" rel="noreferral noopener">
-          <Button onClick={submit} icon={cloudIcon}>
-            Powered by Dark Sky
-          </Button>
+        <a href="mailto:noahryamamoto@gmail.com" target="_blank" rel="noopener noreferrer">
+          <Button icon={mailIcon}>Feedback</Button>
+        </a>
+        <a href="https://darksky.net/poweredby/" target="_blank" rel="noopener noreferrer">
+          <Button icon={cloudIcon}>Powered by Dark Sky</Button>
         </a>
       </div>
       <div className={CSS.saveContainer}>

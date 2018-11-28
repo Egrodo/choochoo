@@ -92,8 +92,8 @@ function WelcomeView({ saveChanges, networkError }) {
           onChange={e => setLine(lines[e.target.value])}
           error={errorObj.line ? errorObj.line : ''}
           lineMap={lineMap}
-          label="Line Type"
-          alt="line type"
+          label="Subway Line"
+          alt="Subway Line"
         />
       </div>
 

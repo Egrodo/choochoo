@@ -19,7 +19,6 @@ function App() {
 
   // When invoked, check if the user is online. If they are, check if the server is online.
   const networkError = (msg, retry, cb, ...params) => {
-    console.error({ error: msg });
     if (retry) {
       // If requested to retry, send to async network retry system.
       networkRetry(10, cb, ...params);
@@ -31,13 +30,14 @@ function App() {
 
   const networkRetry = (tries, cb, ...params) => {
     if (tries === 0) {
+      setNetworkIssue('Tries exceeded, try reloading?');
       return Promise.reject('Tries exceeded');
     }
 
     return new Promise((res, rej) => {
       console.log(`Retrying network, attempt: ${tries}`);
       if (navigator.onLine) {
-        fetch('/api/stopInfo')
+        fetch('/api/stopInfo/115')
           .then(({ status }) => {
             if (status !== 200) throw new Error('Server Error');
             // Otherwise if we're back online invoke the cb and undo errors.

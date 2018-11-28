@@ -7,22 +7,27 @@
   padding: 0.7rem 1.3rem;
   font-size: 1.5em;
   font-weight: bold;
+  display: inline-block;
 }
 
 .Button:hover {
   cursor: pointer;
 }
 
-.icon {
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr;
-  grid-template-rows: 1fr;
-  grid-template-areas: '. .';
+.iconContainer {
+  font-size: 1.3em;
+  display: flex;
 }
 
-img.icon {
-  width: 1.5em;
-  height: 1.5em;
-  color: white;
-  fill: currentColor;
+.icon {
+  float: left;
+  width: 2.5em;
+  height: 1.8em;
+  transform: translateY(0.1em);
+  padding: 0 0.5em;
+}
+
+.iconContainer .text {
+  align-self: center;
+  text-decoration: none;
 }

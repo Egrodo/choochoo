@@ -4,7 +4,6 @@ import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
-// TODO: Cancel async stuff on unmount somehow?
 function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
@@ -17,16 +16,26 @@ function TrainBlock({ stationObj, line, networkError }) {
     setLoading(true);
 
     fetch(`/api/schedule/${line}`)
-      .then(data => data.json())
+      .then(res => {
+        if (!res.ok) throw res;
+        return res.json();
+      })
       .then(json => {
         if (json.error) throw new Error(json.error);
         setSchedule(json);
         setLoading(false);
       })
       .catch(err => {
-        if (err.message === 'Rate Limit Reached') {
-          networkError('Rate Limit Reached', false);
-        } else networkError(`/api/schedule/${line}`, true, getSchedule);
+        // If the server sends me a permanent error, don't retry.
+        console.log(err);
+        if (err.status === 500) {
+          networkError(`500 on /api/schedule/${line}`, true, getSchedule);
+        } else {
+          err.text().then(msg => {
+            networkError(JSON.parse(msg).error, false);
+            // TODO: Turn spinner into cross
+          });
+        }
       });
   };
 
@@ -49,7 +58,9 @@ function TrainBlock({ stationObj, line, networkError }) {
     const reload = window.setInterval(() => {
       getSchedule();
     }, 60 * 1000);
-    return () => window.clearInterval(reload);
+    return () => {
+      window.clearInterval(reload);
+    };
   }, []);
 
   return (
@@ -57,7 +68,7 @@ function TrainBlock({ stationObj, line, networkError }) {
       <div className={CSS.headlineContainer}>
         <span className={CSS.stationName}>{stationObj.stop_name}</span>
         <span onClick={switchDirection} role="button" tabIndex="0" className={`${CSS.direction} ${CSS[direction]}`}>
-          {`${direction === 'N' ? 'North' : 'South'}bound`}
+          {`${direction === 'N' ? 'Up' : 'Down'}town`}
         </span>
       </div>
       <div className={CSS.statusContainer}>

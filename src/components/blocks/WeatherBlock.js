@@ -4,7 +4,6 @@ import Spinner from '../reusables/Spinner';
 
 import CSS from '../../css/blocks/WeatherBlock.module.css';
 
-// TODO: Cancel async stuff on unmount somehow?
 function WeatherBlock({ lat, lon, networkError }) {
   const [temp, setTemp] = useState('00');
   const [desc, setDesc] = useState('Loading');
