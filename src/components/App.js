@@ -19,19 +19,19 @@ function App() {
 
   // When invoked, check if the user is online. If they are, check if the server is online.
   const networkError = (msg, retry, cb, ...params) => {
-    if (retry) {
-      // If requested to retry, send to async network retry system.
-      networkRetry(10, cb, ...params);
-    } else {
+    if (!retry || networkIssue) {
       // Using this for rate limit, but it's usable for other things.
       setNetworkIssue(msg);
+    } else if (retry) {
+      // If requested to retry, send to async network retry system.
+      networkRetry(5, cb, ...params);
     }
   };
 
   const networkRetry = (tries, cb, ...params) => {
     if (tries === 0) {
       setNetworkIssue('Tries exceeded, try reloading?');
-      return Promise.reject('Tries exceeded');
+      return false;
     }
 
     return new Promise((res, rej) => {

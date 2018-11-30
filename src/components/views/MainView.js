@@ -5,6 +5,7 @@ import TrainBlock from '../blocks/TrainBlock';
 
 import CSS from '../../css/views/MainView.module.css';
 
+// Keep this stuff cached while I'm in settingsView.
 function MainView({ name, stationObj, line, gotoSettings, networkError }) {
   const [greeting, setGreeting] = useState();
 

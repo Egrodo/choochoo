@@ -26,14 +26,15 @@ function TrainBlock({ stationObj, line, networkError }) {
         setLoading(false);
       })
       .catch(err => {
+        console.count('Throwing error from trainBlock');
         // If the server sends me a permanent error, don't retry.
-        console.log(err);
         if (err.status === 500) {
           networkError(`500 on /api/schedule/${line}`, true, getSchedule);
         } else {
+          console.log(err);
           err.text().then(msg => {
-            networkError(JSON.parse(msg).error, false);
-            // TODO: Turn spinner into cross
+            console.log(msg);
+            networkError(msg.error, false);
           });
         }
       });
@@ -54,10 +55,16 @@ function TrainBlock({ stationObj, line, networkError }) {
 
     getSchedule();
 
-    // Get fresh data every 60 seconds.
+    // Get fresh data every 60 seconds if not in error / loading state.
     const reload = window.setInterval(() => {
-      getSchedule();
-    }, 60 * 1000);
+      // Workaround to get accurate state data inside the setInterval.
+      setLoading(load => {
+        if (!load) {
+          getSchedule();
+        }
+        return load;
+      });
+    }, 10 * 1000);
     return () => {
       window.clearInterval(reload);
     };

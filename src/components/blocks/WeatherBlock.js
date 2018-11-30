@@ -19,6 +19,7 @@ function WeatherBlock({ lat, lon, networkError }) {
         setDesc(json.summary);
       })
       .catch(err => {
+        console.count('Throwing error from weatherBlock');
         if (err.message === 'Rate Limit Reached') {
           networkError('Rate Limit Reached', false);
         } else networkError('/api/weather req failed', true, getWeather);
