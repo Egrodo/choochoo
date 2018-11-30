@@ -64,7 +64,7 @@ function TrainBlock({ stationObj, line, networkError }) {
         }
         return load;
       });
-    }, 10 * 1000);
+    }, 60 * 1000);
     return () => {
       window.clearInterval(reload);
     };

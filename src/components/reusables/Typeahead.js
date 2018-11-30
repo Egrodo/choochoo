@@ -83,7 +83,7 @@ Typeahead.propTypes = {
   error: PropTypes.string,
   getData: PropTypes.func,
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
-  setStation: PropTypes.func
+  setStationObj: PropTypes.func
 };
 
 Typeahead.defaultProps = {
@@ -92,7 +92,7 @@ Typeahead.defaultProps = {
     throw new Error('getData not passed to Typeahead');
   },
   stationObj: {},
-  setStation: () => {
+  setStationObj: () => {
     throw new Error('setStation not passed to Typeahead');
   }
 };

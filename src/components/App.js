@@ -17,24 +17,13 @@ function App() {
 
   const [networkIssue, setNetworkIssue] = useState('');
 
-  // When invoked, check if the user is online. If they are, check if the server is online.
-  const networkError = (msg, retry, cb, ...params) => {
-    if (!retry || networkIssue) {
-      // Using this for rate limit, but it's usable for other things.
-      setNetworkIssue(msg);
-    } else if (retry) {
-      // If requested to retry, send to async network retry system.
-      networkRetry(5, cb, ...params);
-    }
-  };
-
   const networkRetry = (tries, cb, ...params) => {
     if (tries === 0) {
       setNetworkIssue('Tries exceeded, try reloading?');
       return false;
     }
 
-    return new Promise((res, rej) => {
+    return new Promise(res => {
       console.log(`Retrying network, attempt: ${tries}`);
       if (navigator.onLine) {
         fetch('/api/stopInfo/115')
@@ -55,6 +44,17 @@ function App() {
         setTimeout(() => networkRetry(tries - 1, cb, ...params), 10000);
       }
     });
+  };
+
+  // When invoked, check if the user is online. If they are, check if the server is online.
+  const networkError = (msg, retry, cb, ...params) => {
+    if (!retry || networkIssue) {
+      // Using this for rate limit, but it's usable for other things.
+      setNetworkIssue(msg);
+    } else if (retry) {
+      // If requested to retry, send to async network retry system.
+      networkRetry(5, cb, ...params);
+    }
   };
 
   const saveChanges = (newName, newStationObj, newLine) => {

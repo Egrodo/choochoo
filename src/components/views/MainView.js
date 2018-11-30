@@ -11,13 +11,10 @@ function MainView({ name, stationObj, line, gotoSettings, networkError }) {
 
   const calcGreeting = () => {
     const currT = new Date().getHours();
-    if (currT < 12) {
-      return 'Morning';
-    } else if (currT < 18) {
-      return 'Afternoon';
-    } else if (currT < 24) {
-      return 'Evening';
-    }
+
+    if (currT > 5 && currT < 12) return 'Morning';
+    if (currT > 12 && currT < 18) return 'Afternoon';
+    if (currT > 18) return 'Evening';
     return 'Day';
   };
 
