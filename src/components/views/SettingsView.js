@@ -55,10 +55,13 @@ function SettingsView({ initData, networkError, saveChanges }) {
 
   useEffect(
     () => {
+      console.log(stationObj.stop_id);
       setLines(stationObj.stop_id);
       if (stationObj.stop_id) {
         const ind = stationObj.stop_id.indexOf(line);
-        if (ind !== -1) setLine(stationObj.stop_id[ind]);
+        if (ind !== -1) {
+          setLine(stationObj.stop_id[ind]);
+        } else setLine(stationObj.stop_id[0]);
       }
     },
     [stationObj]
@@ -86,10 +89,10 @@ function SettingsView({ initData, networkError, saveChanges }) {
         />
         <Option
           data={lines}
+          lineMap={lineMap}
           selected={lines.indexOf(line)}
           onChange={e => setLine(lines[e.target.value])}
           error={errorObj.line ? errorObj.line : ''}
-          lineMap={lineMap}
           label="Subway Line"
           alt="Subway Line"
         />
