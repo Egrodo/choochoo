@@ -7,9 +7,8 @@ import WelcomeView from './views/WelcomeView';
 import MainView from './views/MainView';
 import SettingsView from './views/SettingsView';
 
+// This function will run on every single render. But hooks is smart enough to not rewrite existing state !
 function App() {
-  // This function will run on every single render. But hooks is smart enough to not rewrite existing state !
-
   const [stationObj, setStationObj] = useState('');
   const [name, setName] = useState('');
   const [line, setLine] = useState('');
@@ -26,7 +25,7 @@ function App() {
     return new Promise(res => {
       console.log(`Retrying network, attempt: ${tries}`);
       if (navigator.onLine) {
-        fetch('/api/stopInfo/115')
+        fetch(`${process.env.REACT_APP_API_URL}/api/stopInfo/115`)
           .then(({ status }) => {
             if (status !== 200) throw new Error('Server Error');
             // Otherwise if we're back online invoke the cb and undo errors.

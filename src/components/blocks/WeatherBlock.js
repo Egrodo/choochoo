@@ -11,7 +11,7 @@ function WeatherBlock({ lat, lon, networkError }) {
 
   const getWeather = () => {
     setLoading(true);
-    fetch(`/api/weather/${lat}/${lon}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/weather/${lat}/${lon}`)
       .then(res => res.json())
       .then(json => {
         if (json.error) throw new Error(json.error);

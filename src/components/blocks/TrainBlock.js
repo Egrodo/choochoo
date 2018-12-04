@@ -15,7 +15,7 @@ function TrainBlock({ stationObj, line, networkError }) {
     console.log(`Getting new schedule for line ${line}`);
     setLoading(true);
 
-    fetch(`/api/schedule/${line}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
       .then(res => {
         if (!res.ok) throw res;
         return res.json();
@@ -26,16 +26,11 @@ function TrainBlock({ stationObj, line, networkError }) {
         setLoading(false);
       })
       .catch(err => {
-        console.count('Throwing error from trainBlock');
         // If the server sends me a permanent error, don't retry.
-        if (err.status === 500) {
+        if (err.status === 500 || err.status === 503) {
           networkError(`500 on /api/schedule/${line}`, true, getSchedule);
         } else {
-          console.log(err);
-          err.text().then(msg => {
-            console.log(msg);
-            networkError(msg.error, false);
-          });
+          console.error(err);
         }
       });
   };

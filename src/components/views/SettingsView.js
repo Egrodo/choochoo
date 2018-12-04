@@ -11,6 +11,7 @@ import mailIcon from '../../assets/images/emailIcon.svg';
 import cloudIcon from '../../assets/images/cloudIcon.svg';
 
 // SettingsView is just a re-branded WelcomeView, check that component for comments.
+// BUG: Option isn't defaulting to the currently selected line.
 function SettingsView({ initData, networkError, saveChanges }) {
   const [name, setName] = useState(initData.name);
   const [stationObj, setStationObj] = useState(initData.stationObj);
@@ -38,7 +39,7 @@ function SettingsView({ initData, networkError, saveChanges }) {
   };
 
   const getData = (stationName, setOptions, enableOptionsView) => {
-    fetch(`/search/stops/?query=${stationName}`)
+    fetch(`${process.env.REACT_APP_API_URL}/search/stops/?query=${stationName}`)
       .then(data => data.json())
       .then(json => {
         if (json.error) throw new Error(json.error);
@@ -55,7 +56,10 @@ function SettingsView({ initData, networkError, saveChanges }) {
   useEffect(
     () => {
       setLines(stationObj.stop_id);
-      if (stationObj.stop_id) setLine(stationObj.stop_id[0]);
+      if (stationObj.stop_id) {
+        const ind = stationObj.stop_id.indexOf(line);
+        if (ind !== -1) setLine(stationObj.stop_id[ind]);
+      }
     },
     [stationObj]
   );
@@ -82,7 +86,7 @@ function SettingsView({ initData, networkError, saveChanges }) {
         />
         <Option
           data={lines}
-          selection={line}
+          selected={lines.indexOf(line)}
           onChange={e => setLine(lines[e.target.value])}
           error={errorObj.line ? errorObj.line : ''}
           lineMap={lineMap}

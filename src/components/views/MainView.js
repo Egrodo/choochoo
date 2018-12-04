@@ -14,7 +14,7 @@ function MainView({ name, stationObj, line, gotoSettings, networkError }) {
 
     if (currT > 5 && currT < 12) return 'Morning';
     if (currT > 12 && currT < 18) return 'Afternoon';
-    if (currT > 18) return 'Evening';
+    if (currT > 18 || currT < 5) return 'Evening';
     return 'Day';
   };
 

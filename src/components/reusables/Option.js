@@ -33,9 +33,9 @@ function Option(props) {
       )}
       <select
         className={`${CSS.select} ${props.data.length < 2 && CSS.disabled}`}
-        selected={props.selection}
         onChange={props.onChange}
         disabled={props.data.length < 2}
+        value={props.selected}
       >
         {props.data.map((item, i) => (
           <option value={i} key={item}>
@@ -54,7 +54,7 @@ function Option(props) {
 
 Option.propTypes = {
   data: PropTypes.arrayOf(PropTypes.string),
-  selection: PropTypes.string,
+  selected: PropTypes.number,
   onChange: PropTypes.func,
   lineMap: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
   error: PropTypes.string,
@@ -64,7 +64,7 @@ Option.propTypes = {
 
 Option.defaultProps = {
   data: [],
-  selection: '',
+  selected: 0,
   onChange: () => {
     throw new Error('onChange not passed to Typeahead');
   },

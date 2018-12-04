@@ -39,7 +39,7 @@ function WelcomeView({ saveChanges, networkError }) {
   };
 
   const getData = (stationName, setOptions, enableOptionsView) => {
-    fetch(`/search/stops/?query=${stationName}`)
+    fetch(`${process.env.REACT_APP_API_URL}/search/stops/?query=${stationName}`)
       .then(data => data.json())
       .then(json => {
         if (json.error) throw new Error(json.error);
