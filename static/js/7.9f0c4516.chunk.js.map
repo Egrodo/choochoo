@@ -1,1 +1,0 @@
-{"version":3,"sources":["assets/images/trainIcons/6.svg"],"names":["module","exports","__webpack_require__","p"],"mappings":"4EAAAA,EAAAC,QAAiBC,EAAAC,EAAuB","file":"static/js/7.9f0c4516.chunk.js","sourcesContent":["module.exports = __webpack_public_path__ + \"static/media/6.48d3f924.svg\";"],"sourceRoot":""}
