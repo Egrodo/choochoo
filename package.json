@@ -2,7 +2,7 @@
   "name": "choochoo",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://egrodo.github.io/choochoo",
+  "homepage": "https://choochoo.app",
   "dependencies": {
     "normalize.css": "^8.0.1",
     "prop-types": "^15.6.2",
