@@ -284,7 +284,7 @@ self.__precacheManifest = [
     "url": "/choochoo/static/css/30.c198ff71.chunk.css"
   },
   {
-    "revision": "bc45a5f997a029211e7fc3d23f8f11a7",
+    "revision": "1bd7d80adc4a9607d1b0fa2efab7d7de",
     "url": "/choochoo/index.html"
   }
 ];
