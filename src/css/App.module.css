@@ -17,8 +17,10 @@
   color: #fff;
   font-family: 'Product Sans';
   position: relative;
-  max-width: 100vw;
+  width: 100vw;
   height: 100vh;
+  max-width: 500px;
+  max-height: 750px;
 }
 
 .imgContainer {
@@ -29,4 +31,26 @@
 .headerImg {
   width: 100%;
   height: 100%;
+}
+
+/* Below a certain width (on phones), just assume full height. */
+
+@media only screen and (max-width: 450px) {
+  .App {
+    max-height: 100vh;
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  /* After max width, center app and add borderish */
+  body {
+    background-color: #494949;
+    height: 100%;
+    display: grid;
+  }
+
+  .App {
+    border: 2px solid white;
+    margin: 1em auto;
+  }
 }
