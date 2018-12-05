@@ -5,8 +5,7 @@ import CSS from '../../css/reusables/Typeahead.module.css';
 import useDebounce from './useDebounce';
 import Input from './Input';
 
-// TODO: Add 'x' button to clear input field and spinner when loading.
-function Typeahead({ error, getData, stationObj, setStationObj }) {
+function Typeahead({ error, getData, stationObj, setStationObj, loading }) {
   const [stationName, setStationName] = useState(stationObj.stop_name || '');
   const [options, setOptions] = useState([]);
   const [optionsView, enableOptionsView] = useState(false);
@@ -34,7 +33,7 @@ function Typeahead({ error, getData, stationObj, setStationObj }) {
       <div className={CSS.inputContainer}>
         <Input
           placeholder="Station..."
-          value={stationName}
+          initValue={stationName}
           onChange={e => {
             setStationName(e.target.value);
             enableOptionsView(true);
@@ -65,6 +64,7 @@ function Typeahead({ error, getData, stationObj, setStationObj }) {
           classes={CSS.input}
           fluid={1}
           error={error}
+          loading={loading}
         />
       </div>
       <div className={`${CSS.dropDownContainer} ${!optionsView && CSS.hidden}`}>
@@ -84,7 +84,8 @@ Typeahead.propTypes = {
   error: PropTypes.string,
   getData: PropTypes.func,
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
-  setStationObj: PropTypes.func
+  setStationObj: PropTypes.func,
+  loading: PropTypes.bool
 };
 
 Typeahead.defaultProps = {
@@ -95,7 +96,8 @@ Typeahead.defaultProps = {
   stationObj: {},
   setStationObj: () => {
     throw new Error('setStation not passed to Typeahead');
-  }
+  },
+  loading: false
 };
 
 export default Typeahead;

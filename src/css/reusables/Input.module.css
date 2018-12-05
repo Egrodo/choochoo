@@ -1,8 +1,14 @@
-.InputContainer {
-  margin-bottom: 1rem;
+.Input {
+  margin-bottom: 2.15rem;
 }
 
-.Input {
+.inputContainer {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+}
+
+.input {
   max-width: 100%;
   outline: none;
   text-align: left;
@@ -14,7 +20,8 @@
   border-radius: 0.286rem;
   box-shadow: none;
   box-sizing: border-box;
-  margin-bottom: 1.15rem;
+
+  padding-right: 2.5em;
 }
 
 .Input:focus {
@@ -31,6 +38,7 @@
 
 .label {
   margin-left: 0.8em;
+  display: block;
 }
 
 .error {
@@ -40,4 +48,46 @@
 
 .label.error {
   color: red;
+}
+
+.icon {
+  position: absolute;
+  height: 100%;
+  width: 2em;
+  right: 0;
+  margin-right: 0.05em;
+  border-radius: 0 0.3rem 0.3rem 0;
+  opacity: 0.4;
+}
+
+.icon:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.cancel::before {
+  content: '';
+  position: absolute;
+  background-image: url('../../assets/images/cancel.svg');
+  background-size: 1em 1em;
+  color: black;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  height: 1em;
+  width: 1em;
+}
+
+.spinner::before {
+  content: '';
+  position: absolute;
+  background-image: url('../../assets/images/spinner.svg');
+  background-size: 1.5em 1.5em;
+  color: black;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  height: 1.5em;
+  width: 1.5em;
 }

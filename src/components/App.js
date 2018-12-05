@@ -7,6 +7,7 @@ import WelcomeView from './views/WelcomeView';
 import MainView from './views/MainView';
 import SettingsView from './views/SettingsView';
 
+// TODO: Using page visibility API: if the page is backgrounded for less than 60 seconds then revisited, restore content.
 function App() {
   const [stationObj, setStationObj] = useState('');
   const [name, setName] = useState('');

@@ -1,34 +1,129 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import Spinner from './Spinner';
 import CSS from '../../css/reusables/Input.module.css';
 
+// If loading, show spinner. Otherwise show cross to allow input deletion.
 function Input(props) {
+  const {
+    initValue,
+    placeholder,
+    onChange,
+    onBlur,
+    onFocus,
+    alt,
+    label,
+    classes,
+    fluid,
+    error,
+    loading,
+    maxLength
+  } = props;
+
+  const [inpVal, setInpVal] = useState(initValue);
+  const [active, setActive] = useState(false);
+
+  const onInpChange = e => {
+    setInpVal(e.target.value);
+    onChange(e);
+  };
+
+  useEffect(
+    () => {
+      setInpVal(initValue);
+    },
+    [initValue]
+  );
+
   return (
-    <div className={CSS.InputContainer}>
-      {props.label && (
-        <label htmlFor={props.alt} className={CSS.label}>
-          {props.label}
+    <section className={CSS.Input}>
+      {label && (
+        <label htmlFor={alt} className={CSS.label}>
+          {label}
         </label>
       )}
-      <input
-        {...props}
-        name={props.alt}
-        className={`
-          ${CSS.Input}
-          ${props.classes ? props.classes : ''}
-          ${props.fluid ? CSS.fluid : ''}
-          ${props.error && CSS.error}
-        `}
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck="false"
-      />
-      {props.error && (
-        <label htmlFor={props.alt} className={`${CSS.label} ${CSS.error}`}>
-          {props.error}
+      <div className={CSS.inputContainer}>
+        <input
+          value={inpVal}
+          onChange={onInpChange}
+          onFocus={() => {
+            // Giving these a bit of a timeout so that the user will be able to click delete before its hidden.
+            setTimeout(() => {
+              setActive(true);
+            }, 200);
+            onFocus();
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              setActive(false);
+            }, 200);
+            onBlur();
+          }}
+          className={`
+          ${CSS.input}
+          ${classes || ''}
+          ${fluid && CSS.fluid}
+          ${error && CSS.error}
+          `}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          placeholder={placeholder}
+          name={alt}
+          alt={alt}
+          maxLength={maxLength}
+        />
+        {loading ? (
+          <i role="button" tabIndex="0" alt="Spinner" className={`${CSS.icon} ${CSS.spinner}`} />
+        ) : (
+          active && (
+            <i
+              role="button"
+              tabIndex="0"
+              alt="Delete"
+              className={`${CSS.icon} ${CSS.cancel}`}
+              onClick={() => setInpVal('')}
+            />
+          )
+        )}
+      </div>
+      {error && (
+        <label htmlFor={alt} className={`${CSS.label} ${CSS.error}`}>
+          {error}
         </label>
       )}
-    </div>
+    </section>
   );
 }
+
+Input.propTypes = {
+  initValue: PropTypes.string,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
+  alt: PropTypes.string,
+  label: PropTypes.string,
+  classes: PropTypes.string,
+  fluid: PropTypes.number,
+  error: PropTypes.string,
+  loading: PropTypes.bool,
+  maxLength: PropTypes.string
+};
+
+Input.defaultProps = {
+  initValue: '',
+  placeholder: '',
+  onChange: () => {},
+  onBlur: () => {},
+  onFocus: () => {},
+  alt: '',
+  label: '',
+  classes: '',
+  fluid: 1,
+  error: '',
+  loading: false,
+  maxLength: '50'
+};
 
 export default Input;

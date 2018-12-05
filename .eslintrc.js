@@ -1,8 +1,8 @@
 module.exports = {
-  parser: "babel-eslint",
+  parser: 'babel-eslint',
   parserOptions: {
-    "sourceType": "module",
-    "allowImportExportEverywhere": true
+    sourceType: 'module',
+    allowImportExportEverywhere: true
   },
   extends: ['airbnb', 'prettier', 'prettier/react'],
   env: {
@@ -25,7 +25,8 @@ module.exports = {
     'react/no-unescaped-entities': 0,
     'react/destructuring-assignment': 0,
     'jsx-a11y/label-has-for': 0,
-    "jsx-a11y/href-no-hash": "off",
-    "jsx-a11y/anchor-is-valid": ["warn", { "aspects": ["invalidHref"] }],
+    'jsx-a11y/href-no-hash': 'off',
+    'jsx-a11y/anchor-is-valid': ['warn', { aspects: ['invalidHref'] }],
+    'jsx-a11y/click-events-have-key-events': 0
   }
 };

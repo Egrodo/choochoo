@@ -77,7 +77,7 @@ function WelcomeView({ saveChanges, networkError }) {
         />
         <Input
           onChange={e => setName(e.target.value)}
-          value={name}
+          initValue={name}
           maxLength="16"
           placeholder="Name..."
           alt="name"

@@ -24,12 +24,12 @@ function TrainBlock({ stationObj, line, networkError }) {
       .then(json => {
         if (json.error) throw new Error(json.error);
         setSchedule(json);
-        console.log(json);
         setLoading(false);
       })
       .catch(err => {
         // If the server sends me a permanent error, don't retry.
         if (err.status === 500 || err.status === 503) {
+          console.count('Sending error to networkError: ');
           networkError(`500 on /api/schedule/${line}`, true, getSchedule);
         } else {
           console.error(err);

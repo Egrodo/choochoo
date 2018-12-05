@@ -16,6 +16,7 @@ function SettingsView({ initData, networkError, saveChanges }) {
   const [stationObj, setStationObj] = useState(initData.stationObj);
   const [lines, setLines] = useState([]);
   const [line, setLine] = useState(initData.line);
+  const [loading, setLoading] = useState(false);
 
   const [errorObj, setErrorObj] = useState({
     name: '',
@@ -37,11 +38,13 @@ function SettingsView({ initData, networkError, saveChanges }) {
   };
 
   const getData = (stationName, setOptions, enableOptionsView) => {
+    setLoading(true);
     fetch(`${process.env.REACT_APP_API_URL}/search/stops/?query=${stationName}`)
       .then(data => data.json())
       .then(json => {
         if (json.error) throw new Error(json.error);
         setOptions(json);
+        setLoading(false);
         enableOptionsView(true);
       })
       .catch(err => {
@@ -73,10 +76,11 @@ function SettingsView({ initData, networkError, saveChanges }) {
           getData={getData}
           stationObj={stationObj}
           setStationObj={setStationObj}
+          loading={loading}
         />
         <Input
           onChange={e => setName(e.target.value)}
-          value={name}
+          initValue={name}
           maxLength="16"
           placeholder="Name..."
           alt="name"
