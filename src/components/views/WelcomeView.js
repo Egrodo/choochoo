@@ -7,6 +7,7 @@ import Input from '../reusables/Input';
 import Button from '../reusables/Button';
 import lineMap from '../data/lineMap';
 
+// TODO: Make name optional
 function WelcomeView({ saveChanges, networkError }) {
   // The station should contain all the data for the station, not just the name.
   const [name, setName] = useState('');

@@ -4,6 +4,7 @@ import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
+// TODO: Load more blocks if there is ample screen height, max of 5 min of 3.
 function TrainBlock({ stationObj, line, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
@@ -15,6 +16,7 @@ function TrainBlock({ stationObj, line, networkError }) {
     console.log(`Getting new schedule for line ${line}`);
     setLoading(true);
 
+    // TODO: Don't load while the network req is in progress, instead do that in background and just load while rendering new content.
     fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
       .then(res => {
         if (!res.ok) throw res;
@@ -74,7 +76,7 @@ function TrainBlock({ stationObj, line, networkError }) {
         </span>
       </div>
       <div className={CSS.statusContainer}>
-        {loading || !schedule[direction] ? (
+        {loading || !schedule[direction].length ? (
           <>
             <div className={CSS.floatLoader}>
               <Spinner />
@@ -83,13 +85,17 @@ function TrainBlock({ stationObj, line, networkError }) {
               <TrainStatus loading />
               <TrainStatus loading />
               <TrainStatus loading />
+              {window.screen.height > 700 && <TrainStatus loading />}
             </div>
           </>
         ) : (
           <>
-            {schedule[direction].map((status, i) => (
-              <TrainStatus status={status} key={`${status.routeId}_${i}`} />
-            ))}
+            <TrainStatus status={schedule[direction][0]} key={`${schedule[direction][0]}_${0}`} />
+            <TrainStatus status={schedule[direction][1]} key={`${schedule[direction][1]}_${1}`} />
+            <TrainStatus status={schedule[direction][2]} key={`${schedule[direction][2]}_${2}`} />
+            {window.screen.height > 700 && (
+              <TrainStatus status={schedule[direction][3]} key={`${schedule[direction][3]}_${3}`} />
+            )}
           </>
         )}
       </div>

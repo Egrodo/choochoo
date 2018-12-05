@@ -5,6 +5,7 @@ import CSS from '../../css/reusables/Typeahead.module.css';
 import useDebounce from './useDebounce';
 import Input from './Input';
 
+// TODO: Spinner while loading getData
 function Typeahead({ error, getData, stationObj, setStationObj }) {
   const [stationName, setStationName] = useState(stationObj.stop_name || '');
   const [options, setOptions] = useState([]);

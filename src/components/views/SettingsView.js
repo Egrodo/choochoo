@@ -55,7 +55,6 @@ function SettingsView({ initData, networkError, saveChanges }) {
 
   useEffect(
     () => {
-      console.log(stationObj.stop_id);
       setLines(stationObj.stop_id);
       if (stationObj.stop_id) {
         const ind = stationObj.stop_id.indexOf(line);
