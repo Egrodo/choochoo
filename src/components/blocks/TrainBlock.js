@@ -24,6 +24,7 @@ function TrainBlock({ stationObj, line, networkError }) {
       .then(json => {
         if (json.error) throw new Error(json.error);
         setSchedule(json);
+        console.log(json);
         setLoading(false);
       })
       .catch(err => {
@@ -38,6 +39,7 @@ function TrainBlock({ stationObj, line, networkError }) {
 
   const switchDirection = () => {
     // On clicking of direction toggle rendered direction and save to localStorage.
+
     setDirection(dir => {
       const newDir = dir === 'N' ? 'S' : 'N';
       localStorage.setItem('direction', newDir);
@@ -66,6 +68,7 @@ function TrainBlock({ stationObj, line, networkError }) {
     };
   }, []);
 
+  // Only render the TrainStatus if we have a direction for that block.
   return (
     <section className={CSS.TrainBlock}>
       <div className={CSS.headlineContainer}>
@@ -89,10 +92,11 @@ function TrainBlock({ stationObj, line, networkError }) {
           </>
         ) : (
           <>
-            <TrainStatus status={schedule[direction][0]} key={`${schedule[direction][0]}_${0}`} />
-            <TrainStatus status={schedule[direction][1]} key={`${schedule[direction][1]}_${1}`} />
-            <TrainStatus status={schedule[direction][2]} key={`${schedule[direction][2]}_${2}`} />
-            {window.screen.height > 700 && (
+            {schedule[direction].map((status, i) => {
+              if (i < 3) return <TrainStatus status={status} key={`${status}_${i}`} />;
+              return false;
+            })}
+            {window.screen.height > 700 && schedule[direction][3] && (
               <TrainStatus status={schedule[direction][3]} key={`${schedule[direction][3]}_${3}`} />
             )}
           </>
