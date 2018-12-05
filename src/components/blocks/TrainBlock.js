@@ -13,7 +13,6 @@ function TrainBlock({ stationObj, line, networkError }) {
     // If we're already loading or something is broken, don't retry.
     if (loading) return;
     console.log(`Getting new schedule for line ${line}`);
-    setLoading(true);
 
     // TODO: Don't load while the network req is in progress, instead do that in background and just load while rendering new content.
     fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
@@ -24,7 +23,6 @@ function TrainBlock({ stationObj, line, networkError }) {
       .then(json => {
         if (json.error) throw new Error(json.error);
         setSchedule(json);
-        setLoading(false);
       })
       .catch(err => {
         // If the server sends me a permanent error, don't retry.
@@ -55,7 +53,7 @@ function TrainBlock({ stationObj, line, networkError }) {
 
     // Get fresh data every 60 seconds if not in error / loading state.
     const reload = window.setInterval(() => {
-      // Workaround to get accurate state data inside the setInterval.
+      // Workaround to get accurate state data inside the setInterval and disable loading after first load.
       setLoading(load => {
         if (!load) {
           getSchedule();
