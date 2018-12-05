@@ -1,7 +1,7 @@
 .TrainTracks {
   border-bottom: 2px solid white;
   text-align: left;
-  margin: 0 .5em;
+  margin: 0 0.5em;
   width: calc(100% - 1em);
   position: relative;
 }
@@ -11,4 +11,16 @@
   height: 2.5em;
   display: inline-block;
   position: relative;
+}
+
+@media only screen and (min-width: 400px) {
+  /* At 500px make the train icons smaller. */
+  .TrainTracks {
+    height: 95%;
+  }
+
+  .TrainImg {
+    position: absolute;
+    bottom: 0.2em;
+  }
 }
