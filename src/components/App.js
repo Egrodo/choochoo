@@ -7,7 +7,6 @@ import WelcomeView from './views/WelcomeView';
 import MainView from './views/MainView';
 import SettingsView from './views/SettingsView';
 
-// This function will run on every single render. But hooks is smart enough to not rewrite existing state !
 function App() {
   const [stationObj, setStationObj] = useState('');
   const [name, setName] = useState('');
@@ -16,6 +15,7 @@ function App() {
 
   const [networkIssue, setNetworkIssue] = useState('');
 
+  // BUG: Occasionally this won't adhere to tries and instead retry infinitely
   const networkRetry = (tries, cb, ...params) => {
     if (tries === 0) {
       setNetworkIssue('Tries exceeded, try reloading?');

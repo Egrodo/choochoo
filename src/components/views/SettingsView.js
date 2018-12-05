@@ -11,7 +11,6 @@ import mailIcon from '../../assets/images/emailIcon.svg';
 import cloudIcon from '../../assets/images/cloudIcon.svg';
 
 // SettingsView is just a re-branded WelcomeView, check that component for comments.
-// BUG: Option isn't defaulting to the currently selected line.
 function SettingsView({ initData, networkError, saveChanges }) {
   const [name, setName] = useState(initData.name);
   const [stationObj, setStationObj] = useState(initData.stationObj);

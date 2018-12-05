@@ -18,6 +18,9 @@ function Input(props) {
           ${props.fluid ? CSS.fluid : ''}
           ${props.error && CSS.error}
         `}
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck="false"
       />
       {props.error && (
         <label htmlFor={props.alt} className={`${CSS.label} ${CSS.error}`}>
