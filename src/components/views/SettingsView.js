@@ -29,7 +29,6 @@ function SettingsView({ initData, networkError, saveChanges }) {
 
     if (!Object.keys(stationObj).length) errors.stationObj = 'Missing station name';
     if (name.length > 16) errors.name = 'First name too long';
-    if (!name.trim()) errors.name = 'Missing name';
     if (!line) errors.line = 'Missing line';
 
     setErrorObj(errors);
@@ -82,7 +81,7 @@ function SettingsView({ initData, networkError, saveChanges }) {
           maxLength="16"
           placeholder="Name..."
           alt="name"
-          label="First Name"
+          label="First Name (optional)"
           error={errorObj.name ? errorObj.name : ''}
           fluid={1}
         />

@@ -58,7 +58,7 @@ function App() {
 
   const saveChanges = (newName, newStationObj, newLine) => {
     // Submit the state to the localStorage.
-    if (!newName || !newStationObj || !newLine) {
+    if (!newStationObj || !newLine) {
       throw new Error("saveChanges wasn't given proper variables");
     }
 
@@ -80,7 +80,7 @@ function App() {
     setName(newName);
     setLine(newLine);
     setStationObj(newStationObj);
-    if (newName && newStationObj && newLine) {
+    if (newStationObj && newLine) {
       setView('main');
     } else setView('welcome');
   }, []);
