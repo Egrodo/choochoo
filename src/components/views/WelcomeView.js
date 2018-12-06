@@ -68,7 +68,7 @@ function WelcomeView({ saveChanges, networkError }) {
     <section className={CSS.WelcomeView}>
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
       <h4 className={CSS.secondaryHeader}>
-        Your friendly schedule helper! I work with all trains in the MTA system, please pick one to get started!
+        Your friendly schedule helper! I work with all the trains in the MTA system, please pick one to get started!
       </h4>
       <div className={CSS.inputsContainer}>
         <Typeahead

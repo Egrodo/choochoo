@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SunAndClouds from '../assets/images/sunny-day.png';
 import CSS from '../css/App.module.css';
 
@@ -15,6 +15,8 @@ function App() {
   const [view, setView] = useState('');
 
   const [networkIssue, setNetworkIssue] = useState('');
+  const [reqOn, setReqOn] = useState(true);
+  const timerRef = useRef();
 
   // BUG: Occasionally this won't adhere to tries and instead retry infinitely
   const networkRetry = (tries, cb, ...params) => {
@@ -72,6 +74,24 @@ function App() {
     setView('main');
   };
 
+  // If the user leaves the tab for more than n seconds, pause requests and restart them when they come back.
+  const visibilityChange = () => {
+    if (document.hidden) {
+      if (!timerRef.current) {
+        const timer = window.setTimeout(() => {
+          // If it reaches inside here that means the page has been hidden for > 60 seconds, so stop reqs and clear self.
+          setReqOn(false);
+          timerRef.current = undefined;
+        }, 60 * 1000);
+        timerRef.current = timer;
+      }
+    } else if (timerRef.current) {
+      // If document becomes visible while timer is still underway, clear it.
+      window.clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    } else setReqOn(true);
+  };
+
   useEffect(() => {
     // On first load check if we have data. If we don't have any data, show welcome view. If we do, show mainView.
     const checkStorage = key => localStorage.getItem(key) || '';
@@ -84,6 +104,9 @@ function App() {
     if (newStationObj && newLine) {
       setView('main');
     } else setView('welcome');
+
+    document.addEventListener('visibilitychange', visibilityChange);
+    return () => document.removeEventListener('visibilitychange', visibilityChange);
   }, []);
 
   // General parent stylings setting the header img, fonts, bg color.
@@ -100,6 +123,7 @@ function App() {
             name={name}
             stationObj={stationObj}
             line={line}
+            reqOn={reqOn}
             networkError={networkError}
             gotoSettings={() => setView('settings')}
           />

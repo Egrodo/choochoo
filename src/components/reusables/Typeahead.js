@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import CSS from '../../css/reusables/Typeahead.module.css';
-import useDebounce from './useDebounce';
+import useDebounce from '../hooks/useDebounce';
 import Input from './Input';
 
 function Typeahead({ error, getData, stationObj, setStationObj, loading }) {

@@ -21,7 +21,7 @@
   height: 100vh;
   max-width: 500px;
   max-height: 750px;
-  min-height: 600px;
+  min-height: 675px;
 }
 
 .imgContainer {
@@ -35,6 +35,12 @@
 }
 
 /* Below a certain width (on phones), just assume full height. */
+
+@media only screen and (min-height: 775px) {
+  .App {
+    min-height: 760px;
+  }
+}
 
 @media only screen and (max-width: 450px) {
   body {

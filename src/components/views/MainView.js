@@ -6,7 +6,7 @@ import TrainBlock from '../blocks/TrainBlock';
 import CSS from '../../css/views/MainView.module.css';
 
 // Keep this stuff cached while I'm in settingsView.
-function MainView({ name, stationObj, line, gotoSettings, networkError }) {
+function MainView({ name, stationObj, line, reqOn, gotoSettings, networkError }) {
   const [greeting, setGreeting] = useState();
 
   const calcGreeting = () => {
@@ -31,7 +31,7 @@ function MainView({ name, stationObj, line, gotoSettings, networkError }) {
         <WeatherBlock lat={stationObj.stop_lat} lon={stationObj.stop_lon} networkError={networkError} />
       </div>
       <div className={CSS.trainContainer}>
-        <TrainBlock stationObj={stationObj} line={line} networkError={networkError} />
+        <TrainBlock stationObj={stationObj} line={line} reqOn={reqOn} networkError={networkError} />
       </div>
       <div className={CSS.settingsLink}>
         <span onClick={gotoSettings} role="button" tabIndex="0">
@@ -46,6 +46,7 @@ MainView.propTypes = {
   name: PropTypes.string,
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
+  reqOn: PropTypes.bool,
   gotoSettings: PropTypes.func,
   networkError: PropTypes.func
 };
@@ -54,6 +55,7 @@ MainView.defaultProps = {
   name: '',
   stationObj: {},
   line: '',
+  reqOn: true,
   gotoSettings: () => {
     throw new ReferenceError('gotoSettings not passed to MainView');
   },

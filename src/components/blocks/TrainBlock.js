@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
-function TrainBlock({ stationObj, line, networkError }) {
+function TrainBlock({ stationObj, line, reqOn, networkError }) {
   const [direction, setDirection] = useState('N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
   const [loading, setLoading] = useState(false);
+  const timerRef = useRef();
 
   const getSchedule = () => {
     // If we're already loading or something is broken, don't retry.
@@ -45,15 +46,11 @@ function TrainBlock({ stationObj, line, networkError }) {
     });
   };
 
-  useEffect(() => {
-    // On first mount, get schedule and check for direction.
-    if (localStorage.getItem('direction')) setDirection(localStorage.getItem('direction'));
-
-    getSchedule();
-
-    // Get fresh data every 60 seconds if not in error / loading state.
-    const reload = window.setInterval(() => {
-      // Workaround to get accurate state data inside the setInterval and disable loading after first load.
+  // Return a reference to a timer that gets fresh data every 60 seconds if not in error / loading state.
+  const scheduleTimer = () =>
+    window.setInterval(() => {
+      // Before reloading, check if currently loading and if requests are on.
+      // Workaround to get accurate state data in timer.
       setLoading(load => {
         if (!load) {
           getSchedule();
@@ -61,10 +58,33 @@ function TrainBlock({ stationObj, line, networkError }) {
         return load;
       });
     }, 60 * 1000);
+
+  // On first mount, check for direction, get schedule, and initialize a scheduleTimer.
+  useEffect(() => {
+    if (localStorage.getItem('direction')) setDirection(localStorage.getItem('direction'));
+
+    getSchedule();
+    timerRef.current = scheduleTimer();
     return () => {
-      window.clearInterval(reload);
+      window.clearInterval(timerRef.current);
     };
   }, []);
+
+  // On updates of reqOn (see App.js visibilityChange)
+  useEffect(
+    () => {
+      if (reqOn && !timerRef.current) {
+        // If reqs turn back on after having been off, setSchedule and restart interval.
+        getSchedule();
+        timerRef.current = scheduleTimer();
+      } else {
+        // If reqs turn off, clear reload interval and undefine the timer.
+        window.clearInterval(timerRef.current);
+        timerRef.current = undefined;
+      }
+    },
+    [reqOn]
+  );
 
   // Only render the TrainStatus if we have a direction for that block.
   return (
@@ -85,7 +105,7 @@ function TrainBlock({ stationObj, line, networkError }) {
               <TrainStatus loading />
               <TrainStatus loading />
               <TrainStatus loading />
-              {window.screen.height > 700 && <TrainStatus loading />}
+              {window.screen.height > 775 && <TrainStatus loading />}
             </div>
           </>
         ) : (
@@ -94,7 +114,7 @@ function TrainBlock({ stationObj, line, networkError }) {
               if (i < 3) return <TrainStatus status={status} key={`${status}_${i}`} />;
               return false;
             })}
-            {window.screen.height > 700 && schedule[direction][3] && (
+            {window.screen.height > 775 && schedule[direction][3] && (
               <TrainStatus status={schedule[direction][3]} key={`${schedule[direction][3]}_${3}`} />
             )}
           </>
@@ -107,12 +127,14 @@ function TrainBlock({ stationObj, line, networkError }) {
 TrainBlock.propTypes = {
   stationObj: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])),
   line: PropTypes.string,
+  reqOn: PropTypes.bool,
   networkError: PropTypes.func
 };
 
 TrainBlock.defaultProps = {
   stationObj: {},
   line: '',
+  reqOn: true,
   networkError: () => {
     throw new ReferenceError('networkError not passed to MainView');
   }

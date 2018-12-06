@@ -100,7 +100,7 @@ function SettingsView({ initData, networkError, saveChanges }) {
       </div>
 
       <div className={CSS.btnContainer}>
-        <a href="mailto:noahryamamoto@gmail.com" target="_blank" rel="noopener noreferrer">
+        <a href="mailto:feedback@choochoo.app?subject=Feedback on Choochoo" target="_blank" rel="noopener noreferrer">
           <Button icon={mailIcon}>Feedback</Button>
         </a>
         <a href="https://darksky.net/poweredby/" target="_blank" rel="noopener noreferrer">
