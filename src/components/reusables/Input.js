@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import Spinner from './Spinner';
 import CSS from '../../css/reusables/Input.module.css';
 
 // If loading, show spinner. Otherwise show cross to allow input deletion.
@@ -21,6 +20,7 @@ function Input(props) {
   } = props;
 
   const [inpVal, setInpVal] = useState(initValue);
+  const inpRef = useRef();
   const [active, setActive] = useState(false);
 
   const onInpChange = e => {
@@ -69,9 +69,10 @@ function Input(props) {
           autoCorrect="off"
           spellCheck="false"
           placeholder={placeholder}
+          maxLength={maxLength}
+          ref={inpRef}
           name={alt}
           alt={alt}
-          maxLength={maxLength}
         />
         {loading ? (
           <i role="button" tabIndex="0" alt="Spinner" className={`${CSS.icon} ${CSS.spinner}`} />
@@ -82,7 +83,10 @@ function Input(props) {
               tabIndex="0"
               alt="Delete"
               className={`${CSS.icon} ${CSS.cancel}`}
-              onClick={() => setInpVal('')}
+              onClick={() => {
+                setInpVal('');
+                inpRef.current.focus();
+              }}
             />
           )
         )}

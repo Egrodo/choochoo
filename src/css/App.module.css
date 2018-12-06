@@ -37,13 +37,17 @@
 /* Below a certain width (on phones), just assume full height. */
 
 @media only screen and (max-width: 450px) {
+  body {
+    font-size: 18px;
+  }
+
   .App {
     max-height: 100vh;
   }
 }
 
 @media only screen and (min-width: 500px) {
-  /* After max width, center app and add borderish */
+  /* After max width, center app and add border */
   body {
     background-color: #494949;
     height: 100%;

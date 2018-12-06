@@ -67,7 +67,9 @@ function WelcomeView({ saveChanges, networkError }) {
   return (
     <section className={CSS.WelcomeView}>
       <h1 className={CSS.mainHeader}>Welcome to choochoo</h1>
-      <h4 className={CSS.secondaryHeader}>I'll need some information before we start</h4>
+      <h4 className={CSS.secondaryHeader}>
+        Your friendly schedule helper! I work with all trains in the MTA system, please pick one to get started!
+      </h4>
       <div className={CSS.inputsContainer}>
         <Typeahead
           error={errorObj.stationObj ? errorObj.stationObj : ''}
