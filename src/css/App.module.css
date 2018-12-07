@@ -1,13 +1,15 @@
 /* Nighttime background color #00395d */
 @font-face {
-  font-family: 'Product Sans';
   src: url('../assets/font/Product\ Sans\ Regular.ttf') format('truetype');
+  font-family: 'Product Sans';
+  font-display: auto;
   font-weight: normal;
 }
 
 @font-face {
-  font-family: 'Product Sans';
   src: url('../assets/font/Product\ Sans\ Bold.ttf') format('truetype');
+  font-family: 'Product Sans';
+  font-display: auto;
   font-weight: bold;
 }
 

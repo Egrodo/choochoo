@@ -73,6 +73,7 @@ function Input(props) {
           ref={inpRef}
           name={alt}
           alt={alt}
+          id={alt}
         />
         {loading ? (
           <i role="button" tabIndex="0" alt="Spinner" className={`${CSS.icon} ${CSS.spinner}`} />

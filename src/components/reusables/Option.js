@@ -31,12 +31,7 @@ function Option(props) {
           {props.label}
         </label>
       )}
-      <select
-        className={`${CSS.select} ${props.data.length < 2 && CSS.disabled}`}
-        onChange={props.onChange}
-        disabled={props.data.length < 2}
-        value={props.selected}
-      >
+      <select className={CSS.select} onChange={props.onChange} disabled={props.data.length < 2} value={props.selected}>
         {props.data.map((item, i) => (
           <option value={i} key={item}>
             {`${trains[item]} Trains`}
