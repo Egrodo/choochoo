@@ -28,7 +28,6 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
       .catch(err => {
         // If the server sends me a permanent error, don't retry.
         if (err.status === 500 || err.status === 503) {
-          console.count('Sending error to networkError: ');
           networkError(`500 on /api/schedule/${line}`, true, getSchedule);
         } else {
           console.error(err);
