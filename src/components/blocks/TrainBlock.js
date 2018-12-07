@@ -15,7 +15,6 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
     if (loading) return;
     console.log(`Getting new schedule for line ${line}`);
 
-    // TODO: Don't load while the network req is in progress, instead do that in background and just load while rendering new content.
     fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
       .then(res => {
         if (!res.ok) throw res;
