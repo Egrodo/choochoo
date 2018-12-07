@@ -140,12 +140,12 @@ self.__precacheManifest = [
     "url": "/static/js/runtime~main.975eaffa.js"
   },
   {
-    "revision": "eab30f6eda703fa98429dcfaf13283b7",
-    "url": "/static/media/spinner.eab30f6e.svg"
-  },
-  {
     "revision": "bb93e3a2bf87cd2035f1215f4bea8aa3",
     "url": "/static/media/cancel.bb93e3a2.svg"
+  },
+  {
+    "revision": "eab30f6eda703fa98429dcfaf13283b7",
+    "url": "/static/media/spinner.eab30f6e.svg"
   },
   {
     "revision": "da9ebc967a80f5ebdc3609c859c46494",
