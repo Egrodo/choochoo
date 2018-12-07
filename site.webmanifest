@@ -16,5 +16,6 @@
   "theme_color": "#60c2ff",
   "background_color": "#60c2ff",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "description": "Friendly schedule helper to show incoming arrival times of any station in the MTA system!"
 }
