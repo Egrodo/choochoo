@@ -13,7 +13,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
   const getSchedule = () => {
     // If we're already loading or something is broken, don't retry.
     if (loading) return;
-    console.log(`Getting new schedule for line ${line}`);
+    console.log(`Getting new schedule for line ${line}.`);
 
     fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
       .then(res => {
@@ -23,6 +23,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
       .then(json => {
         if (json.error) throw new Error(json.error);
         setSchedule(json);
+        setLoading(false);
       })
       .catch(err => {
         // If the server sends me a permanent error, don't retry.
@@ -72,10 +73,12 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
   useEffect(
     () => {
       if (reqOn && !timerRef.current) {
+        console.log('reqOn firing with undefined timerRef');
         // If reqs turn back on after having been off, setSchedule and restart interval.
-        getSchedule();
         timerRef.current = scheduleTimer();
-      } else {
+        setLoading(true);
+        getSchedule();
+      } else if (!reqOn) {
         // If reqs turn off, clear reload interval and undefine the timer.
         window.clearInterval(timerRef.current);
         timerRef.current = undefined;
