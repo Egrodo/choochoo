@@ -20,6 +20,7 @@ function TrainStatus({ status, loading }) {
 
   useEffect(() => {
     // If this TrainStatus is in loading mode don't do anything here.
+    // console.log('mounting trainstatus');
     if (loading) return;
 
     getImg(status.routeId.toLowerCase());
@@ -28,7 +29,10 @@ function TrainStatus({ status, loading }) {
     const timer = window.setInterval(() => {
       setTimeLeft(currTimeLeft => (currTimeLeft - 10 > 0 ? currTimeLeft - 10 : 0));
     }, 10 * 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      // console.log('unmounting trainstatus');
+      window.clearInterval(timer);
+    };
   }, []);
 
   useEffect(

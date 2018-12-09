@@ -53,3 +53,40 @@
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* StatusBlock error */
+
+.errorBlock {
+  text-align: center;
+  padding: 1em;
+  margin: 0.5em 1em;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.errorBlock h4 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.errorBlock p {
+  margin: 1em 0 0.2em 0;
+}
+
+.errorBlock a {
+  color: #ffe236;
+  font-weight: normal;
+  letter-spacing: normal;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.errorBlock a:hover {
+  text-decoration: underline;
+}
+
+.ErrorImg {
+  height: 3em;
+  width: 3em;
+  fill: red;
+  padding: 1em 0;
+}

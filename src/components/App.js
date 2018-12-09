@@ -36,14 +36,15 @@ function App() {
             res(status);
             setNetworkIssue('');
           })
-          .catch(() => {
+          .catch(err => {
             if (networkIssue !== 'Server Down') setNetworkIssue('Server Down');
+            console.log(err);
             // If sill offline, wait 10 seconds and try again.
-            setTimeout(() => networkRetry(tries - 1, cb, ...params), 10000);
+            setTimeout(() => networkRetry(tries - 1, cb, ...params), 10 * 1000);
           });
       } else {
         if (!networkIssue) setNetworkIssue('Internet down');
-        setTimeout(() => networkRetry(tries - 1, cb, ...params), 10000);
+        setTimeout(() => networkRetry(tries - 1, cb, ...params), 10 * 1000);
       }
     });
   };

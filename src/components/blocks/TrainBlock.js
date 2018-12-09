@@ -2,19 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import TrainStatus from '../reusables/TrainStatus';
 import Spinner from '../reusables/Spinner';
+import { ReactComponent as ErrorImg } from '../../assets/images/cancel.svg';
+
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
 function TrainBlock({ stationObj, line, reqOn, networkError }) {
-  const [direction, setDirection] = useState('N');
+  const [direction, setDirection] = useState(localStorage.getItem('direction') || 'N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(false);
   const timerRef = useRef();
 
   const getSchedule = () => {
     // If we're already loading or something is broken, don't retry.
-    if (loading) return;
     console.log(`Getting new schedule for line ${line}.`);
 
+    // If the request fails, error on both directions. If a direction is empty error just for that direction.
     fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
       .then(res => {
         if (!res.ok) throw res;
@@ -22,10 +25,16 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
       })
       .then(json => {
         if (json.error) throw new Error(json.error);
-        setSchedule(json);
+
+        // If a direction is empty set error for that direction. Otherwise clear error.
+        if (!json.N.length || !json.S.length) {
+          setApiError(true);
+        } else setApiError(false);
         setLoading(false);
+        setSchedule(json);
       })
       .catch(err => {
+        setApiError(true);
         // If the server sends me a permanent error, don't retry.
         if (err.status === 500 || err.status === 503) {
           networkError(`500 on /api/schedule/${line}`, true, getSchedule);
@@ -37,7 +46,6 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
 
   const switchDirection = () => {
     // On clicking of direction toggle rendered direction and save to localStorage.
-
     setDirection(dir => {
       const newDir = dir === 'N' ? 'S' : 'N';
       localStorage.setItem('direction', newDir);
@@ -60,8 +68,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
 
   // On first mount, check for direction, get schedule, and initialize a scheduleTimer.
   useEffect(() => {
-    if (localStorage.getItem('direction')) setDirection(localStorage.getItem('direction'));
-
+    setLoading(true);
     getSchedule();
     timerRef.current = scheduleTimer();
     return () => {
@@ -73,7 +80,6 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
   useEffect(
     () => {
       if (reqOn && !timerRef.current) {
-        console.log('reqOn firing with undefined timerRef');
         // If reqs turn back on after having been off, setSchedule and restart interval.
         timerRef.current = scheduleTimer();
         setLoading(true);
@@ -87,6 +93,55 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
     [reqOn]
   );
 
+  // Status logic in a function for cleaner render code.
+  const Status = () => {
+    // If there is an ApiError return for whichever direction erred (or both).
+    if (apiError && !schedule[direction].length) {
+      return (
+        <div className={CSS.errorBlock}>
+          <ErrorImg className={CSS.ErrorImg} />
+          <h4>
+            No schedule found for {`${direction === 'N' ? 'Up' : 'Down'}town`}
+            <span role="img" aria-label="frowning face">
+              🙁
+            </span>
+          </h4>
+          <p>Check the MTA website for service alerts:</p>
+          <a href="http://alert.mta.info/" target="_blank" rel="noopener noreferrer">
+            http://alert.mta.info
+          </a>
+        </div>
+      );
+    }
+
+    // If there is a schedule ready to load
+    if (!loading && schedule[direction].length) {
+      return (
+        <>
+          {schedule[direction].map((status, i) => {
+            if (i < 3) return <TrainStatus status={status} key={`${status}_${i}`} />;
+            if (i === 3 && window.screen.height > 775) return <TrainStatus status={status} key={`${status}_${i}`} />;
+            return false;
+          })}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className={CSS.floatLoader}>
+          <Spinner />
+        </div>
+        <div className={CSS.darken}>
+          <TrainStatus loading />
+          <TrainStatus loading />
+          <TrainStatus loading />
+          {window.screen.height > 775 && <TrainStatus loading />}
+        </div>
+      </>
+    );
+  };
+
   // Only render the TrainStatus if we have a direction for that block.
   return (
     <section className={CSS.TrainBlock}>
@@ -97,29 +152,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
         </span>
       </div>
       <div className={CSS.statusContainer}>
-        {loading || !schedule[direction].length ? (
-          <>
-            <div className={CSS.floatLoader}>
-              <Spinner />
-            </div>
-            <div className={CSS.darken}>
-              <TrainStatus loading />
-              <TrainStatus loading />
-              <TrainStatus loading />
-              {window.screen.height > 775 && <TrainStatus loading />}
-            </div>
-          </>
-        ) : (
-          <>
-            {schedule[direction].map((status, i) => {
-              if (i < 3) return <TrainStatus status={status} key={`${status}_${i}`} />;
-              return false;
-            })}
-            {window.screen.height > 775 && schedule[direction][3] && (
-              <TrainStatus status={schedule[direction][3]} key={`${schedule[direction][3]}_${3}`} />
-            )}
-          </>
-        )}
+        <Status />
       </div>
     </section>
   );
