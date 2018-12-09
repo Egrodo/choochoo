@@ -6,6 +6,7 @@ import { ReactComponent as ErrorImg } from '../../assets/images/cancel.svg';
 
 import CSS from '../../css/blocks/TrainBlock.module.css';
 
+// TODO: Implement https://github.com/mauricedb/use-abortable-fetch
 function TrainBlock({ stationObj, line, reqOn, networkError }) {
   const [direction, setDirection] = useState(localStorage.getItem('direction') || 'N');
   const [schedule, setSchedule] = useState({ N: [], S: [] }); // Obj containing incoming trains for both directions.
@@ -14,7 +15,6 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
   const timerRef = useRef();
 
   const getSchedule = () => {
-    // If we're already loading or something is broken, don't retry.
     console.log(`Getting new schedule for line ${line}.`);
 
     // If the request fails, error on both directions. If a direction is empty error just for that direction.
@@ -85,7 +85,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
         setLoading(true);
         getSchedule();
       } else if (!reqOn) {
-        // If reqs turn off, clear reload interval and undefine the timer.
+        // If reqs turn off, clear reload interval and un-define the timer.
         window.clearInterval(timerRef.current);
         timerRef.current = undefined;
       }
@@ -116,13 +116,13 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
 
     // If there is a schedule ready to load
     if (!loading && schedule[direction].length) {
+      const status = schedule[direction];
       return (
         <>
-          {schedule[direction].map((status, i) => {
-            if (i < 3) return <TrainStatus status={status} key={`${status}_${i}`} />;
-            if (i === 3 && window.screen.height > 775) return <TrainStatus status={status} key={`${status}_${i}`} />;
-            return false;
-          })}
+          <TrainStatus status={status[0]} key={`${status[0]}_${0}`} />
+          <TrainStatus status={status[1]} key={`${status[1]}_${1}`} />
+          <TrainStatus status={status[2]} key={`${status[2]}_${2}`} />
+          {window.screen.height > 775 && <TrainStatus status={status[3]} key={`${status[3]}_${3}`} />}
         </>
       );
     }
@@ -133,10 +133,10 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
           <Spinner />
         </div>
         <div className={CSS.darken}>
-          <TrainStatus loading />
-          <TrainStatus loading />
-          <TrainStatus loading />
-          {window.screen.height > 775 && <TrainStatus loading />}
+          <div className={CSS.loadingBlock} />
+          <div className={CSS.loadingBlock} />
+          <div className={CSS.loadingBlock} />
+          {window.screen.height > 775 && <div className={CSS.loadingBlock} />}
         </div>
       </>
     );

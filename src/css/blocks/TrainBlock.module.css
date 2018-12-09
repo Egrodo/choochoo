@@ -47,6 +47,14 @@
   position: relative;
 }
 
+.loadingBlock {
+  height: 3.2em;
+  margin-bottom: 1em;
+  padding: 0.5em 0;
+  width: 100%;
+  background-color: hsla(0, 0%, 100%, 0.3);
+}
+
 .floatLoader {
   position: absolute;
   left: 50%;
