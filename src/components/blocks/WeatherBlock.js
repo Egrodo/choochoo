@@ -9,9 +9,16 @@ function WeatherBlock({ lat, lon, networkError }) {
   const [desc, setDesc] = useState('Loading');
   const [loading, setLoading] = useState(true);
 
+  // Callback to give to networkError to handle data received after successful retry.
+  const onReceiveData = json => {
+    setTemp(Math.round(json.temperature));
+    setDesc(json.summary);
+  };
+
   const getWeather = () => {
     setLoading(true);
-    fetch(`${process.env.REACT_APP_API_URL}/api/weather/${lat}/${lon}`)
+    const url = `${process.env.REACT_APP_API_URL}/api/weather/${lat}/${lon}`;
+    fetch(url)
       .then(res => res.json())
       .then(json => {
         if (json.error) throw new Error(json.error);
@@ -22,7 +29,7 @@ function WeatherBlock({ lat, lon, networkError }) {
         console.count('Throwing error from weatherBlock');
         if (err.message === 'Rate Limit Reached') {
           networkError('Rate Limit Reached', false);
-        } else networkError('/api/weather req failed', true, getWeather);
+        } else networkError('/api/weather req failed', true, onReceiveData, url);
       });
   };
 

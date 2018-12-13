@@ -14,11 +14,21 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
   const [apiError, setApiError] = useState(false);
   const timerRef = useRef();
 
+  // Callback to give to networkError to handle data received after successful retry.
+  const onReceiveData = json => {
+    if (json.error || !json.N.length || !json.S.length) {
+      console.error(json.error);
+      setApiError(true);
+    }
+    setSchedule(json);
+  };
+
   const getSchedule = () => {
     console.log(`Getting new schedule for line ${line}.`);
 
     // If the request fails, error on both directions. If a direction is empty error just for that direction.
-    fetch(`${process.env.REACT_APP_API_URL}/api/schedule/${line}`)
+    const url = `${process.env.REACT_APP_API_URL}/api/schedule/${line}`;
+    fetch(url)
       .then(res => {
         if (!res.ok) throw res;
         return res.json();
@@ -37,7 +47,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
         setApiError(true);
         // If the server sends me a permanent error, don't retry.
         if (err.status === 500 || err.status === 503) {
-          networkError(`500 on /api/schedule/${line}`, true, getSchedule);
+          networkError(`500 on /api/schedule/${line}`, true, onReceiveData, url);
         } else {
           console.error(err);
         }
@@ -108,7 +118,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
           </h4>
           <p>Check the MTA website for service alerts:</p>
           <a href="http://alert.mta.info/" target="_blank" rel="noopener noreferrer">
-            http://alert.mta.info
+            https://new.mta.info/
           </a>
         </div>
       );
@@ -119,10 +129,10 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
       const status = schedule[direction];
       return (
         <>
-          <TrainStatus status={status[0]} key={`${status[0]}_${0}`} />
-          <TrainStatus status={status[1]} key={`${status[1]}_${1}`} />
-          <TrainStatus status={status[2]} key={`${status[2]}_${2}`} />
-          {window.screen.height > 775 && <TrainStatus status={status[3]} key={`${status[3]}_${3}`} />}
+          {status[0] && <TrainStatus status={status[0]} key={`${status[0].eta}_${0}`} />}
+          {status[1] && <TrainStatus status={status[1]} key={`${status[1].eta}_${1}`} />}
+          {status[2] && <TrainStatus status={status[2]} key={`${status[2].eta}_${2}`} />}
+          {window.screen.height > 775 && status[3] && <TrainStatus status={status[3]} key={`${status[3].eta}_${3}`} />}
         </>
       );
     }

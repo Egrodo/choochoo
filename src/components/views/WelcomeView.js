@@ -37,8 +37,15 @@ function WelcomeView({ saveChanges, networkError }) {
     }
   };
 
+  // Callback to give to networkError to handle data received after successful retry.
+  const onReceiveData = (json, setOptions, enableOptionsView) => {
+    setOptions(json);
+    enableOptionsView(true);
+  };
+
   const getData = (stationName, setOptions, enableOptionsView) => {
-    fetch(`${process.env.REACT_APP_API_URL}/search/stops/?query=${stationName}`)
+    const url = `${process.env.REACT_APP_API_URL}/search/stops/?query=${stationName}`;
+    fetch(url)
       .then(data => data.json())
       .then(json => {
         if (json.error) throw new Error(json.error);
@@ -49,7 +56,7 @@ function WelcomeView({ saveChanges, networkError }) {
       .catch(err => {
         if (err.message === 'Rate Limit Reached') {
           networkError('Rate Limit Reached', false);
-        } else networkError('/searchStops req failed', true, getData, stationName, setOptions, enableOptionsView);
+        } else networkError('/searchStops req failed', true, onReceiveData, url, setOptions, enableOptionsView);
       });
   };
 

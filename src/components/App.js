@@ -19,7 +19,8 @@ function App() {
   const timerRef = useRef();
 
   // BUG: Occasionally this won't adhere to tries and instead retry infinitely
-  const networkRetry = (tries, cb, ...params) => {
+  // Maybe fixed ^
+  const networkRetry = (tries, cb, url, ...params) => {
     if (tries === 0) {
       setNetworkIssue('Tries exceeded, try reloading?');
       return false;
@@ -28,35 +29,38 @@ function App() {
     return new Promise(res => {
       console.log(`Retrying network, attempt: ${tries}`);
       if (navigator.onLine) {
-        fetch(`${process.env.REACT_APP_API_URL}/api/stopInfo/115`)
-          .then(({ status }) => {
-            if (status !== 200) throw new Error('Server Error');
-            // Otherwise if we're back online invoke the cb and undo errors.
-            if (cb) cb(...params);
-            res(status);
+        fetch(url)
+          .then(resp => {
+            if (!resp.ok) throw resp;
+            return resp.json();
+          })
+          .then(json => {
+            // If we're back online invoke the cb and undo errors.
+            if (cb) cb(json, ...params);
+            res(true);
             setNetworkIssue('');
           })
           .catch(err => {
             if (networkIssue !== 'Server Down') setNetworkIssue('Server Down');
-            console.log(err);
+            console.log('Error caught: ', err);
             // If sill offline, wait 10 seconds and try again.
-            setTimeout(() => networkRetry(tries - 1, cb, ...params), 10 * 1000);
+            setTimeout(() => networkRetry(tries - 1, cb, url, ...params), 10 * 1000);
           });
       } else {
         if (!networkIssue) setNetworkIssue('Internet down');
-        setTimeout(() => networkRetry(tries - 1, cb, ...params), 10 * 1000);
+        setTimeout(() => networkRetry(tries - 1, cb, url, ...params), 10 * 1000);
       }
     });
   };
 
   // When invoked, check if the user is online. If they are, check if the server is online.
-  const networkError = (msg, retry, cb, ...params) => {
+  const networkError = (msg, retry, cb, url, ...params) => {
     if (!retry || networkIssue) {
       // Using this for rate limit, but it's usable for other things.
       setNetworkIssue(msg);
     } else if (retry) {
       // If requested to retry, send to async network retry system.
-      networkRetry(5, cb, ...params);
+      networkRetry(5, cb, url, ...params);
     }
   };
 
