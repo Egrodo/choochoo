@@ -70,7 +70,7 @@
   "static/media/TrainBlock.module.css": "/static/media/upArrow.da9ebc96.svg",
   "static/media/Input.module.css": "/static/media/cancel.bb93e3a2.svg",
   "static/media/MainView.module.css": "/static/media/cog.92c0d6ef.svg",
-  "static/media/App.module.css": "/static/media/Product Sans Bold.dba0c688.ttf",
+  "static/media/App.module.css": "/static/media/Product Sans Regular.eae9c18c.ttf",
   "static/media/sunny-day.png": "/static/media/sunny-day.275bbde9.png",
   "static/media/whiteTrain.png": "/static/media/whiteTrain.390291fc.png",
   "static/media/emailIcon.svg": "/static/media/emailIcon.ac575565.svg",
@@ -108,6 +108,6 @@
   "static/css/main.6cc8eab6.chunk.css.map": "/static/css/main.6cc8eab6.chunk.css.map",
   "static/css/31.c198ff71.chunk.css.map": "/static/css/31.c198ff71.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.501dcc026bf9e422f3b341a38892e6e7.js": "/precache-manifest.501dcc026bf9e422f3b341a38892e6e7.js",
+  "precache-manifest.adaf9435deffae519d3ee23988e2f587.js": "/precache-manifest.adaf9435deffae519d3ee23988e2f587.js",
   "service-worker.js": "/service-worker.js"
 }
