@@ -18,8 +18,6 @@ function App() {
   const [reqOn, setReqOn] = useState(true);
   const timerRef = useRef();
 
-  // BUG: Occasionally this won't adhere to tries and instead retry infinitely
-  // Maybe fixed ^
   const networkRetry = (tries, cb, url, ...params) => {
     if (tries === 0) {
       setNetworkIssue('Tries exceeded, try reloading?');
@@ -112,6 +110,8 @@ function App() {
 
     document.addEventListener('visibilitychange', visibilityChange);
     return () => document.removeEventListener('visibilitychange', visibilityChange);
+
+    // Depending on the time of day present different themes.
   }, []);
 
   // General parent stylings setting the header img, fonts, bg color.

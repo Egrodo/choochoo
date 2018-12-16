@@ -14,15 +14,6 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
   const [apiError, setApiError] = useState(false);
   const timerRef = useRef();
 
-  // Callback to give to networkError to handle data received after successful retry.
-  const onReceiveData = json => {
-    if (json.error || !json.N.length || !json.S.length) {
-      console.error(json.error);
-      setApiError(true);
-    }
-    setSchedule(json);
-  };
-
   const getSchedule = () => {
     console.log(`Getting new schedule for line ${line}.`);
 
@@ -47,7 +38,16 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
         setApiError(true);
         // If the server sends me a permanent error, don't retry.
         if (err.status === 500 || err.status === 503) {
-          networkError(`500 on /api/schedule/${line}`, true, onReceiveData, url);
+          networkError(
+            `500 on /api/schedule/${line}`,
+            true,
+            json => {
+              if (json.error || !json.N.length || !json.S.length) {
+                setApiError(true);
+              } else setSchedule(json);
+            },
+            url
+          );
         } else {
           console.error(err);
         }
