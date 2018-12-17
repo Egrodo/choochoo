@@ -45,6 +45,7 @@ function TrainBlock({ stationObj, line, reqOn, networkError }) {
               if (json.error || !json.N.length || !json.S.length) {
                 setApiError(true);
               } else setSchedule(json);
+              setLoading(false);
             },
             url
           );

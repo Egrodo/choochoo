@@ -14,6 +14,8 @@ function Typeahead({ error, getData, stationObj, setStationObj, loading }) {
 
   const onOptionClick = ({ target: { id } }) => {
     if (!options[id]) throw new RangeError('Invalid id passed to onOptionClick');
+    if (!options[id].stop_id) return; // If there is no stop_id, don't continue (for "none found")
+
     // If one is selected send it upwards for validation and disable option view.
     enableOptionsView(false);
     setStationObj(options[id]);
@@ -26,6 +28,20 @@ function Typeahead({ error, getData, stationObj, setStationObj, loading }) {
       if (debouncedQuery && optionsView) getData(stationName, setOptions, enableOptionsView);
     },
     [debouncedQuery]
+  );
+
+  useEffect(
+    () => {
+      if (options.length === 0 && optionsView) {
+        // TODO: Set 'None Found' option.
+        setOptions([
+          {
+            stop_name: 'No Results Found'
+          }
+        ]);
+      }
+    },
+    [options]
   );
 
   return (
