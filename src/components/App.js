@@ -39,7 +39,7 @@ function App() {
             setNetworkIssue('');
           })
           .catch(err => {
-            if (networkIssue !== 'Server Down') setNetworkIssue('Server Down');
+            if (networkIssue !== 'Unable to connect to server') setNetworkIssue('Unable to connect to server');
             console.log('Error caught: ', err);
             // If sill offline, wait 10 seconds and try again.
             setTimeout(() => networkRetry(tries - 1, cb, url, ...params), 10 * 1000);
@@ -53,12 +53,12 @@ function App() {
 
   // When invoked, check if the user is online. If they are, check if the server is online.
   const networkError = (msg, retry, cb, url, ...params) => {
-    if (!retry || networkIssue) {
-      // Using this for rate limit, but it's usable for other things.
-      setNetworkIssue(msg);
-    } else if (retry) {
+    if (retry && !networkIssue) {
       // If requested to retry, send to async network retry system.
       networkRetry(5, cb, url, ...params);
+    } else {
+      // Using this for rate limit, but it's usable for other things.
+      setNetworkIssue(msg);
     }
   };
 

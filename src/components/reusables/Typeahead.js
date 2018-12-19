@@ -33,7 +33,6 @@ function Typeahead({ error, getData, stationObj, setStationObj, loading }) {
   useEffect(
     () => {
       if (options.length === 0 && optionsView) {
-        // TODO: Set 'None Found' option.
         setOptions([
           {
             stop_name: 'No Results Found'
