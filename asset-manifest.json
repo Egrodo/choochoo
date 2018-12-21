@@ -1,7 +1,7 @@
 {
   "main.css": "/static/css/main.6cc8eab6.chunk.css",
-  "main.js": "/static/js/main.0af3042d.chunk.js",
-  "main.js.map": "/static/js/main.0af3042d.chunk.js.map",
+  "main.js": "/static/js/main.b8f62f51.chunk.js",
+  "main.js.map": "/static/js/main.b8f62f51.chunk.js.map",
   "static/js/1.9657ea33.chunk.js": "/static/js/1.9657ea33.chunk.js",
   "static/js/1.9657ea33.chunk.js.map": "/static/js/1.9657ea33.chunk.js.map",
   "static/js/2.f7263b07.chunk.js": "/static/js/2.f7263b07.chunk.js",
@@ -71,8 +71,7 @@
   "static/media/Input.module.css": "/static/media/cancel.bb93e3a2.svg",
   "static/media/MainView.module.css": "/static/media/cog.92c0d6ef.svg",
   "static/media/App.module.css": "/static/media/Product Sans Regular.eae9c18c.ttf",
-  "static/media/sunny-day.png": "/static/media/sunny-day.275bbde9.png",
-  "static/media/whiteTrain.png": "/static/media/whiteTrain.390291fc.png",
+  "static/media/sunny-day.webp": "/static/media/sunny-day.874c41f0.webp",
   "static/media/emailIcon.svg": "/static/media/emailIcon.ac575565.svg",
   "static/media/cloudIcon.svg": "/static/media/cloudIcon.941f4bce.svg",
   "static/media/1.svg": "/static/media/1.5e8d8a62.svg",
@@ -108,6 +107,6 @@
   "static/css/main.6cc8eab6.chunk.css.map": "/static/css/main.6cc8eab6.chunk.css.map",
   "static/css/31.c198ff71.chunk.css.map": "/static/css/31.c198ff71.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.e8d9c9bd3b082b4eae7c81908b687bd6.js": "/precache-manifest.e8d9c9bd3b082b4eae7c81908b687bd6.js",
+  "precache-manifest.ee1e502cbee3af4244dd5ce839a82486.js": "/precache-manifest.ee1e502cbee3af4244dd5ce839a82486.js",
   "service-worker.js": "/service-worker.js"
 }
