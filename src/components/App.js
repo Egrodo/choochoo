@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import SunAndClouds from '../assets/images/sunny-day.png';
+import SunAndClouds from '../assets/images/sunny-day.webp';
 import CSS from '../css/App.module.css';
 
 import NetworkDialogue from './reusables/NetworkDialogue';
