@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
 import SunAndClouds from '../assets/images/sunny-day.webp';
+import NetworkDialogue from './reusables/NetworkDialogue';
+import Spinner from './reusables/Spinner';
 import CSS from '../css/App.module.css';
 
-import NetworkDialogue from './reusables/NetworkDialogue';
-import WelcomeView from './views/WelcomeView';
-import MainView from './views/MainView';
-import SettingsView from './views/SettingsView';
+const WelcomeView = React.lazy(() => import('./views/WelcomeView'));
+const MainView = React.lazy(() => import('./views/MainView'));
+const SettingsView = React.lazy(() => import('./views/SettingsView'));
 
 // TODO: Setup theming system with context and make different themes for night, stormy, etc.
 function App() {
@@ -122,28 +123,32 @@ function App() {
       </header>
       <div className={CSS.content}>
         <NetworkDialogue message={networkIssue} />
-        {view === 'welcome' && <WelcomeView saveChanges={saveChanges} networkError={networkError} />}
-        {view === 'main' && (
-          <MainView
-            name={name}
-            stationObj={stationObj}
-            line={line}
-            reqOn={reqOn}
-            networkError={networkError}
-            gotoSettings={() => setView('settings')}
-          />
-        )}
-        {view === 'settings' && (
-          <SettingsView
-            initData={{
-              name,
-              stationObj,
-              line
-            }}
-            networkError={networkError}
-            saveChanges={saveChanges}
-          />
-        )}
+        <Suspense ms={700} fallback={
+          <div className={CSS.centerSpinner}><Spinner /></div>
+        }>
+          {view === 'welcome' && <WelcomeView saveChanges={saveChanges} networkError={networkError} />}
+          {view === 'main' && (
+            <MainView
+              name={name}
+              stationObj={stationObj}
+              line={line}
+              reqOn={reqOn}
+              networkError={networkError}
+              gotoSettings={() => setView('settings')}
+            />
+          )}
+          {view === 'settings' && (
+            <SettingsView
+              initData={{
+                name,
+                stationObj,
+                line
+              }}
+              networkError={networkError}
+              saveChanges={saveChanges}
+            />
+          )}
+        </Suspense>
       </div>
     </div>
   );

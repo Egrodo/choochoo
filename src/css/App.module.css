@@ -36,6 +36,12 @@
   height: 100%;
 }
 
+.centerSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Below a certain width (on phones), just assume full height. */
 
 @media only screen and (min-height: 775px) {
