@@ -1,5 +1,5 @@
 <h1 align="center">Choochoo</h1>
-<p align="center">A PWA gives you real-time updates of weather and train status at any MTA station in NYC.</p>
+<p align="center">A PWA that gives you real-time updates of weather and train status at any MTA station in NYC.</p>
 <p align="center">
   <img src="https://i.imgur.com/kpTRta1.png" alt="choochoo" width="300">
 </p>
