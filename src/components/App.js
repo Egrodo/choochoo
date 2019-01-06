@@ -1,5 +1,6 @@
 import React, { Suspense, useState, useEffect, useRef } from 'react';
-import SunAndClouds from '../assets/images/sunny-day.webp';
+import SunAndCloudsWEBP from '../assets/images/sunny-day.webp';
+import SunAndCloudsPNG from '../assets/images/sunny-day.png';
 import NetworkDialogue from './reusables/NetworkDialogue';
 import Spinner from './reusables/Spinner';
 import CSS from '../css/App.module.css';
@@ -119,13 +120,22 @@ function App() {
   return (
     <div className={CSS.App}>
       <header className={CSS.imgContainer}>
-        <img src={SunAndClouds} className={CSS.headerImg} alt="Sun And Clouds" />
+        <picture>
+          <source srcSet={SunAndCloudsWEBP} type="image/webp" />
+          <source srcSet={SunAndCloudsPNG} type="image/png" />
+          <img src={SunAndCloudsPNG} className={CSS.headerImg} alt="Sun And Clouds" />
+        </picture>
       </header>
       <div className={CSS.content}>
         <NetworkDialogue message={networkIssue} />
-        <Suspense ms={700} fallback={
-          <div className={CSS.centerSpinner}><Spinner /></div>
-        }>
+        <Suspense
+          ms={700}
+          fallback={
+            <div className={CSS.centerSpinner}>
+              <Spinner />
+            </div>
+          }
+        >
           {view === 'welcome' && <WelcomeView saveChanges={saveChanges} networkError={networkError} />}
           {view === 'main' && (
             <MainView
